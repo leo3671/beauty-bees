@@ -1,0 +1,80 @@
+.crossSellContainer {
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 1px dashed var(--border-light);
+}
+
+.crossSellContainer h3 {
+  font-size: 1.1rem;
+  margin-bottom: 15px;
+  color: var(--text-dark);
+}
+
+.crossSellList {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.crossSellItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background-color: #fdfafb;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #f0e6e9;
+}
+
+.itemImageWrap {
+  width: 50px;
+  height: 50px;
+  flex-shrink: 0;
+  border-radius: 6px;
+  overflow: hidden;
+  background-color: #fff;
+}
+
+.itemImageWrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.itemDetails {
+  flex-grow: 1;
+}
+
+.itemName {
+  font-size: 0.85rem;
+  font-weight: 500;
+  line-height: 1.3;
+  margin-bottom: 4px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.itemPrice {
+  font-size: 0.85rem;
+  color: var(--text-dark);
+  font-weight: 600;
+}
+
+.addBtn {
+  background-color: var(--primary-pink);
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.addBtn:hover {
+  background-color: var(--hover-pink);
+  transform: translateY(-1px);
+}

@@ -1,0 +1,62 @@
+[
+  {
+    "id": "ORD-4921",
+    "date": "2026-05-01T00:48:03.931Z",
+    "status": "Cancelled",
+    "customer": "Aayush Shrestha",
+    "email": "aayush@example.com",
+    "total": 6200,
+    "items": [
+      {
+        "id": "a3",
+        "name": "Anua Heartleaf 77% Soothing Toner 250ml",
+        "quantity": 1,
+        "price": 2900
+      },
+      {
+        "id": "a4",
+        "name": "Anua Niacinamide 10% TXA 4 Serum 30ml",
+        "quantity": 1,
+        "price": 3300
+      }
+    ]
+  },
+  {
+    "id": "ORD-1842",
+    "date": "2026-04-30T02:48:03.934Z",
+    "status": "Delivered",
+    "customer": "Priya Gurung",
+    "email": "priya.g@example.com",
+    "total": 3100,
+    "items": [
+      {
+        "id": "a5",
+        "name": "Anua Heartleaf Pore Control Cleansing oil Mild 200ml",
+        "quantity": 1,
+        "price": 3100
+      }
+    ]
+  },
+  {
+    "id": "ORD-9912",
+    "date": "2026-04-29T02:48:03.934Z",
+    "status": "Delivered",
+    "customer": "Rohan Thapa",
+    "email": "rohan.t@gmail.com",
+    "total": 9400,
+    "items": [
+      {
+        "id": "s2",
+        "name": "Skin1004 Madagascar Centella Tone Brightening Capsule Ampoule 100ml",
+        "quantity": 2,
+        "price": 3100
+      },
+      {
+        "id": "s10",
+        "name": "Skin1004 Madagascar Centella Cream 75ml",
+        "quantity": 1,
+        "price": 3200
+      }
+    ]
+  }
+]

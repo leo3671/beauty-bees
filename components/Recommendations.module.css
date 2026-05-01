@@ -1,0 +1,55 @@
+.recSection {
+  padding: 60px 20px;
+  background-color: #fdfafb;
+  border-radius: 16px;
+  margin: 40px auto;
+}
+
+@media (min-width: 768px) {
+  .recSection {
+    padding: 80px 24px;
+    margin: 60px auto;
+  }
+}
+
+.sectionHeader {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+@media (min-width: 768px) {
+  .sectionHeader {
+    margin-bottom: 40px;
+  }
+}
+
+.sectionHeader h2 {
+  font-size: 2rem;
+  color: var(--primary-pink); /* Stand out a bit */
+  font-weight: 600;
+}
+
+@media (min-width: 768px) {
+  .sectionHeader h2 {
+    font-size: 2.5rem;
+  }
+}
+
+.sectionHeader p {
+  color: #666;
+  margin-top: 8px;
+  font-size: 1.1rem;
+}
+
+.productGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+}
+
+@media (min-width: 768px) {
+  .productGrid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 32px;
+  }
+}

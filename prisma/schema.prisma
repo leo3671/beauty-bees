@@ -1,0 +1,100 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  name      String   @default("")
+  email     String   @unique
+  phone     String   @default("")
+  password  String
+  role      String   @default("customer")
+  isVerified  Boolean  @default(false)
+  mfaEnabled  Boolean  @default(false)
+  mfaSecret   String?  // For OTP/MFA storage
+  createdAt DateTime @default(now())
+}
+
+model Product {
+  id            String   @id @default(cuid()) // Can keep the JSON IDs like 'a1' manually
+  name          String
+  brand         String
+  category      String
+  description   String?
+  price         Int
+  originalPrice Int?
+  isNew         Boolean  @default(false)
+  isBestSeller  Boolean  @default(false)
+  stock         Int      @default(0)
+  inStock       Boolean  @default(true)
+  image         String
+  skinType      String   @default("[]") // JSON array of strings
+  ingredients   String   @default("[]") // JSON array of strings
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  reviews       Review[]
+
+  @@index([category])
+  @@index([brand])
+}
+
+model Review {
+  id        String   @id @default(cuid())
+  productId String
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  userId    String
+  userName  String
+  rating    Int      @default(5)
+  comment   String
+  images    String   @default("[]") // JSON array of image URLs/base64
+  date      DateTime @default(now())
+
+  @@index([productId])
+  @@index([userId])
+}
+
+model Order {
+  id                String      @id // E.g. ORD-1234 manually passed
+  customer          String
+  email             String
+  location          String?
+  paymentMethod     String
+  paymentStatus     String      @default("Pending Verification")
+  paymentScreenshot String?
+  status            String      @default("Pending") // Fulfillment status
+  total             Int
+  date              DateTime    @default(now())
+  items             OrderItem[]
+
+  @@index([email])
+  @@index([status])
+}
+
+model OrderItem {
+  id        String  @id @default(cuid())
+  orderId   String
+  order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId String
+  name      String
+  quantity  Int
+  price     Int     @default(0)
+}
+
+model VerificationToken {
+  id        String   @id @default(cuid())
+  email     String
+  token     String
+  type      String   // 'EMAIL_VERIFICATION' or 'MFA'
+  expires   DateTime
+  createdAt DateTime @default(now())
+
+  @@unique([email, token])
+}

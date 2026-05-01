@@ -1,0 +1,168 @@
+.container {
+  margin-top: 60px;
+  border-top: 1px solid #eee;
+  padding-top: 40px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 40px;
+}
+
+.avgScore {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--text-dark);
+}
+
+.ratingOverview {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.stars {
+  font-size: 1.2rem;
+}
+
+.totalCount {
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.writeBtn {
+  background: white;
+  border: 1px solid var(--text-dark);
+  color: var(--text-dark);
+  padding: 10px 24px;
+  border-radius: 999px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.writeBtn:hover {
+  background: var(--text-dark);
+  color: white;
+}
+
+/* Form Styling */
+.form {
+  background: #fdf2f4;
+  border-radius: 20px;
+  padding: 30px;
+  margin-bottom: 40px;
+  border: 1px solid #f9d8de;
+}
+
+.form h4 {
+  margin-bottom: 20px;
+}
+
+.ratingInput {
+  display: flex;
+  gap: 5px;
+  margin-bottom: 20px;
+}
+
+.star, .activeStar {
+  background: none;
+  border: none;
+  font-size: 1.8rem;
+  cursor: pointer;
+  padding: 0;
+}
+
+.star { color: #e2e8f0; }
+.activeStar { color: #facc15; }
+
+.form textarea {
+  width: 100%;
+  min-height: 120px;
+  border-radius: 12px;
+  border: 1px solid #ddd;
+  padding: 15px;
+  font-family: inherit;
+  margin-bottom: 20px;
+  outline: none;
+}
+
+.form textarea:focus {
+  border-color: var(--primary-pink);
+}
+
+.formFooter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.imageHint {
+  font-size: 0.8rem;
+  color: #888;
+}
+
+.submitBtn {
+  background: var(--primary-pink);
+  color: white;
+  border: none;
+  padding: 12px 30px;
+  border-radius: 30px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* List Styling */
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.reviewCard {
+  border-bottom: 1px solid #f1f5f9;
+  padding-bottom: 30px;
+}
+
+.reviewTop {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 15px;
+}
+
+.userMeta strong {
+  display: block;
+  margin-bottom: 4px;
+}
+
+.date {
+  font-size: 0.85rem;
+  color: #999;
+}
+
+.comment {
+  line-height: 1.6;
+  color: #444;
+}
+
+.reviewImages {
+  display: flex;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.reviewImages img {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.noReviews {
+  text-align: center;
+  color: #888;
+  padding: 40px 0;
+}

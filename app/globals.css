@@ -1,0 +1,71 @@
+:root {
+  /* Premium K-Beauty Pink Palette */
+  --bg-color: #FFF8F9;          /* Very soft blush background */
+  --text-color: #4A3B3E;        /* Deep charcoal with warm undertones */
+  --primary-pink: #F2B6C1;      /* Soft Rose pink for accents */
+  --primary-pink-hover: #D994A0;
+  --accent-peach: #FCE4E8;      /* Extremely light pink for subtle backgrounds */
+  --border-light: #F7D6DB;      /* Soft pink border */
+  --white: #ffffff;
+  
+  --font-main-fallback: sans-serif;
+  --font-heading-fallback: serif;
+}
+
+/* Base Styles */
+html {
+  height: 100%;
+}
+
+body {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  font-family: var(--font-main);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  font-weight: 400;
+  color: #382A2D;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+button {
+  cursor: pointer;
+  font-family: var(--font-main);
+  border: none;
+  background: none;
+}
+
+/* Utilities */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(15px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}

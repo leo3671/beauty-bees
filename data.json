@@ -1,0 +1,255 @@
+[
+  {
+    "id": "a1",
+    "name": "Anua Heartleaf Pore Control Cleansing Oil 200ml",
+    "brand": "Anua",
+    "price": 2800,
+    "originalPrice": 3100,
+    "category": "Cleanser",
+    "image": "/images/anua_oil.jpg",
+    "description": "Formulated with 10,000ppm Heartleaf extract to soothe troubled skin, this non-comedogenic cleansing oil gently but effectively removes blackheads, makeup, and sebum without clogging pores.",
+    "isNew": true,
+    "isBestSeller": true
+  },
+  {
+    "id": "a2",
+    "name": "Anua Heartleaf Quercetinol Pore Deep Cleansing foam 150ml",
+    "brand": "Anua",
+    "price": 1710,
+    "category": "Cleanser",
+    "image": "https://images.unsplash.com/photo-1556228578-0d85b1a4d571?auto=format&fit=crop&q=80&w=600",
+    "description": "A deep cleansing foam containing Heartleaf powder and Quercetinol to calm skin, clear dead skin cells, and purify pores with a refreshing finish.",
+    "isNew": false,
+    "isBestSeller": true,
+    "originalPrice": 1900
+  },
+  {
+    "id": "a3",
+    "name": "Anua Heartleaf 77% Soothing Toner 250ml",
+    "brand": "Anua",
+    "price": 2500,
+    "originalPrice": 3100,
+    "category": "Toner",
+    "image": "/images/anua_toner.jpg",
+    "description": "A highly moisturizing, award-winning toner packed with 77% Houttuynia Cordata Extract to calm irritation, reduce redness, and restore optimal moisture balance.",
+    "isNew": false,
+    "isBestSeller": true
+  },
+  {
+    "id": "a4",
+    "name": "Anua Niacinamide 10% TXA 4 Serum 30ml",
+    "brand": "Anua",
+    "price": 3300,
+    "category": "Serum/Essence",
+    "image": "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&q=80&w=600",
+    "description": "A powerful brightening serum combining 10% Niacinamide and 4% Tranexamic Acid to effectively fade dark spots, hyperpigmentation, and acne scars.",
+    "isNew": true
+  },
+  {
+    "id": "a5",
+    "name": "Anua Heartleaf Pore Control Cleansing oil Mild 200ml",
+    "brand": "Anua",
+    "price": 3100,
+    "category": "Cleanser",
+    "image": "/images/anua_oil.jpg",
+    "description": "A gentler, fragrance-free version of the bestselling cleansing oil, perfect for ultra-sensitive skin. Effortlessly melts away impurities while soothing irritation.",
+    "isNew": false
+  },
+  {
+    "id": "a6",
+    "name": "Anua 7 Rice Ceramide Hydrating Barrier Serum 50ml",
+    "brand": "Anua",
+    "price": 3150,
+    "category": "Serum/Essence",
+    "image": "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&q=80&w=600",
+    "description": "Enriched with rice bran water and 7 types of ceramides, this serum deeply hydrates, improves skin elasticity, and fortifies the natural moisture barrier.",
+    "isNew": true
+  },
+  {
+    "id": "a7",
+    "name": "Anua Heartleaf 70 Daily Lotion",
+    "brand": "Anua",
+    "price": 3200,
+    "category": "Moisturizer",
+    "image": "https://images.unsplash.com/photo-1608248593842-8d7d4c82b130?auto=format&fit=crop&q=80&w=600",
+    "description": "A lightweight, fast-absorbing lotion with 70% Heartleaf extract that delivers deep hydration and soothes sensitive skin without any greasy residue.",
+    "isNew": false
+  },
+  {
+    "id": "a8",
+    "name": "Anua Rice 70 Glow Milky Toner 250ml",
+    "brand": "Anua",
+    "price": 2800,
+    "originalPrice": 3100,
+    "category": "Toner",
+    "image": "/images/anua_toner.jpg",
+    "description": "Formulated with 70% Rice Bran Water, this milky toner provides intense moisture, gently brightens, and creates a smooth, glass-skin glow.",
+    "isNew": true,
+    "isBestSeller": true
+  },
+  {
+    "id": "s1",
+    "name": "Skin1004 Madagascar Centella Tone Brightening Capsule Ampoule 50ml",
+    "brand": "Skin1004",
+    "price": 2100,
+    "originalPrice": 2300,
+    "category": "Serum/Essence",
+    "image": "/images/skin1004_ampoule.jpg",
+    "description": "A fast-absorbing ampoule featuring patented MadeWhite™ capsules and Madagascan Centella Asiatica extract to brighten uneven skin tone and soothe blemishes.",
+    "isNew": false,
+    "isBestSeller": true
+  },
+  {
+    "id": "s2",
+    "name": "Skin1004 Madagascar Centella Tone Brightening Capsule Ampoule 100ml",
+    "brand": "Skin1004",
+    "price": 3100,
+    "category": "Serum/Essence",
+    "image": "/images/skin1004_ampoule.jpg",
+    "description": "A fast-absorbing ampoule featuring patented MadeWhite™ capsules and Madagascan Centella Asiatica extract to brighten uneven skin tone and soothe blemishes. Large size.",
+    "isNew": false
+  },
+  {
+    "id": "s3",
+    "name": "Skin1004 Madagascar Centella Tone Brightening Capsule Ampoule 30ml",
+    "brand": "Skin1004",
+    "price": 1300,
+    "category": "Serum/Essence",
+    "image": "/images/skin1004_ampoule.jpg",
+    "description": "A fast-absorbing ampoule featuring patented MadeWhite™ capsules and Madagascan Centella Asiatica extract to brighten uneven skin tone. Travel size.",
+    "isNew": false
+  },
+  {
+    "id": "s4",
+    "name": "Skin1004 Madagascar Centella Hyalu-Cica Water-fit Sun Serum 50ml",
+    "brand": "Skin1004",
+    "price": 2300,
+    "category": "Sunscreen",
+    "image": "/images/skin1004_sun.jpg",
+    "description": "A lightweight, hydrating chemical sunscreen (SPF50+ PA++++) formulated with Hyaluronic Acid and Centella Asiatica to provide a dewy, white-cast-free finish.",
+    "isNew": true
+  },
+  {
+    "id": "s5",
+    "name": "Skin1004 Madagascar Centella Light Cleansing Oil 200ml",
+    "brand": "Skin1004",
+    "price": 2900,
+    "category": "Cleanser",
+    "image": "/images/anua_oil.jpg",
+    "description": "A lightweight, oil-based cleanser featuring Centella Asiatica extract that effortlessly melts away makeup, dirt, and excess sebum while preventing breakouts.",
+    "isNew": false
+  },
+  {
+    "id": "s6",
+    "name": "Skin1004 Madagascar Centella Poremizing Ampoule 50ml",
+    "brand": "Skin1004",
+    "price": 2300,
+    "category": "Serum/Essence",
+    "image": "/images/skin1004_ampoule.jpg",
+    "description": "Infused with Pink Himalayan Salt and Centella Asiatica, this ampoule visibly tightens enlarged pores and controls excess sebum production.",
+    "isNew": false
+  },
+  {
+    "id": "s7",
+    "name": "Skin1004 Madagascar Centella probio-cica ampoule 50ml",
+    "brand": "Skin1004",
+    "price": 2300,
+    "category": "Serum/Essence",
+    "image": "/images/skin1004_ampoule.jpg",
+    "description": "A highly concentrated ampoule formulated with fermented Centella Asiatica (Probio-cica) to intensely repair and strengthen a damaged skin barrier.",
+    "isNew": true
+  },
+  {
+    "id": "s8",
+    "name": "Skin1004 Madagascar Centella Asiatica Ampoule 55ml",
+    "brand": "Skin1004",
+    "price": 1900,
+    "category": "Serum/Essence",
+    "image": "/images/skin1004_ampoule.jpg",
+    "description": "Made with 100% pure Centella Asiatica Extract from Madagascar, this iconic ampoule instantly soothes inflamed skin and provides deep, lasting hydration.",
+    "isNew": false,
+    "isBestSeller": true,
+    "originalPrice": 2300
+  },
+  {
+    "id": "s9",
+    "name": "Skin1004 Madagascar Centella hyalu-cica silky fit sun stick 7g",
+    "brand": "Skin1004",
+    "price": 1300,
+    "category": "Sunscreen",
+    "image": "/images/skin1004_sun.jpg",
+    "description": "A convenient, portable sun stick (SPF50+ PA++++) that offers a smooth, silky finish while hydrating and calming the skin with the Hyalu-Cica formula.",
+    "isNew": true
+  },
+  {
+    "id": "s10",
+    "name": "Skin1004 Madagascar Centella Cream 75ml",
+    "brand": "Skin1004",
+    "price": 2600,
+    "category": "Moisturizer",
+    "image": "https://images.unsplash.com/photo-1608248593842-8d7d4c82b130?auto=format&fit=crop&q=80&w=600",
+    "description": "A nourishing daily cream packed with Centella Asiatica extract, Niacinamide, and Squalane to lock in moisture, calm redness, and brighten the complexion.",
+    "isNew": false
+  },
+  {
+    "id": "s11",
+    "name": "Skin1004 Madagascar Centella Ampoule Foam 125ml",
+    "brand": "Skin1004",
+    "price": 1800,
+    "category": "Cleanser",
+    "image": "https://images.unsplash.com/photo-1556228578-0d85b1a4d571?auto=format&fit=crop&q=80&w=600",
+    "description": "A mildly acidic, pH-balanced foaming cleanser enriched with Centella Asiatica extract to gently cleanse without stripping the skin of its natural moisture.",
+    "isNew": false
+  },
+  {
+    "id": "h1",
+    "name": "Haru Haru wonder Black Rice Probiotics Barrier Essence 120ml",
+    "brand": "Haru Haru Wonder",
+    "price": 3000,
+    "category": "Serum/Essence",
+    "image": "/images/haru_toner.jpg",
+    "description": "A highly concentrated essence formulated with fermented black rice and probiotics to strengthen the skin barrier, provide intense hydration, and protect against environmental stressors.",
+    "isNew": true
+  },
+  {
+    "id": "h2",
+    "name": "Haru Haru wonder Black Rice Hyaluronic Toner Free of Alcohol & Fragrance 150ml",
+    "brand": "Haru Haru Wonder",
+    "price": 2200,
+    "category": "Toner",
+    "image": "/images/haru_toner.jpg",
+    "description": "A gentle, unscented, and alcohol-free toner enriched with fermented black rice and hyaluronic acid to provide deep, non-irritating hydration for sensitive skin.",
+    "isNew": false
+  },
+  {
+    "id": "h3",
+    "name": "Haru Haru Wonder 4% Txa Serum Uncented 30ml",
+    "brand": "Haru Haru Wonder",
+    "price": 2900,
+    "category": "Serum/Essence",
+    "image": "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&q=80&w=600",
+    "description": "An unscented dark spot serum featuring 4% Tranexamic Acid and Vitamin C to effectively target hyperpigmentation and reveal a brighter, more even skin tone.",
+    "isNew": false
+  },
+  {
+    "id": "h4",
+    "name": "Haru Haru Wonder Moisture 5.5 Soft Cleansing Gel Uncented 100ml",
+    "brand": "Haru Haru Wonder",
+    "price": 1800,
+    "category": "Cleanser",
+    "image": "/images/haru_cleanser.jpg",
+    "description": "A low-pH, unscented gel cleanser that utilizes natural plant-derived surfactants to gently remove impurities while maintaining the skin optimal moisture balance.",
+    "isNew": false
+  },
+  {
+    "id": "h5",
+    "name": "Haru Haru Wonder Moisture Airyfit Daily Sunscreen SPF + PA ++++ 50ml",
+    "brand": "Haru Haru Wonder",
+    "price": 1950,
+    "category": "Sunscreen",
+    "image": "/images/skin1004_sun.jpg",
+    "description": "A lightweight, velvety chemical sunscreen (SPF50+ PA++++) infused with black rice extract that absorbs quickly without a white cast or greasy finish.",
+    "isNew": true,
+    "originalPrice": 2300
+  }
+]
