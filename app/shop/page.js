@@ -24,18 +24,18 @@ function ShopContent() {
     if (initialBrand) setActiveCategory(initialBrand);
   }, [initialBrand]);
 
-  const filteredProducts = products.filter(p => {
+  const filteredProducts = Array.isArray(products) ? products.filter(p => {
     const matchesCategory = activeCategory === 'All' || p.category === activeCategory || p.brand === activeCategory;
     const matchesSearch = searchQuery === '' || 
-      p.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
-      p.brand.toLowerCase().includes(searchQuery.toLowerCase());
+      (p.name || '').toLowerCase().includes(searchQuery.toLowerCase()) || 
+      (p.brand || '').toLowerCase().includes(searchQuery.toLowerCase());
     
     let pSkinTypes = [];
     try { pSkinTypes = JSON.parse(p.skinType || '[]'); } catch(e) {}
     const matchesSkinType = skinType === 'All' || pSkinTypes.includes(skinType);
     
     return matchesCategory && matchesSearch && matchesSkinType;
-  });
+  }) : [];
 
   // Apply sorting
   const sortedProducts = [...filteredProducts].sort((a, b) => {
