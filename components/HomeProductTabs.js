@@ -10,8 +10,8 @@ export default function HomeProductTabs() {
   const [activeTab, setActiveTab] = useState('new');
   const { products } = useProducts();
 
-  const newArrivals = products.filter(p => p.isNew).slice(0, 4);
-  const bestSellers = products.filter(p => p.isBestSeller).slice(0, 4);
+  const newArrivals = Array.isArray(products) ? products.filter(p => p.isNew).slice(0, 4) : [];
+  const bestSellers = Array.isArray(products) ? products.filter(p => p.isBestSeller).slice(0, 4) : [];
 
   const displayedProducts = activeTab === 'new' ? newArrivals : bestSellers;
 

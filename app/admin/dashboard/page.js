@@ -34,8 +34,8 @@ export default function DashboardOverview() {
   const verifiedPayments = orders.filter(o => o.paymentStatus === 'Verified');
   const pendingPayments = orders.filter(o => o.paymentStatus !== 'Verified');
   const uniqueCustomers = [...new Set(orders.map(o => o.email))];
-  const outOfStockProducts = products.filter(p => p.inStock === false);
-  const activeDiscounts = products.filter(p => p.originalPrice && p.originalPrice > p.price);
+  const outOfStockProducts = Array.isArray(products) ? products.filter(p => p.inStock === false) : [];
+  const activeDiscounts = Array.isArray(products) ? products.filter(p => p.originalPrice && p.originalPrice > p.price) : [];
   const avgOrderValue = orders.length > 0 ? Math.round(totalRevenue / orders.length) : 0;
 
   // Revenue by day (last 7 days)

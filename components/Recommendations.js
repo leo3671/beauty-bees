@@ -11,7 +11,7 @@ export default function Recommendations() {
   const [historyExists, setHistoryExists] = useState(false);
 
   useEffect(() => {
-    if (!products || products.length === 0) return;
+    if (!Array.isArray(products) || products.length === 0) return;
 
     try {
       const historyStr = localStorage.getItem('beautyBees_history');
