@@ -119,3 +119,15 @@
   transform: translateY(-2px);
   box-shadow: 0 6px 20px rgba(242, 182, 193, 0.6);
 }
+
+@media (max-width: 600px) {
+  .spotlightContent h3 {
+    font-size: 1.5rem;
+  }
+  .spotlightContent p {
+    font-size: 1rem;
+  }
+  .shopBtn {
+    width: 100%;
+  }
+}

@@ -9,6 +9,9 @@ import SearchBar from './SearchBar';
 export default function Header() {
   const { openCart, cartItems = [] } = useCart() || {};
   const [user, setUser] = useState(null);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -35,9 +38,13 @@ export default function Header() {
       </div>
       <div className={`container ${styles.navContainer}`}>
         <div className={styles.mobileMenu}>
-          <button aria-label="Menu">
+          <button onClick={toggleMenu} aria-label="Toggle Menu">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M3 12h18M3 6h18M3 18h18" />
+              {isMenuOpen ? (
+                <path d="M18 6L6 18M6 6l12 12" />
+              ) : (
+                <path d="M3 12h18M3 6h18M3 18h18" />
+              )}
             </svg>
           </button>
         </div>
@@ -54,11 +61,15 @@ export default function Header() {
           </Link>
         </div>
 
-        <nav className={styles.navLinks}>
-          <Link href="/shop" className={styles.link}>Shop All</Link>
-          <Link href="/skincare" className={styles.link}>Skincare</Link>
-          <Link href="/brands" className={styles.link}>Brands</Link>
-          {user?.role === 'admin' && <Link href="/admin/dashboard" className={styles.link} style={{color: 'var(--primary-pink)', fontWeight: '600'}}>Dashboard</Link>}
+        <nav className={`${styles.navLinks} ${isMenuOpen ? styles.mobileActive : ''}`}>
+          <Link href="/shop" className={styles.link} onClick={() => setIsMenuOpen(false)}>Shop All</Link>
+          <Link href="/skincare" className={styles.link} onClick={() => setIsMenuOpen(false)}>Skincare</Link>
+          <Link href="/brands" className={styles.link} onClick={() => setIsMenuOpen(false)}>Brands</Link>
+          {user?.role === 'admin' && (
+            <Link href="/admin/dashboard" className={styles.link} onClick={() => setIsMenuOpen(false)} style={{color: 'var(--primary-pink)', fontWeight: '600'}}>
+              Dashboard
+            </Link>
+          )}
         </nav>
 
         <div className={styles.icons}>
@@ -84,6 +95,7 @@ export default function Header() {
           </button>
         </div>
       </div>
+      {isMenuOpen && <div className={styles.backdrop} onClick={toggleMenu} />}
     </header>
   );
 }

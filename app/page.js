@@ -3,8 +3,22 @@ import styles from "./page.module.css";
 import HomeProductTabs from "../components/HomeProductTabs";
 import ShopByCategory from "../components/ShopByCategory";
 import Recommendations from "../components/Recommendations";
+import prisma from "@/lib/prisma";
 
-export default function Home() {
+export default async function Home() {
+  // Fetch top 3 brands dynamically from DB
+  let brands = [];
+  try {
+    const brandProducts = await prisma.product.findMany({
+      select: { brand: true, image: true },
+      distinct: ['brand'],
+      take: 3
+    });
+    brands = brandProducts.map(p => ({ name: p.brand, img: p.image }));
+  } catch (e) {
+    console.error("Failed to fetch brands", e);
+  }
+
   return (
     <div className={styles.page}>
       
@@ -101,7 +115,7 @@ export default function Home() {
         <HomeProductTabs />
       </section>
 
-      {/* ===== SHOP BY BRAND (Premium Cards) ===== */}
+      {/* ===== SHOP BY BRAND (Dynamic) ===== */}
       <section className={`container ${styles.sectionBlock}`}>
         <div className={styles.sectionHeader}>
           <span className={styles.sectionTag}>BRANDS</span>
@@ -110,32 +124,20 @@ export default function Home() {
         </div>
         
         <div className={styles.brandGrid}>
-          <Link href="/shop?brand=Anua" className={styles.brandCard}>
-            <div className={styles.brandOverlay}></div>
-            <img src="https://images.unsplash.com/photo-1617897903246-719242758050?auto=format&fit=crop&q=80&w=800" alt="Anua" className={styles.brandBg} />
-            <div className={styles.brandContent}>
-              <h3>Anua</h3>
-              <span>Heartleaf Collection →</span>
-            </div>
-          </Link>
-
-          <Link href="/shop?brand=Skin1004" className={styles.brandCard}>
-            <div className={styles.brandOverlay}></div>
-            <img src="https://images.unsplash.com/photo-1599305090598-fe179d501227?auto=format&fit=crop&q=80&w=800" alt="Skin1004" className={styles.brandBg} />
-            <div className={styles.brandContent}>
-              <h3>Skin1004</h3>
-              <span>Centella Line →</span>
-            </div>
-          </Link>
-
-          <Link href="/shop?brand=Haru Haru Wonder" className={styles.brandCard}>
-            <div className={styles.brandOverlay}></div>
-            <img src="https://images.unsplash.com/photo-1629198688000-71f23e745b6e?auto=format&fit=crop&q=80&w=800" alt="Haru Haru Wonder" className={styles.brandBg} />
-            <div className={styles.brandContent}>
-              <h3>Haru Haru Wonder</h3>
-              <span>Black Rice Line →</span>
-            </div>
-          </Link>
+          {brands.length > 0 ? (
+            brands.map((brand, idx) => (
+              <Link href={`/shop?brand=${encodeURIComponent(brand.name)}`} key={idx} className={styles.brandCard}>
+                <div className={styles.brandOverlay}></div>
+                <img src={brand.img || "https://images.unsplash.com/photo-1617897903246-719242758050?auto=format&fit=crop&q=80&w=800"} alt={brand.name} className={styles.brandBg} />
+                <div className={styles.brandContent}>
+                  <h3>{brand.name}</h3>
+                  <span>Explore Collection →</span>
+                </div>
+              </Link>
+            ))
+          ) : (
+            <p style={{ textAlign: 'center', width: '100%', color: '#999' }}>No brands available yet.</p>
+          )}
         </div>
       </section>
 
@@ -157,26 +159,24 @@ export default function Home() {
             <h2>The Beauty Bees Difference</h2>
           </div>
           <div className={styles.whyGrid}>
-            <div className={styles.whyCard}>
-              <div className={styles.whyIcon}>🇰🇷</div>
-              <h3>Direct from Korea</h3>
-              <p>We source directly from official Korean distributors. Zero middlemen, zero counterfeits.</p>
-            </div>
-            <div className={styles.whyCard}>
-              <div className={styles.whyIcon}>🧪</div>
-              <h3>Dermatologist Tested</h3>
-              <p>Every brand in our catalog is clinically tested and approved by Korean dermatologists.</p>
-            </div>
-            <div className={styles.whyCard}>
-              <div className={styles.whyIcon}>🌿</div>
-              <h3>Clean Ingredients</h3>
-              <p>No parabens, no sulfates, no animal testing. Just pure, effective skincare.</p>
-            </div>
-            <div className={styles.whyCard}>
-              <div className={styles.whyIcon}>💬</div>
-              <h3>Expert Support</h3>
-              <p>Not sure what to buy? Our skincare experts help you find the perfect routine.</p>
-            </div>
+            <div className={styles.whyIcon}>🇰🇷</div>
+            <h3>Direct from Korea</h3>
+            <p>We source directly from official Korean distributors. Zero middlemen, zero counterfeits.</p>
+          </div>
+          <div className={styles.whyCard}>
+            <div className={styles.whyIcon}>🧪</div>
+            <h3>Dermatologist Tested</h3>
+            <p>Every brand in our catalog is clinically tested and approved by Korean dermatologists.</p>
+          </div>
+          <div className={styles.whyCard}>
+            <div className={styles.whyIcon}>🌿</div>
+            <h3>Clean Ingredients</h3>
+            <p>No parabens, no sulfates, no animal testing. Just pure, effective skincare.</p>
+          </div>
+          <div className={styles.whyCard}>
+            <div className={styles.whyIcon}>💬</div>
+            <h3>Expert Support</h3>
+            <p>Not sure what to buy? Our skincare experts help you find the perfect routine.</p>
           </div>
         </div>
       </section>

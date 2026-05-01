@@ -1,9 +1,7 @@
 import { NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
+import prisma from '@/lib/prisma';
 import fs from 'fs';
 import path from 'path';
-
-const prisma = new PrismaClient();
 
 export async function GET() {
   try {
@@ -46,7 +44,9 @@ export async function POST(request) {
         isBestSeller: newProduct.isBestSeller || false,
         stock: Number(newProduct.stock || 0),
         inStock: Number(newProduct.stock || 0) > 0,
-        image: newProduct.image
+        image: newProduct.image,
+        skinType: JSON.stringify(newProduct.skinType || []),
+        ingredients: JSON.stringify(newProduct.ingredients || [])
       }
     });
     
@@ -101,7 +101,7 @@ export async function PUT(request) {
     const data = { ...updatedProduct };
     delete data.id; // don't update ID
     
-    // Clean up specific keys to match schema precisely if they exist but are nullish
+    // Clean up specific keys to match schema precisely
     if (data.originalPrice !== undefined) data.originalPrice = data.originalPrice ? Number(data.originalPrice) : null;
     if (data.price !== undefined) data.price = Number(data.price);
     if (data.stock !== undefined) {
@@ -109,9 +109,14 @@ export async function PUT(request) {
       data.inStock = data.stock > 0;
     }
     
-    // Strip updatedAt if passed so Prisma handles it
+    // Stringify arrays if they exist
+    if (Array.isArray(data.skinType)) data.skinType = JSON.stringify(data.skinType);
+    if (Array.isArray(data.ingredients)) data.ingredients = JSON.stringify(data.ingredients);
+
+    // Strip updatedAt/createdAt
     delete data.updatedAt;
     delete data.createdAt;
+    delete data.reviews;
 
     const result = await prisma.product.update({
       where: { id },

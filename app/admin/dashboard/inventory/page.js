@@ -19,8 +19,24 @@ export default function InventoryManagement() {
     description: '',
     imageBase64: '',
     stock: 0,
-    inStock: true
+    inStock: true,
+    skinType: [],
+    ingredients: [],
+    isNew: false,
+    isBestSeller: false
   });
+
+  const [isCustomCategory, setIsCustomCategory] = useState(false);
+  const skinTypes = ['Oily', 'Dry', 'Sensitive', 'Combination'];
+
+  const handleSkinTypeToggle = (type) => {
+    setFormData(prev => ({
+      ...prev,
+      skinType: prev.skinType.includes(type)
+        ? prev.skinType.filter(t => t !== type)
+        : [...prev.skinType, type]
+    }));
+  };
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -60,7 +76,7 @@ export default function InventoryManagement() {
       setShowAddModal(false);
       setEditingProductId(null);
       setFormData({
-        name: '', brand: '', price: '', category: 'Cleanser', description: '', imageBase64: '', stock: 0
+        name: '', brand: '', price: '', category: 'Cleanser', description: '', imageBase64: '', stock: 0, inStock: true, skinType: [], ingredients: [], isNew: false, isBestSeller: false
       });
     } catch (err) {
       alert("Error saving product");
@@ -70,6 +86,12 @@ export default function InventoryManagement() {
   };
 
   const handleEditClick = (product) => {
+    setIsCustomCategory(false);
+    const defaultCats = ['Cleanser', 'Toner', 'Serum/Essence', 'Moisturizer', 'Sunscreen'];
+    if (!defaultCats.includes(product.category)) {
+      setIsCustomCategory(true);
+    }
+
     setFormData({
       name: product.name,
       brand: product.brand,
@@ -78,7 +100,11 @@ export default function InventoryManagement() {
       description: product.description || '',
       imageBase64: '',
       stock: product.stock || 0,
-      inStock: product.inStock !== false // Default to true if undefined
+      inStock: product.inStock !== false,
+      skinType: typeof product.skinType === 'string' ? JSON.parse(product.skinType || '[]') : (product.skinType || []),
+      ingredients: typeof product.ingredients === 'string' ? JSON.parse(product.ingredients || '[]') : (product.ingredients || []),
+      isNew: product.isNew || false,
+      isBestSeller: product.isBestSeller || false
     });
     setEditingProductId(product.id);
     setShowAddModal(true);
@@ -99,7 +125,8 @@ export default function InventoryManagement() {
         <button 
           onClick={() => {
             setEditingProductId(null);
-            setFormData({ name: '', brand: '', price: '', category: 'Cleanser', description: '', imageBase64: '', stock: 0, inStock: true });
+            setFormData({ name: '', brand: '', price: '', category: 'Cleanser', description: '', imageBase64: '', stock: 0, inStock: true, skinType: [], ingredients: [] , isNew: false, isBestSeller: false});
+            setIsCustomCategory(false);
             setShowAddModal(true);
           }}
           style={{
@@ -137,13 +164,53 @@ export default function InventoryManagement() {
               </div>
               <div>
                 <label style={{ display: 'block', marginBottom: '5px' }}>Category</label>
-                <select value={formData.category} onChange={e => setFormData({...formData, category: e.target.value})} style={{ width: '100%', padding: '8px' }}>
+                <select 
+                  value={isCustomCategory ? 'Other' : formData.category} 
+                  onChange={e => {
+                    if (e.target.value === 'Other') {
+                      setIsCustomCategory(true);
+                      setFormData({...formData, category: ''});
+                    } else {
+                      setIsCustomCategory(false);
+                      setFormData({...formData, category: e.target.value});
+                    }
+                  }} 
+                  style={{ width: '100%', padding: '8px' }}
+                >
                   <option value="Cleanser">Cleanser</option>
                   <option value="Toner">Toner</option>
                   <option value="Serum/Essence">Serum/Essence</option>
                   <option value="Moisturizer">Moisturizer</option>
                   <option value="Sunscreen">Sunscreen</option>
+                  <option value="Other">Add New Category...</option>
                 </select>
+                {isCustomCategory && (
+                  <input 
+                    placeholder="Enter custom category name" 
+                    value={formData.category} 
+                    onChange={e => setFormData({...formData, category: e.target.value})} 
+                    style={{ width: '100%', padding: '8px', marginTop: '10px' }} 
+                    autoFocus
+                  />
+                )}
+              </div>
+              <div style={{ display: 'flex', gap: '20px', background: '#f0fdf4', padding: '12px', borderRadius: '8px' }}>
+                <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', fontWeight: '500' }}>
+                  <input 
+                    type="checkbox" 
+                    checked={formData.isNew} 
+                    onChange={e => setFormData({...formData, isNew: e.target.checked})} 
+                  />
+                  New Arrival
+                </label>
+                <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', fontWeight: '500' }}>
+                  <input 
+                    type="checkbox" 
+                    checked={formData.isBestSeller} 
+                    onChange={e => setFormData({...formData, isBestSeller: e.target.checked})} 
+                  />
+                  Best Seller
+                </label>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                 <input 
@@ -163,12 +230,36 @@ export default function InventoryManagement() {
                 <input required type="number" value={formData.stock} onChange={e => setFormData({...formData, stock: e.target.value})} style={{ width: '100%', padding: '8px' }} />
               </div>
               <div>
+                <label style={{ display: 'block', marginBottom: '8px' }}>Target Skin Types</label>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '10px', background: '#f9fafb', padding: '12px', borderRadius: '8px' }}>
+                  {skinTypes.map(type => (
+                    <label key={type} style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', fontSize: '0.9rem' }}>
+                      <input 
+                        type="checkbox" 
+                        checked={formData.skinType.includes(type)} 
+                        onChange={() => handleSkinTypeToggle(type)} 
+                      />
+                      {type}
+                    </label>
+                  ))}
+                </div>
+              </div>
+              <div>
                 <label style={{ display: 'block', marginBottom: '5px' }}>Product Image</label>
-                <input required type="file" accept="image/*" onChange={handleImageChange} style={{ width: '100%' }} />
+                <input required={!editingProductId} type="file" accept="image/*" onChange={handleImageChange} style={{ width: '100%' }} />
               </div>
               <div>
                 <label style={{ display: 'block', marginBottom: '5px' }}>Description</label>
                 <textarea required value={formData.description} onChange={e => setFormData({...formData, description: e.target.value})} style={{ width: '100%', padding: '8px', minHeight: '80px' }} />
+              </div>
+              <div>
+                <label style={{ display: 'block', marginBottom: '5px' }}>Ingredients (comma-separated)</label>
+                <textarea 
+                  value={Array.isArray(formData.ingredients) ? formData.ingredients.join(', ') : formData.ingredients} 
+                  onChange={e => setFormData({...formData, ingredients: e.target.value.split(',').map(i => i.trim())})} 
+                  placeholder="Niacinamide, Glycerin, Centella..."
+                  style={{ width: '100%', padding: '8px', minHeight: '60px' }} 
+                />
               </div>
               <div style={{ display: 'flex', gap: '10px', marginTop: '10px' }}>
                 <button type="button" onClick={() => setShowAddModal(false)} style={{ padding: '10px', flex: 1, background: '#eee', border: 'none', cursor: 'pointer' }}>Cancel</button>

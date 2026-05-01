@@ -9,14 +9,34 @@ export default function AdminLogin() {
   const [password, setPassword] = useState('');
   const router = useRouter();
 
-  const handleLogin = (e) => {
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const handleLogin = async (e) => {
     e.preventDefault();
-    // Simulate login success
-    if (email === 'admin@beautybees.com.np' && password === 'admin123') {
-      alert('Login Successful!');
-      router.push('/admin/dashboard');
-    } else {
-      alert('Invalid credentials. Use admin@beautybees.com.np / admin123');
+    setError('');
+    setLoading(true);
+    
+    try {
+      const res = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      });
+      
+      const data = await res.json();
+      
+      if (res.ok && data.role === 'admin') {
+        router.push('/admin/dashboard');
+      } else if (res.ok) {
+        setError('You do not have permission to access the admin area.');
+      } else {
+        setError(data.error || 'Invalid credentials');
+      }
+    } catch (err) {
+      setError('Something went wrong. Please try again.');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -27,13 +47,14 @@ export default function AdminLogin() {
         <p>Log in to manage your store.</p>
         
         <form onSubmit={handleLogin} className={styles.form}>
+          {error && <div style={{ color: '#ef4444', background: '#fee2e2', padding: '10px', borderRadius: '4px', marginBottom: '15px', fontSize: '0.9rem' }}>{error}</div>}
           <div className={styles.inputGroup}>
             <label>Email Address</label>
             <input 
               type="email" 
               value={email} 
               onChange={(e) => setEmail(e.target.value)} 
-              placeholder="admin@beautybees.com.np" 
+              placeholder="admin@beautybees.com" 
               required 
             />
           </div>
@@ -43,11 +64,13 @@ export default function AdminLogin() {
               type="password" 
               value={password} 
               onChange={(e) => setPassword(e.target.value)} 
-              placeholder="admin123" 
+              placeholder="Enter your password" 
               required 
             />
           </div>
-          <button type="submit" className={styles.loginBtn}>Sign In</button>
+          <button type="submit" className={styles.loginBtn} disabled={loading}>
+            {loading ? 'Signing in...' : 'Sign In'}
+          </button>
         </form>
       </div>
     </div>

@@ -142,3 +142,73 @@
 @keyframes spin {
   to { transform: rotate(360deg); }
 }
+
+.priceInputWrapper {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: white;
+  border: 1px solid #ddd;
+  padding: 8px 12px;
+  border-radius: 10px;
+  transition: border-color 0.2s;
+}
+
+.priceInputWrapper:focus-within {
+  border-color: var(--primary-pink);
+}
+
+.priceInputWrapper span {
+  color: #888;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.priceInput {
+  border: none;
+  width: 100%;
+  outline: none;
+  font-family: inherit;
+  font-size: 1rem;
+  color: var(--text-dark);
+}
+
+.priceInput::-webkit-inner-spin-button,
+.priceInput::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.mobileFilterToggle {
+  display: none;
+  width: 100%;
+  padding: 15px;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  font-weight: 600;
+  margin-bottom: 20px;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+@media (max-width: 768px) {
+  .mobileFilterToggle {
+    display: flex;
+  }
+
+  .sidebar {
+    display: none;
+    position: static;
+    background: #f9fafb;
+    padding: 20px;
+    border-radius: 16px;
+    margin-bottom: 20px;
+  }
+
+  .mobileVisible {
+    display: block;
+  }
+}

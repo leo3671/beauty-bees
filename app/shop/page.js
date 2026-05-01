@@ -15,7 +15,8 @@ function ShopContent() {
   
   const [activeCategory, setActiveCategory] = useState(initialBrand || 'All');
   const [skinType, setSkinType] = useState('All');
-  const [priceRange, setPriceRange] = useState(5000); // Max price
+  const [sortBy, setSortBy] = useState('Newest');
+  const [showMobileFilters, setShowMobileFilters] = useState(false);
   const { products, loading } = useProducts();
 
   // Sync activeCategory if URL changes
@@ -33,9 +34,15 @@ function ShopContent() {
     try { pSkinTypes = JSON.parse(p.skinType || '[]'); } catch(e) {}
     const matchesSkinType = skinType === 'All' || pSkinTypes.includes(skinType);
     
-    const matchesPrice = p.price <= priceRange;
+    return matchesCategory && matchesSearch && matchesSkinType;
+  });
 
-    return matchesCategory && matchesSearch && matchesSkinType && matchesPrice;
+  // Apply sorting
+  const sortedProducts = [...filteredProducts].sort((a, b) => {
+    if (sortBy === 'Price: Low to High') return a.price - b.price;
+    if (sortBy === 'Price: High to Low') return b.price - a.price;
+    if (sortBy === 'Newest') return new Date(b.createdAt) - new Date(a.createdAt);
+    return 0;
   });
 
   if (loading) return (
@@ -52,8 +59,12 @@ function ShopContent() {
         <p>Curated Korean beauty for every skin type and concern.</p>
       </div>
 
+      <button className={styles.mobileFilterToggle} onClick={() => setShowMobileFilters(!showMobileFilters)}>
+        {showMobileFilters ? '✕ Close Filters' : '🔍 Show Filters & Sorting'}
+      </button>
+
       <div className={styles.layout}>
-        <aside className={styles.sidebar}>
+        <aside className={`${styles.sidebar} ${showMobileFilters ? styles.mobileVisible : ''}`}>
           <div className={styles.filterGroup}>
             <h3>Categories & Brands</h3>
             <ul className={styles.categoryList}>
@@ -82,28 +93,24 @@ function ShopContent() {
           </div>
 
           <div className={styles.filterGroup}>
-            <h3>Max Price: Rs. {priceRange}</h3>
-            <input 
-              type="range" 
-              min="500" 
-              max="5000" 
-              step="100" 
-              value={priceRange} 
-              onChange={(e) => setPriceRange(parseInt(e.target.value))}
-              className={styles.priceRange}
-            />
+            <h3>Sort By</h3>
+            <select value={sortBy} onChange={(e) => setSortBy(e.target.value)} className={styles.selectFilter}>
+              <option value="Newest">Newest First</option>
+              <option value="Price: Low to High">Price: Low to High</option>
+              <option value="Price: High to Low">Price: High to Low</option>
+            </select>
           </div>
         </aside>
 
         <div className={styles.productGrid}>
-          {filteredProducts.length > 0 ? (
-            filteredProducts.map(product => (
+          {sortedProducts.length > 0 ? (
+            sortedProducts.map(product => (
               <ProductCard key={product.id} product={product} />
             ))
           ) : (
             <div className={styles.noResults}>
               <p>No products match your filters.</p>
-              <button onClick={() => { setActiveCategory('All'); setSkinType('All'); setPriceRange(5000); }} className={styles.resetBtn}>Reset Filters</button>
+              <button onClick={() => { setActiveCategory('All'); setSkinType('All'); setSortBy('Newest'); setShowMobileFilters(false); }} className={styles.resetBtn}>Reset Filters</button>
             </div>
           )}
         </div>
