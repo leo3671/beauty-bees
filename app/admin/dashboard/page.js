@@ -27,13 +27,13 @@ export default function DashboardOverview() {
   };
 
   // === Analytics Calculations ===
-  const totalRevenue = orders.reduce((sum, o) => sum + o.total, 0);
-  const pendingOrders = orders.filter(o => o.status === 'Pending');
-  const deliveredOrders = orders.filter(o => o.status === 'Delivered');
-  const cancelledOrders = orders.filter(o => o.status === 'Cancelled');
-  const verifiedPayments = orders.filter(o => o.paymentStatus === 'Verified');
-  const pendingPayments = orders.filter(o => o.paymentStatus !== 'Verified');
-  const uniqueCustomers = [...new Set(orders.map(o => o.email))];
+  const totalRevenue = Array.isArray(orders) ? orders.reduce((sum, o) => sum + o.total, 0) : 0;
+  const pendingOrders = Array.isArray(orders) ? orders.filter(o => o.status === 'Pending') : [];
+  const deliveredOrders = Array.isArray(orders) ? orders.filter(o => o.status === 'Delivered') : [];
+  const cancelledOrders = Array.isArray(orders) ? orders.filter(o => o.status === 'Cancelled') : [];
+  const verifiedPayments = Array.isArray(orders) ? orders.filter(o => o.paymentStatus === 'Verified') : [];
+  const pendingPayments = Array.isArray(orders) ? orders.filter(o => o.paymentStatus !== 'Verified') : [];
+  const uniqueCustomers = Array.isArray(orders) ? [...new Set(orders.map(o => o.email))] : [];
   const outOfStockProducts = Array.isArray(products) ? products.filter(p => p.inStock === false) : [];
   const activeDiscounts = Array.isArray(products) ? products.filter(p => p.originalPrice && p.originalPrice > p.price) : [];
   const avgOrderValue = orders.length > 0 ? Math.round(totalRevenue / orders.length) : 0;

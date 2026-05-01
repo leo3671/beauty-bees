@@ -1,10 +1,8 @@
 import { NextResponse } from 'next/server';
-import { getSession } from '../../../../lib/session';
-import { PrismaClient } from '@prisma/client';
+import { getSession } from '@/lib/session';
+import prisma from '@/lib/prisma';
 import bcrypt from 'bcryptjs';
 import { generateOTP, sendOTP } from '@/lib/auth-utils';
-
-const prisma = new PrismaClient();
 
 // Simple in-memory rate limiter
 const attempts = new Map();
@@ -37,18 +35,20 @@ export async function POST(request) {
       return NextResponse.json({ error: 'Email and password are required' }, { status: 400 });
     }
 
-    // Sanitize email
+    // Sanitize email strictly
     const sanitizedEmail = email.toLowerCase().trim();
 
     // Find user in database
     const user = await prisma.user.findUnique({ where: { email: sanitizedEmail } });
     
     if (!user) {
+      console.log(`[AUTH] Login failed: User not found (${sanitizedEmail})`);
       return NextResponse.json({ error: 'Invalid email or password' }, { status: 401 });
     }
 
     // Check if verified
     if (!user.isVerified) {
+      console.log(`[AUTH] Login blocked: User not verified (${sanitizedEmail})`);
       const otp = generateOTP();
       await sendOTP(user.email, otp, 'EMAIL_VERIFICATION');
       return NextResponse.json({ 
@@ -59,8 +59,9 @@ export async function POST(request) {
     }
 
     // Verify password
-    const isValidPassword = await bcrypt.compare(password, user.password);
+    const isValidPassword = await bcrypt.compare(password.trim(), user.password);
     if (!isValidPassword) {
+      console.log(`[AUTH] Login failed: Password mismatch (${sanitizedEmail})`);
       return NextResponse.json({ error: 'Invalid email or password' }, { status: 401 });
     }
 
