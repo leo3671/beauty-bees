@@ -1,36 +1,66 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🐝 Beauty Bees — Authentic Korean Skincare in Nepal
 
-## Getting Started
+Beauty Bees is a premium, full-stack e-commerce platform dedicated to bringing high-quality, authentic Korean beauty products to the Nepalese market. Built with performance, security, and aesthetics in mind.
 
-First, run the development server:
+![Beauty Bees Banner](public/images/hero_banner_main.png)
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## ✨ Top-Tier Features
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 🛍️ Storefront & User Experience
+- **Premium Design**: A clean, modern aesthetic inspired by global beauty brands with smooth animations and micro-interactions.
+- **Smart Live Search**: Real-time product suggestions as you type, with thumbnails and price previews.
+- **Advanced Filtering**: Filter products by category, brand, skin type (Oily, Dry, Sensitive, Combination), and price range.
+- **Interactive Cart**: Side-drawer shopping cart with real-time updates and persistence across page reloads.
+- **Product Reviews**: Full rating and testimonial system where customers can share their experiences.
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+### 🛡️ Security & Account Management
+- **Email Verification**: Mandatory OTP-based email verification during registration to ensure a valid customer base.
+- **Multi-Factor Authentication (MFA)**: Opt-in email-based MFA for an extra layer of account protection.
+- **Customer Dashboard**: Professional profile management, order history tracking, and security settings.
+- **Password Protection**: Secure bcrypt hashing and session management via `iron-session`.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 🛡️ Administrative Controls
+- **Full Inventory Management**: Real-time stock tracking with automatic decrementing upon delivery.
+- **Order Processing**: Manage order statuses from "Pending" to "Delivered" with visual feedback.
+- **User Management**: Admins can oversee all registered users, manage roles, and reset passwords for support.
+- **Analytics Dashboard**: High-level overview of revenue, order volume, and customer growth with interactive KPI cards.
 
-## Learn More
+## 🚀 Tech Stack
 
-To learn more about Next.js, take a look at the following resources:
+- **Frontend**: Next.js 15 (App Router), React, Vanilla CSS
+- **Backend**: Next.js API Routes, Iron Session
+- **Database**: PostgreSQL (Prisma ORM) — *SQLite used for local dev*
+- **Notifications**: React Hot Toast
+- **Email Provider**: Resend API
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 🛠️ Getting Started
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Prerequisites
+- Node.js 18+
+- npm or yarn
 
-## Deploy on Vercel
+### Installation
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/leo3671/beauty-bees.git
+   ```
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+3. Set up environment variables:
+   Create a `.env` file and add your `RESEND_API_KEY` and `SESSION_SECRET`.
+4. Initialize the database:
+   ```bash
+   npx prisma db push
+   ```
+5. Run the development server:
+   ```bash
+   npm run dev
+   ```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 🐝 License
+Distributed under the MIT License. See `LICENSE` for more information.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+*Developed with ❤️ for the K-Beauty community in Nepal.*
