@@ -21,13 +21,7 @@ export async function POST(request) {
 
     // Handle image upload if base64 provided
     if (newProduct.imageBase64) {
-      const base64Data = newProduct.imageBase64.replace(/^data:image\/\w+;base64,/, "");
-      const ext = newProduct.imageBase64.substring("data:image/".length, newProduct.imageBase64.indexOf(";base64"));
-      const fileName = `custom_${Date.now()}.${ext}`;
-      const filePath = path.join(process.cwd(), 'public', 'images', fileName);
-      
-      fs.writeFileSync(filePath, base64Data, 'base64');
-      newProduct.image = `/images/${fileName}`;
+      newProduct.image = newProduct.imageBase64;
       delete newProduct.imageBase64;
     }
 
@@ -88,13 +82,7 @@ export async function PUT(request) {
 
     // Handle image upload if base64 provided
     if (updatedProduct.imageBase64) {
-      const base64Data = updatedProduct.imageBase64.replace(/^data:image\/\w+;base64,/, "");
-      const ext = updatedProduct.imageBase64.substring("data:image/".length, updatedProduct.imageBase64.indexOf(";base64"));
-      const fileName = `custom_${Date.now()}.${ext}`;
-      const filePath = path.join(process.cwd(), 'public', 'images', fileName);
-      
-      fs.writeFileSync(filePath, base64Data, 'base64');
-      updatedProduct.image = `/images/${fileName}`;
+      updatedProduct.image = updatedProduct.imageBase64;
       delete updatedProduct.imageBase64;
     }
 

@@ -26,30 +26,20 @@ export async function POST(request) {
   try {
     const newOrderData = await request.json();
 
-    let paymentScreenshotPath = null;
+    let paymentScreenshot = null;
     if (newOrderData.paymentScreenshotBase64) {
-      if (!fs.existsSync(imagesDir)) {
-        fs.mkdirSync(imagesDir, { recursive: true });
-      }
-      const matches = newOrderData.paymentScreenshotBase64.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/);
-      if (matches && matches.length === 3) {
-        const imageBuffer = Buffer.from(matches[2], 'base64');
-        const filename = `receipt_${Date.now()}.png`;
-        const filepath = path.join(imagesDir, filename);
-        fs.writeFileSync(filepath, imageBuffer);
-        paymentScreenshotPath = `/images/${filename}`;
-      }
+      paymentScreenshot = newOrderData.paymentScreenshotBase64;
     }
 
     const createdOrder = await prisma.order.create({
       data: {
-        id: 'ORD-' + Math.floor(1000 + Math.random() * 9000),
+        id: 'ORD-' + Date.now().toString().slice(-6) + Math.floor(Math.random() * 100),
         customer: newOrderData.customer,
         email: newOrderData.email,
         location: newOrderData.location || '',
         paymentMethod: newOrderData.paymentMethod || 'Cash on Delivery',
         paymentStatus: (newOrderData.paymentMethod || 'Cash on Delivery') === 'Cash on Delivery' ? 'Verified' : 'Pending Verification',
-        paymentScreenshot: paymentScreenshotPath,
+        paymentScreenshot: paymentScreenshot,
         status: 'Pending',
         total: Number(newOrderData.total),
         items: {
