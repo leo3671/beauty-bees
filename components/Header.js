@@ -62,9 +62,6 @@ export default function Header() {
         </div>
 
         <nav className={`${styles.navLinks} ${isMenuOpen ? styles.mobileActive : ''}`}>
-          <Link href="/shop" className={styles.link} onClick={() => setIsMenuOpen(false)}>Shop All</Link>
-          <Link href="/skincare" className={styles.link} onClick={() => setIsMenuOpen(false)}>Skincare</Link>
-          <Link href="/brands" className={styles.link} onClick={() => setIsMenuOpen(false)}>Brands</Link>
           {user?.role === 'admin' && (
             <Link href="/admin/dashboard" className={styles.link} onClick={() => setIsMenuOpen(false)} style={{color: 'var(--primary-pink)', fontWeight: '600'}}>
               Dashboard

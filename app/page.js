@@ -39,7 +39,6 @@ export default async function Home() {
             <p>Discover our handpicked selection of premium K-Beauty products. From serums to sunscreens — everything your skin craves.</p>
             <div className={styles.heroActions}>
               <Link href="/shop" className={styles.ctaPrimary}>Shop Now</Link>
-              <Link href="/shop?category=Serum%2FEssence" className={styles.ctaSecondary}>Explore Serums</Link>
             </div>
           </div>
         </div>
@@ -80,31 +79,6 @@ export default async function Home() {
       {/* ===== RECOMMENDED FOR YOU ===== */}
       <Recommendations />
 
-      {/* ===== SHOP BY CATEGORY ===== */}
-      <section className={`container ${styles.sectionBlock}`}>
-        <div className={styles.sectionHeader}>
-          <span className={styles.sectionTag}>BROWSE</span>
-          <h2>Shop by Category</h2>
-          <p className={styles.sectionSub}>Find exactly what your skin needs</p>
-        </div>
-        <ShopByCategory />
-      </section>
-
-      {/* ===== FULL WIDTH PROMO BANNER ===== */}
-      <section className={styles.promoBanner}>
-        <div className={styles.promoContent}>
-          <div className={styles.promoText}>
-            <span className={styles.promoTag}>YOUR ROUTINE, PERFECTED</span>
-            <h2>Build Your K-Beauty Routine</h2>
-            <p>Follow the famous Korean 4-step routine for glass skin. Cleanse → Tone → Treat → Moisturize. We have everything you need.</p>
-            <Link href="/shop" className={styles.ctaPrimary}>Start Your Routine</Link>
-          </div>
-          <div className={styles.promoImage}>
-            <img src="/images/routine_banner.png" alt="K-Beauty Routine" />
-          </div>
-        </div>
-      </section>
-
       {/* ===== BEST SELLERS / NEW ARRIVALS TABS ===== */}
       <section className={`container ${styles.sectionBlock}`}>
         <div className={styles.sectionHeader}>
@@ -113,32 +87,6 @@ export default async function Home() {
           <p className={styles.sectionSub}>Explore our best sellers and newest arrivals</p>
         </div>
         <HomeProductTabs />
-      </section>
-
-      {/* ===== SHOP BY BRAND (Dynamic) ===== */}
-      <section className={`container ${styles.sectionBlock}`}>
-        <div className={styles.sectionHeader}>
-          <span className={styles.sectionTag}>BRANDS</span>
-          <h2>Shop By Brand</h2>
-          <p className={styles.sectionSub}>Explore our official K-Beauty partners</p>
-        </div>
-        
-        <div className={styles.brandGrid}>
-          {brands.length > 0 ? (
-            brands.map((brand, idx) => (
-              <Link href={`/shop?brand=${encodeURIComponent(brand.name)}`} key={idx} className={styles.brandCard}>
-                <div className={styles.brandOverlay}></div>
-                <img src={brand.img || "https://images.unsplash.com/photo-1617897903246-719242758050?auto=format&fit=crop&q=80&w=800"} alt={brand.name} className={styles.brandBg} />
-                <div className={styles.brandContent}>
-                  <h3>{brand.name}</h3>
-                  <span>Explore Collection →</span>
-                </div>
-              </Link>
-            ))
-          ) : (
-            <p style={{ textAlign: 'center', width: '100%', color: '#999' }}>No brands available yet.</p>
-          )}
-        </div>
       </section>
 
       {/* ===== FULL WIDTH IMAGE BANNER ===== */}
