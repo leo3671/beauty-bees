@@ -2,13 +2,15 @@ import { OpenAI } from 'openai';
 import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
 
 export async function POST(req) {
   try {
     const { message, sessionId, userId, language = 'en' } = await req.json();
+
+    // Initialize OpenAI lazily to avoid build-time errors
+    const openai = new OpenAI({
+      apiKey: process.env.OPENAI_API_KEY || 'mock_key', // Fallback for build phase
+    });
 
     // 1. Get or Create Session
     let session = await prisma.chatSession.findUnique({
