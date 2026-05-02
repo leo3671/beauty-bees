@@ -3,6 +3,7 @@ import styles from './page.module.css';
 import AddToCartButton from '../../../components/AddToCartButton';
 import ProductCard from '../../../components/ProductCard';
 import ReviewSection from '../../../components/ReviewSection';
+import ProductRating from '../../../components/ProductRating';
 
 export default async function ProductDetails({ params }) {
   // Await the params to avoid Next.js sync params error in newer versions
@@ -43,6 +44,7 @@ export default async function ProductDetails({ params }) {
               <span style={{ backgroundColor: '#666', color: 'white', padding: '4px 8px', fontSize: '0.4em', borderRadius: '4px', marginLeft: '10px', verticalAlign: 'middle' }}>OUT OF STOCK</span>
             )}
           </h1>
+          <ProductRating productId={product.id} />
           <p className={styles.price}>
             Rs. {product.price}
             {product.originalPrice && product.originalPrice > product.price && (

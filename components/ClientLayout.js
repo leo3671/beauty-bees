@@ -4,6 +4,7 @@ import { usePathname } from 'next/navigation';
 import Header from './Header';
 import Footer from './Footer';
 import Cart from './Cart';
+import BeeChatWidget from './BeeChatWidget';
 import { useCart } from '../lib/CartContext';
 
 import { Toaster } from 'react-hot-toast';
@@ -29,6 +30,7 @@ export default function ClientLayout({ children }) {
       <Header />
       {closeCart && <Cart isOpen={isCartOpen} onClose={closeCart} />}
       <main style={{ flex: 1 }}>{children}</main>
+      <BeeChatWidget />
       <Footer />
     </>
   );

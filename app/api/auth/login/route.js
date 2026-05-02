@@ -29,7 +29,7 @@ export async function POST(request) {
       return NextResponse.json({ error: 'Too many login attempts. Please wait 1 minute.' }, { status: 429 });
     }
 
-    const { email, password } = await request.json();
+    const { email, password, rememberMe = false } = await request.json();
 
     if (!email || !password) {
       return NextResponse.json({ error: 'Email and password are required' }, { status: 400 });
@@ -54,7 +54,8 @@ export async function POST(request) {
       return NextResponse.json({ 
         requiresVerification: true, 
         email: user.email, 
-        message: 'Please verify your email to continue.' 
+        message: 'Please verify your email to continue.',
+        devOTP: (process.env.GMAIL_APP_PASSWORD && process.env.GMAIL_APP_PASSWORD !== 'PASTE_YOUR_APP_PASSWORD_HERE') ? null : otp
       }, { status: 403 });
     }
 
@@ -65,19 +66,8 @@ export async function POST(request) {
       return NextResponse.json({ error: 'Invalid email or password' }, { status: 401 });
     }
 
-    // Check for MFA
-    if (user.mfaEnabled) {
-      const otp = generateOTP();
-      await sendOTP(user.email, otp, 'MFA');
-      return NextResponse.json({ 
-        requiresMFA: true, 
-        email: user.email, 
-        message: 'Please enter your MFA code.' 
-      });
-    }
-
     // Create secure session
-    const session = await getSession();
+    const session = await getSession(rememberMe);
     session.user = { id: user.id, email: user.email, role: user.role, name: user.name };
     await session.save();
 

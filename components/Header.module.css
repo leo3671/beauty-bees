@@ -142,3 +142,19 @@
     color: var(--text-dark);
   }
 }
+
+.langToggle {
+  background: #fdf2f8;
+  border: 1px solid #fce7f3;
+  padding: 5px 10px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #be185d;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.langToggle:hover {
+  background: #fce7f3;
+}

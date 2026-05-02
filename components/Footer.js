@@ -44,14 +44,7 @@ export default function Footer() {
           </ul>
         </div>
         
-        <div className={styles.newsletter}>
-          <h3>Stay in the Loop</h3>
-          <p>Get exclusive offers and K-beauty tips directly to your inbox.</p>
-          <form className={styles.form} onSubmit={(e) => e.preventDefault()}>
-            <input type="email" placeholder="Enter your email" required />
-            <button type="submit">Subscribe</button>
-          </form>
-        </div>
+
       </div>
       <div className={styles.bottom}>
         <p>&copy; {new Date().getFullYear()} Beauty Bees. All rights reserved.</p>

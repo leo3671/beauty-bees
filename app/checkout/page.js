@@ -23,6 +23,52 @@ export default function Checkout() {
     street: ''
   });
   const [paymentScreenshotBase64, setPaymentScreenshotBase64] = useState('');
+  const [shippingZones, setShippingZones] = useState([]);
+  const [selectedZone, setSelectedZone] = useState(null);
+  const [voucherCode, setVoucherCode] = useState('');
+  const [discount, setDiscount] = useState(0);
+  const [appliedVoucher, setAppliedVoucher] = useState(null);
+  const [checkingVoucher, setCheckingVoucher] = useState(false);
+
+  useEffect(() => {
+    fetch('/api/admin/shipping')
+      .then(res => res.json())
+      .then(data => {
+        if (Array.isArray(data)) {
+          setShippingZones(data);
+          if (data.length > 0) setSelectedZone(data[0]);
+        }
+      });
+  }, []);
+
+  const applyVoucher = async () => {
+    if (!voucherCode) return;
+    setCheckingVoucher(true);
+    try {
+      const res = await fetch('/api/admin/discounts');
+      const data = await res.json();
+      const voucher = data.find(v => v.code === voucherCode.toUpperCase() && v.isActive);
+      
+      if (voucher) {
+        if (subtotal < voucher.minOrderValue) {
+          toast.error(`Minimum order value of Rs. ${voucher.minOrderValue} required.`);
+        } else {
+          setAppliedVoucher(voucher);
+          const amt = voucher.discountType === 'percentage' 
+            ? (subtotal * voucher.discountValue / 100)
+            : voucher.discountValue;
+          setDiscount(amt);
+          toast.success('Voucher applied!');
+        }
+      } else {
+        toast.error('Invalid or expired voucher code');
+      }
+    } catch (e) {
+      toast.error('Error applying voucher');
+    } finally {
+      setCheckingVoucher(false);
+    }
+  };
 
   // Check if user is logged in
   useEffect(() => {
@@ -56,8 +102,9 @@ export default function Checkout() {
   };
   
   const subtotal = cartItems.reduce((acc, item) => acc + item.price, 0);
-  const shipping = subtotal > 5000 ? 0 : 150;
-  const total = subtotal + shipping;
+  const isFreeShipping = subtotal >= 10000;
+  const shippingFee = (selectedZone && !isFreeShipping) ? selectedZone.fee : 0;
+  const finalTotal = subtotal + shippingFee - discount;
 
   // Loading state
   if (authLoading) {
@@ -165,8 +212,23 @@ export default function Checkout() {
             </div>
             
             <div className={styles.formRow}>
-              <input type="text" placeholder="City / District" required className={styles.inputField} value={formData.city} onChange={e => setFormData({...formData, city: e.target.value})} />
-              <input type="text" placeholder="Street Address / Landmark" required className={styles.inputField} value={formData.street} onChange={e => setFormData({...formData, street: e.target.value})} />
+              <div className={styles.fieldGroup}>
+                <label>District / Zone</label>
+                <select 
+                  className={styles.inputField} 
+                  value={selectedZone?.id} 
+                  onChange={e => setSelectedZone(shippingZones.find(z => z.id === e.target.value))}
+                  required
+                >
+                  {shippingZones.map(z => (
+                    <option key={z.id} value={z.id}>{z.name} (Rs. {z.fee})</option>
+                  ))}
+                </select>
+              </div>
+              <div className={styles.fieldGroup}>
+                <label>Street Address</label>
+                <input type="text" placeholder="Street Address / Landmark" required className={styles.inputField} value={formData.street} onChange={e => setFormData({...formData, street: e.target.value})} />
+              </div>
             </div>
           </section>
 
@@ -207,7 +269,7 @@ export default function Checkout() {
             {/* Conditional QR Display */}
             {paymentMethod === 'qr' && (
               <div className={styles.qrDisplay}>
-                <p>Scan the QR below to pay <strong>Rs. {total}</strong></p>
+                <p>Scan the QR below to pay <strong>Rs. {finalTotal}</strong></p>
                 <div className={styles.qrPlaceholder}>
                   <span>[Merchant QR Code Image Here]</span>
                 </div>
@@ -241,10 +303,13 @@ export default function Checkout() {
                 const orderData = {
                   customer: `${formData.firstName} ${formData.lastName}`.trim() || 'Guest User',
                   email: formData.email || 'guest@example.com',
-                  location: `${formData.city}, ${formData.street}`,
+                  location: `${selectedZone?.name}, ${formData.street}`,
                   paymentMethod: paymentMethod === 'qr' ? 'Paid (QR)' : 'Cash on Delivery',
                   paymentScreenshotBase64: paymentScreenshotBase64,
-                  total: cartItems.reduce((sum, item) => sum + (item.price * (item.quantity || 1)), 0),
+                  total: finalTotal,
+                  discountAmount: discount,
+                  discountCode: appliedVoucher?.code || null,
+                  shippingFee: shippingFee,
                   items: cartItems.map(item => ({ id: item.id, name: item.name, quantity: item.quantity || 1 }))
                 };
                 
@@ -308,18 +373,39 @@ export default function Checkout() {
               ))}
             </div>
 
+            <div className={styles.voucherArea}>
+              <input 
+                type="text" 
+                placeholder="Discount Code" 
+                value={voucherCode} 
+                onChange={e => setVoucherCode(e.target.value)}
+                disabled={appliedVoucher}
+              />
+              <button onClick={applyVoucher} disabled={appliedVoucher || checkingVoucher}>
+                {appliedVoucher ? 'Applied' : 'Apply'}
+              </button>
+            </div>
+
             <div className={styles.totals}>
               <div className={styles.totalRow}>
                 <span>Subtotal</span>
                 <span>Rs. {subtotal}</span>
               </div>
               <div className={styles.totalRow}>
-                <span>Shipping</span>
-                <span>{shipping === 0 ? 'Free' : `Rs. ${shipping}`}</span>
+                <span>Shipping ({selectedZone?.name})</span>
+                <span style={{ color: shippingFee === 0 ? '#16a34a' : 'inherit', fontWeight: shippingFee === 0 ? '600' : 'normal' }}>
+                  {shippingFee === 0 ? 'Free' : `Rs. ${shippingFee}`}
+                </span>
               </div>
-              <div className={`${styles.totalRow} ${styles.finalTotal}`}>
-                <span>Total</span>
-                <span>Rs. {total}</span>
+              {discount > 0 && (
+                <div className={`${styles.totalRow} ${styles.discountRow}`}>
+                  <span>Discount ({appliedVoucher?.code})</span>
+                  <span>- Rs. {discount}</span>
+                </div>
+              )}
+              <div className={`${styles.totalRow} ${styles.finalTotalRow}`}>
+                <span>Total Amount</span>
+                <span>Rs. {finalTotal}</span>
               </div>
             </div>
 

@@ -4,10 +4,12 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import styles from './Header.module.css';
 import { useCart } from '../lib/CartContext';
+import { useLanguage } from '../lib/LanguageContext';
 import SearchBar from './SearchBar';
 
 export default function Header() {
   const { openCart, cartItems = [] } = useCart() || {};
+  const { language, toggleLanguage, t } = useLanguage();
   const [user, setUser] = useState(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -34,7 +36,7 @@ export default function Header() {
   return (
     <header className={styles.header}>
       <div className={styles.announcement}>
-        <p>Free Shipping across Nepal on orders over Rs. 5000!</p>
+        <p>{language === 'en' ? 'Free Shipping across Nepal on orders over Rs. 10,000!' : '१०,००० भन्दा बढीको अर्डरमा नेपालभर नि:शुल्क ढुवानी!'}</p>
       </div>
       <div className={`container ${styles.navContainer}`}>
         <div className={styles.mobileMenu}>
@@ -70,6 +72,9 @@ export default function Header() {
         </nav>
 
         <div className={styles.icons}>
+          <button className={styles.langToggle} onClick={toggleLanguage}>
+            {language === 'en' ? 'नेपाली' : 'English'}
+          </button>
           <SearchBar />
           
           <Link href={user ? "/account" : "/login"} className={styles.iconBtn} aria-label={user ? "My Account" : "Login"}>

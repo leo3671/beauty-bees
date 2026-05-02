@@ -2,6 +2,7 @@ import { DM_Sans, Outfit } from "next/font/google";
 import "./globals.css";
 import { CartProvider } from "../lib/CartContext";
 import { ProductProvider } from "../lib/ProductContext";
+import { LanguageProvider } from "../lib/LanguageContext";
 import ClientLayout from "../components/ClientLayout";
 
 const dmSans = DM_Sans({
@@ -23,13 +24,15 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" className={`${dmSans.variable} ${outfit.variable}`}>
       <body>
-        <ProductProvider>
-          <CartProvider>
-            <ClientLayout>
-              {children}
-            </ClientLayout>
-          </CartProvider>
-        </ProductProvider>
+        <LanguageProvider>
+          <ProductProvider>
+            <CartProvider>
+              <ClientLayout>
+                {children}
+              </ClientLayout>
+            </CartProvider>
+          </ProductProvider>
+        </LanguageProvider>
       </body>
     </html>
   );

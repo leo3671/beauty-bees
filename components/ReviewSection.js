@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import styles from './ReviewSection.module.css';
 import { toast } from 'react-hot-toast';
+import StarRating from './StarRating';
 
 export default function ReviewSection({ productId }) {
   const [reviews, setReviews] = useState([]);
@@ -65,9 +66,7 @@ export default function ReviewSection({ productId }) {
           <div className={styles.ratingOverview}>
             <span className={styles.avgScore}>{averageRating}</span>
             <div className={styles.stars}>
-              {[1, 2, 3, 4, 5].map(s => (
-                <span key={s} style={{ color: s <= Math.round(averageRating) ? '#facc15' : '#e2e8f0' }}>★</span>
-              ))}
+              <StarRating initialRating={Math.round(averageRating)} readOnly={true} />
             </div>
             <span className={styles.totalCount}>({reviews.length} reviews)</span>
           </div>
@@ -81,16 +80,10 @@ export default function ReviewSection({ productId }) {
         <form className={styles.form} onSubmit={handleSubmit}>
           <h4>Share your experience</h4>
           <div className={styles.ratingInput}>
-            {[1, 2, 3, 4, 5].map(s => (
-              <button 
-                key={s} 
-                type="button" 
-                className={s <= newReview.rating ? styles.activeStar : styles.star}
-                onClick={() => setNewReview({...newReview, rating: s})}
-              >
-                ★
-              </button>
-            ))}
+            <StarRating 
+              initialRating={newReview.rating} 
+              onRatingChange={(val) => setNewReview({...newReview, rating: val})} 
+            />
           </div>
           <textarea 
             placeholder="What did you think of this product? Mention your skin type and concerns!"
@@ -119,9 +112,7 @@ export default function ReviewSection({ productId }) {
                 <div className={styles.userMeta}>
                   <strong>{review.userName}</strong>
                   <div className={styles.stars}>
-                    {[1, 2, 3, 4, 5].map(s => (
-                      <span key={s} style={{ color: s <= review.rating ? '#facc15' : '#e2e8f0' }}>★</span>
-                    ))}
+                    <StarRating initialRating={review.rating} readOnly={true} />
                   </div>
                 </div>
                 <span className={styles.date}>{new Date(review.date).toLocaleDateString()}</span>

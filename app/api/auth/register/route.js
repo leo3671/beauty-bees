@@ -1,10 +1,9 @@
 import { NextResponse } from 'next/server';
 import { getSession } from '../../../../lib/session';
-import { PrismaClient } from '@prisma/client';
+import prisma from '@/lib/prisma';
 import bcrypt from 'bcryptjs';
 import { generateOTP, sendOTP } from '@/lib/auth-utils';
-
-const prisma = new PrismaClient();
+import { sendSMS } from '@/lib/sms-utils';
 
 // Simple in-memory rate limiter
 const attempts = new Map();
@@ -36,7 +35,8 @@ function validatePassword(password) {
 
 // Email validator
 function validateEmail(email) {
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  const re = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+  return re.test(email);
 }
 
 // Phone validator (Nepal format)
@@ -88,7 +88,11 @@ export async function POST(request) {
     // Check if user already exists
     const existingUser = await prisma.user.findUnique({ where: { email: email.toLowerCase().trim() } });
     if (existingUser) {
-      return NextResponse.json({ error: 'An account with this email already exists' }, { status: 409 });
+      if (existingUser.isVerified) {
+        return NextResponse.json({ error: 'An account with this email already exists' }, { status: 409 });
+      }
+      // Delete unverified account so they can re-register
+      await prisma.user.delete({ where: { id: existingUser.id } });
     }
 
     // Hash password with bcrypt (cost factor 12)
@@ -114,7 +118,8 @@ export async function POST(request) {
       success: true, 
       message: 'Account created. Please verify your email.',
       requiresVerification: true,
-      email: user.email 
+      email: user.email,
+      devOTP: (process.env.GMAIL_APP_PASSWORD && process.env.GMAIL_APP_PASSWORD !== 'PASTE_YOUR_APP_PASSWORD_HERE') ? null : otp 
     }, { status: 201 });
   } catch (error) {
     console.error("Register Error:", error);

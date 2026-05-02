@@ -17,7 +17,7 @@ export default function DashboardLayout({ children }) {
         const res = await fetch('/api/auth/me');
         if (res.ok) {
           const data = await res.json();
-          if (data.user.role === 'admin') {
+          if (data.user.role === 'admin' || data.user.role === 'superadmin') {
             setIsAdmin(true);
           } else {
             router.replace('/login');
@@ -74,6 +74,12 @@ export default function DashboardLayout({ children }) {
           </Link>
           <Link href="/admin/dashboard/discounts" className={`${styles.navLink} ${pathname === '/admin/dashboard/discounts' ? styles.active : ''}`}>
             Discounts & Offers
+          </Link>
+          <Link href="/admin/dashboard/shipping" className={`${styles.navLink} ${pathname === '/admin/dashboard/shipping' ? styles.active : ''}`}>
+            Shipping Zones
+          </Link>
+          <Link href="/admin/dashboard/support" className={`${styles.navLink} ${pathname === '/admin/dashboard/support' ? styles.active : ''}`}>
+            AI & Support
           </Link>
         </nav>
         <div className={styles.logout}>

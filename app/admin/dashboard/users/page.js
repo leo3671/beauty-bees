@@ -81,7 +81,7 @@ export default function UserManagement() {
                 <td>{user.email}</td>
                 <td>{user.phone || 'N/A'}</td>
                 <td>
-                  <span className={`${styles.badge} ${user.role === 'admin' ? styles.adminBadge : styles.userBadge}`}>
+                  <span className={`${styles.badge} ${user.role === 'admin' ? styles.adminBadge : user.role === 'superadmin' ? styles.superadminBadge : styles.userBadge}`}>
                     {user.role}
                   </span>
                 </td>
@@ -117,6 +117,7 @@ export default function UserManagement() {
                 >
                   <option value="customer">Customer</option>
                   <option value="admin">Admin</option>
+                  <option value="superadmin">Superadmin</option>
                 </select>
               </div>
               <div className={styles.field}>

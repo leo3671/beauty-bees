@@ -20,7 +20,7 @@ export async function POST(request) {
     const user = await prisma.user.findUnique({ where: { email } });
     if (!user) return NextResponse.json({ error: 'User not found' }, { status: 404 });
 
-    if (type === 'EMAIL_VERIFICATION') {
+    if (type === 'EMAIL_VERIFICATION' || type === 'PHONE_VERIFICATION') {
       await prisma.user.update({
         where: { id: user.id },
         data: { isVerified: true }

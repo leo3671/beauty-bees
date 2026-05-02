@@ -1,10 +1,11 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import styles from './page.module.css';
 import { toast } from 'react-hot-toast';
+import { Mail, Lock, Eye, EyeOff, ArrowLeft, ArrowRight, ShieldCheck, User } from 'lucide-react';
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -14,7 +15,42 @@ export default function Login() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
+  const [resendTimer, setResendTimer] = useState(0);
   const router = useRouter();
+
+  useEffect(() => {
+    let interval;
+    if (resendTimer > 0) {
+      interval = setInterval(() => {
+        setResendTimer((prev) => prev - 1);
+      }, 1000);
+    }
+    return () => clearInterval(interval);
+  }, [resendTimer]);
+
+  const handleResendCode = async () => {
+    if (resendTimer > 0) return;
+    setLoading(true);
+    try {
+      const res = await fetch('/api/auth/resend-otp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, type: authState === 'VERIFY' ? 'EMAIL_VERIFICATION' : 'MFA' })
+      });
+      if (res.ok) {
+        toast.success('Verification code resent');
+        setResendTimer(60);
+      } else {
+        const data = await res.json();
+        toast.error(data.error || 'Failed to resend code');
+      }
+    } catch (err) {
+      toast.error('Network error');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -24,7 +60,7 @@ export default function Login() {
       const res = await fetch('/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password })
+        body: JSON.stringify({ email, password, rememberMe })
       });
 
       const data = await res.json();
@@ -33,19 +69,24 @@ export default function Login() {
         if (data.requiresMFA) {
           setAuthState('MFA');
           toast.success('MFA code sent to your email');
+          setResendTimer(60);
+          if (data.devOTP) toast.success(`[DEV] Code: ${data.devOTP}`, { duration: 10000 });
         } else {
+          toast.success('Welcome back!');
           router.push(data.role === 'admin' ? '/admin/dashboard' : '/account');
         }
       } else {
         if (data.requiresVerification) {
           setAuthState('VERIFY');
-          toast.error('Email not verified. Verification code sent.');
+          toast.error('Account not verified. Code sent.');
+          setResendTimer(60);
+          if (data.devOTP) toast.success(`[DEV] Code: ${data.devOTP}`, { duration: 10000 });
         } else {
           setError(data.error || 'Invalid email or password.');
         }
       }
     } catch (err) {
-      setError('Something went wrong. Please try again.');
+      setError('Connection failed. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -68,13 +109,13 @@ export default function Login() {
 
       const data = await res.json();
       if (res.ok) {
-        toast.success(authState === 'VERIFY' ? 'Email verified!' : 'MFA Success!');
+        toast.success(authState === 'VERIFY' ? 'Email verified!' : 'Identity confirmed!');
         router.push(data.role === 'admin' ? '/admin/dashboard' : '/account');
       } else {
-        setError(data.error || 'Invalid verification code');
+        setError(data.error || 'The code you entered is incorrect.');
       }
     } catch (err) {
-      setError('Connection error');
+      setError('Verification failed. Try again.');
     } finally {
       setLoading(false);
     }
@@ -82,43 +123,66 @@ export default function Login() {
 
   return (
     <div className={styles.authPage}>
+      {/* Premium Hero Image Section */}
       <div className={styles.imageSide}>
-        <img src="/images/kbeauty_products.png" alt="Popular K-Beauty Products" className={styles.heroImage} />
+        <img 
+          src="/images/premium-bg.png" 
+          alt="Premium K-Beauty" 
+          className={styles.heroImage} 
+        />
         <div className={styles.imageOverlay}>
           <div className={styles.imageContent}>
-            <div className={styles.logoMark}>🐝</div>
-            <h2>Welcome to<br/>Beauty Bees</h2>
-            <p>Your trusted destination for authentic Korean skincare in Nepal.</p>
+            <h2>Unveil Your<br/>Natural Radiance</h2>
+            <p>Experience the finest selection of authentic Korean skincare, curated specifically for your skin's unique needs.</p>
           </div>
         </div>
       </div>
 
       <div className={styles.formSide}>
         <div className={styles.formContainer}>
-          <div className={styles.mobileLogo}><span>🐝</span> Beauty Bees</div>
+          {/* Brand Identity */}
+          <div className={styles.brandLogo}>
+            <Link href="/">
+              <img src="/logo_fixed.png" alt="Beauty Bees" />
+            </Link>
+          </div>
+
+          <div className={styles.mobileLogo}>
+             Beauty Bees
+          </div>
 
           <div className={styles.formHeader}>
-            <h1>{authState === 'LOGIN' ? 'Sign In' : authState === 'VERIFY' ? 'Verify Email' : 'MFA Verification'}</h1>
+            <h1>
+              {authState === 'LOGIN' ? 'Sign In' : authState === 'VERIFY' ? 'Confirm Identity' : 'Secure Login'}
+            </h1>
             <p>
               {authState === 'LOGIN' 
-                ? 'Welcome back! Please enter your details.' 
-                : `We've sent a 6-digit code to ${email}`}
+                ? 'Welcome back to Beauty Bees. Your beauty journey continues here.' 
+                : `A verification code has been sent to ${email}`}
             </p>
           </div>
 
-          {error && <div className={styles.errorBox}>{error}</div>}
+          {error && (
+            <div className={styles.errorBox}>
+              <ShieldCheck size={18} />
+              <span>{error}</span>
+            </div>
+          )}
 
           {authState === 'LOGIN' ? (
             <form onSubmit={handleLogin} className={styles.form}>
               <div className={styles.inputGroup}>
-                <label>Email</label>
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="Enter your email"
-                  required
-                />
+                <label>Email Address</label>
+                <div className={styles.inputWrapper}>
+                  <Mail className={styles.inputIcon} size={18} />
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="name@example.com"
+                    required
+                  />
+                </div>
               </div>
 
               <div className={styles.inputGroup}>
@@ -126,40 +190,75 @@ export default function Login() {
                   <label>Password</label>
                   <Link href="/forgot-password" className={styles.forgotLink}>Forgot password?</Link>
                 </div>
-                <input
-                  type={showPassword ? 'text' : 'password'}
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Enter your password"
-                  required
-                />
+                <div className={styles.inputWrapper}>
+                  <Lock className={styles.inputIcon} size={18} />
+                  <input
+                    type={showPassword ? 'text' : 'password'}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="••••••••"
+                    required
+                  />
+                  <button 
+                    type="button" 
+                    className={styles.togglePassword}
+                    onClick={() => setShowPassword(!showPassword)}
+                    style={{ position: 'absolute', right: '16px', background: 'none', border: 'none', color: '#999', cursor: 'pointer' }}
+                  >
+                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                  </button>
+                </div>
+              </div>
+
+              <div className={styles.rememberRow}>
+                <label className={styles.rememberLabel}>
+                  <input 
+                    type="checkbox" 
+                    checked={rememberMe} 
+                    onChange={(e) => setRememberMe(e.target.checked)} 
+                  />
+                  Keep me signed in for 30 days
+                </label>
               </div>
 
               <button type="submit" className={styles.submitBtn} disabled={loading}>
-                {loading ? 'Signing in...' : 'Sign In'}
+                {loading ? <div className={styles.spinner}></div> : <>Sign In <ArrowRight size={18} /></>}
               </button>
             </form>
           ) : (
             <form onSubmit={handleVerify} className={styles.form}>
               <div className={styles.inputGroup}>
                 <label>Verification Code</label>
-                <input
-                  type="text"
-                  value={otp}
-                  onChange={(e) => setOtp(e.target.value)}
-                  placeholder="Enter 6-digit code"
-                  maxLength={6}
-                  required
-                  style={{ textAlign: 'center', fontSize: '1.5rem', letterSpacing: '4px' }}
-                />
+                <div className={styles.otpContainer}>
+                  <input
+                    type="text"
+                    value={otp}
+                    onChange={(e) => setOtp(e.target.value)}
+                    placeholder="000000"
+                    maxLength={6}
+                    className={styles.otpInput}
+                    required
+                  />
+                </div>
               </div>
 
               <button type="submit" className={styles.submitBtn} disabled={loading}>
-                {loading ? 'Verifying...' : 'Verify & Continue'}
+                {loading ? <div className={styles.spinner}></div> : 'Verify & Continue'}
               </button>
+
+              <div className={styles.resendArea}>
+                <button 
+                  type="button" 
+                  className={styles.resendBtn} 
+                  onClick={handleResendCode} 
+                  disabled={resendTimer > 0 || loading}
+                >
+                  {resendTimer > 0 ? `Resend code in ${resendTimer}s` : 'Resend verification code'}
+                </button>
+              </div>
               
               <button type="button" className={styles.backBtn} onClick={() => setAuthState('LOGIN')}>
-                Back to Login
+                <ArrowLeft size={16} style={{ marginRight: '8px' }} /> Back to Sign In
               </button>
             </form>
           )}
@@ -167,9 +266,11 @@ export default function Login() {
           {authState === 'LOGIN' && (
             <>
               <div className={styles.divider}><span>or</span></div>
-              <button className={styles.guestBtn} onClick={() => router.push('/shop')}>Continue as Guest</button>
+              <button className={styles.guestBtn} onClick={() => router.push('/shop')}>
+                Browse as Guest
+              </button>
               <p className={styles.switchAuth}>
-                Don't have an account? <Link href="/register">Create one</Link>
+                New to Beauty Bees? <Link href="/register">Create an account</Link>
               </p>
             </>
           )}

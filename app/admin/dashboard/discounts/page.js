@@ -1,136 +1,151 @@
 "use client";
 
-import { useState } from 'react';
-import { useProducts } from '../../../../lib/ProductContext';
-import styles from '../page.module.css';
-import Link from 'next/link';
+import { useState, useEffect } from 'react';
+import styles from './discounts.module.css';
+import { toast } from 'react-hot-toast';
 
-export default function DiscountsOffers() {
-  const { products, loading, editProduct } = useProducts();
-  const [selectedProduct, setSelectedProduct] = useState(null);
-  const [discountAmount, setDiscountAmount] = useState('');
-  const [isPercentage, setIsPercentage] = useState(true);
+export default function DiscountManagement() {
+  const [vouchers, setVouchers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [newVoucher, setNewVoucher] = useState({ 
+    code: '', 
+    discountType: 'percentage', 
+    discountValue: '', 
+    minOrderValue: 0 
+  });
 
-  if (loading) return <div>Loading products...</div>;
+  useEffect(() => {
+    fetchVouchers();
+  }, []);
 
-  const handleApplyDiscount = async (e) => {
-    e.preventDefault();
-    if (!selectedProduct || !discountAmount) return;
-
-    let originalPrice = selectedProduct.originalPrice || selectedProduct.price;
-    let newPrice;
-
-    if (isPercentage) {
-      newPrice = Math.floor(originalPrice - (originalPrice * (parseFloat(discountAmount) / 100)));
-    } else {
-      newPrice = Math.floor(originalPrice - parseFloat(discountAmount));
+  const fetchVouchers = async () => {
+    try {
+      const res = await fetch('/api/admin/discounts');
+      const data = await res.json();
+      if (Array.isArray(data)) setVouchers(data);
+    } catch (e) {
+      toast.error('Failed to load vouchers');
+    } finally {
+      setLoading(false);
     }
-
-    if (newPrice < 0) newPrice = 0;
-
-    const updatedProduct = {
-      ...selectedProduct,
-      originalPrice: originalPrice,
-      price: newPrice
-    };
-
-    await editProduct(updatedProduct);
-    setSelectedProduct(null);
-    setDiscountAmount('');
   };
 
-  const handleRemoveDiscount = async (product) => {
-    if (!product.originalPrice) return;
-    const updatedProduct = {
-      ...product,
-      price: product.originalPrice,
-    };
-    delete updatedProduct.originalPrice;
-    await editProduct(updatedProduct);
+  const handleCreate = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await fetch('/api/admin/discounts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newVoucher)
+      });
+      if (res.ok) {
+        toast.success('Voucher created');
+        setNewVoucher({ code: '', discountType: 'percentage', discountValue: '', minOrderValue: 0 });
+        fetchVouchers();
+      }
+    } catch (e) {
+      toast.error('Failed to create voucher');
+    }
   };
+
+  const handleDelete = async (id) => {
+    if (!confirm('Delete this voucher?')) return;
+    try {
+      const res = await fetch('/api/admin/discounts', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id })
+      });
+      if (res.ok) {
+        toast.success('Voucher deleted');
+        fetchVouchers();
+      }
+    } catch (e) {
+      toast.error('Delete failed');
+    }
+  };
+
+  if (loading) return <div>Loading...</div>;
 
   return (
-    <div>
-      <h1 className={styles.title}>Discounts & Offers</h1>
-      <p style={{ marginBottom: '20px', color: '#666' }}>
-        Select a product to apply a discount. The storefront will automatically display a "Sale" badge and show the original price crossed out.
-      </p>
+    <div className={styles.container}>
+      <header className={styles.header}>
+        <h1>Discount Vouchers</h1>
+        <p>Create and manage promo codes for your customers.</p>
+      </header>
 
-      {selectedProduct && (
-        <div style={{ background: '#fffbeb', border: '1px solid #fbbf24', padding: '20px', borderRadius: '8px', marginBottom: '20px' }}>
-          <h3>Apply Discount to: {selectedProduct.name}</h3>
-          <p>Current Price: Rs. {selectedProduct.price}</p>
-          <form onSubmit={handleApplyDiscount} style={{ display: 'flex', gap: '15px', marginTop: '15px', alignItems: 'center' }}>
-            <input 
-              type="number" 
-              placeholder="Amount" 
-              value={discountAmount}
-              onChange={e => setDiscountAmount(e.target.value)}
-              required
-              style={{ padding: '8px', width: '120px' }}
-            />
-            <select value={isPercentage} onChange={e => setIsPercentage(e.target.value === 'true')} style={{ padding: '8px' }}>
-              <option value="true">% Off</option>
-              <option value="false">Rs. Off</option>
-            </select>
-            <button type="submit" style={{ padding: '8px 16px', background: '#ef4444', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>
-              Set Discount
-            </button>
-            <button type="button" onClick={() => setSelectedProduct(null)} style={{ padding: '8px 16px', background: 'transparent', border: 'none', cursor: 'pointer' }}>
-              Cancel
-            </button>
+      <div className={styles.grid}>
+        <div className={styles.formCard}>
+          <h2>Create New Voucher</h2>
+          <form onSubmit={handleCreate}>
+            <div className={styles.field}>
+              <label>Promo Code</label>
+              <input 
+                type="text" 
+                placeholder="e.g. WELCOME10"
+                value={newVoucher.code}
+                onChange={(e) => setNewVoucher({...newVoucher, code: e.target.value.toUpperCase()})}
+                required
+              />
+            </div>
+            <div className={styles.field}>
+              <label>Type</label>
+              <select 
+                value={newVoucher.discountType}
+                onChange={(e) => setNewVoucher({...newVoucher, discountType: e.target.value})}
+              >
+                <option value="percentage">Percentage (%)</option>
+                <option value="fixed">Fixed Amount (Rs.)</option>
+              </select>
+            </div>
+            <div className={styles.field}>
+              <label>Value</label>
+              <input 
+                type="number" 
+                placeholder="e.g. 10"
+                value={newVoucher.discountValue}
+                onChange={(e) => setNewVoucher({...newVoucher, discountValue: e.target.value})}
+                required
+              />
+            </div>
+            <div className={styles.field}>
+              <label>Min. Order Amount (Optional)</label>
+              <input 
+                type="number" 
+                placeholder="e.g. 1000"
+                value={newVoucher.minOrderValue}
+                onChange={(e) => setNewVoucher({...newVoucher, minOrderValue: e.target.value})}
+              />
+            </div>
+            <button type="submit" className={styles.submitBtn}>Create Voucher</button>
           </form>
         </div>
-      )}
 
-      <div className={styles.tableContainer}>
-        <table className={styles.table}>
-          <thead>
-            <tr>
-              <th>Product</th>
-              <th>Original Price</th>
-              <th>Current Price</th>
-              <th>Status</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {products.map(product => {
-              const isOnSale = product.originalPrice && product.originalPrice > product.price;
-              return (
-                <tr key={product.id}>
-                  <td style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                    <img src={product.image} style={{ width: '40px', height: '40px', objectFit: 'cover', borderRadius: '4px' }} />
-                    <span style={{ maxWidth: '200px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{product.name}</span>
-                  </td>
-                  <td style={{ color: isOnSale ? '#999' : 'inherit', textDecoration: isOnSale ? 'line-through' : 'none' }}>
-                    Rs. {product.originalPrice || product.price}
-                  </td>
-                  <td style={{ fontWeight: isOnSale ? 'bold' : 'normal', color: isOnSale ? '#ef4444' : 'inherit' }}>
-                    Rs. {product.price}
-                  </td>
+        <div className={styles.listCard}>
+          <h2>Active Vouchers</h2>
+          <table className={styles.table}>
+            <thead>
+              <tr>
+                <th>Code</th>
+                <th>Discount</th>
+                <th>Min. Spend</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {vouchers.map(v => (
+                <tr key={v.id}>
+                  <td><strong>{v.code}</strong></td>
+                  <td>{v.discountType === 'percentage' ? `${v.discountValue}%` : `Rs. ${v.discountValue}`}</td>
+                  <td>Rs. {v.minOrderValue || 0}</td>
                   <td>
-                    {isOnSale ? (
-                      <span className={`${styles.badge}`} style={{ background: '#fee2e2', color: '#ef4444' }}>On Sale</span>
-                    ) : (
-                      <span className={`${styles.badge}`} style={{ background: '#f1f5f9', color: '#64748b' }}>Regular</span>
-                    )}
-                  </td>
-                  <td>
-                    {isOnSale ? (
-                      <div style={{ display: 'flex', gap: '10px' }}>
-                        <button onClick={() => setSelectedProduct(product)} style={{ color: '#2563eb', border: 'none', background: 'none', cursor: 'pointer', fontWeight: '500' }}>Edit Discount</button>
-                        <button onClick={() => handleRemoveDiscount(product)} style={{ color: '#64748b', border: 'none', background: 'none', cursor: 'pointer', fontWeight: '500' }}>Remove Sale</button>
-                      </div>
-                    ) : (
-                      <button onClick={() => setSelectedProduct(product)} style={{ color: '#2563eb', border: 'none', background: 'none', cursor: 'pointer', fontWeight: '500' }}>Set Discount</button>
-                    )}
+                    <button onClick={() => handleDelete(v.id)} className={styles.deleteBtn}>Delete</button>
                   </td>
                 </tr>
-              );
-            })}
-          </tbody>
-        </table>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );

@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
 import fs from 'fs';
 import path from 'path';
-import { sendOrderConfirmation, sendPaymentVerificationEmail } from '../../../lib/email';
+import { sendOrderConfirmation, sendPaymentVerificationEmail, sendOrderDelivered, sendOrderCancelled } from '../../../lib/email';
 
 const prisma = new PrismaClient();
 const imagesDir = path.join(process.cwd(), 'public', 'images');
@@ -42,6 +42,9 @@ export async function POST(request) {
         paymentScreenshot: paymentScreenshot,
         status: 'Pending',
         total: Number(newOrderData.total),
+        discountCode: newOrderData.discountCode || null,
+        discountAmount: Number(newOrderData.discountAmount || 0),
+        shippingFee: Number(newOrderData.shippingFee || 0),
         items: {
           create: newOrderData.items.map(item => ({
             productId: item.id,
@@ -114,9 +117,16 @@ export async function PUT(request) {
       }
     }
 
-    // Trigger payment verification email
     if (paymentStatus === 'Verified') {
       try { await sendPaymentVerificationEmail(updatedOrder); } catch (e) { console.error('Email send failed:', e); }
+    }
+
+    if (status === 'Delivered') {
+      try { await sendOrderDelivered(updatedOrder); } catch (e) { console.error('Email send failed:', e); }
+    }
+
+    if (status === 'Cancelled') {
+      try { await sendOrderCancelled(updatedOrder); } catch (e) { console.error('Email send failed:', e); }
     }
     
     return NextResponse.json(updatedOrder);

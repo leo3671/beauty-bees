@@ -24,7 +24,7 @@ export default async function Home() {
       
       {/* ===== ANNOUNCEMENT BAR ===== */}
       <div className={styles.announcementBar}>
-        <p>🌸 FREE SHIPPING on orders over Rs. 5,000 &nbsp;|&nbsp; 100% Authentic K-Beauty &nbsp;|&nbsp; Fast Delivery Across Nepal 🇳🇵</p>
+        <p>🌸 FREE SHIPPING on orders over Rs. 10,000 &nbsp;|&nbsp; 100% Authentic K-Beauty &nbsp;|&nbsp; Fast Delivery Across Nepal 🇳🇵</p>
       </div>
 
       {/* ===== HERO SLIDESHOW ===== */}
@@ -50,7 +50,7 @@ export default async function Home() {
           <span className={styles.trustIcon}>✈️</span>
           <div>
             <strong>Free Shipping</strong>
-            <span>On orders over Rs. 5,000</span>
+            <span>On orders over Rs. 10,000</span>
           </div>
         </div>
         <div className={styles.trustItem}>

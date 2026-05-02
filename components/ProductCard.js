@@ -4,15 +4,19 @@ import Image from 'next/image';
 import Link from 'next/link';
 import styles from './ProductCard.module.css';
 import { useCart } from '../lib/CartContext';
+import { useLanguage } from '../lib/LanguageContext';
 import { toast } from 'react-hot-toast';
+import ProductRating from './ProductRating';
 
 export default function ProductCard({ product }) {
-  const { setCartItems } = useCart();
+  const { setCartItems, openCart } = useCart();
+  const { t } = useLanguage();
 
   const handleAddToCart = (e) => {
     e.preventDefault();
     if (product.stock <= 0) return;
     setCartItems(prev => [...prev, product]);
+    openCart();
     toast.success(`${product.name} added to cart!`, {
       icon: '🐝',
       style: {
@@ -37,7 +41,7 @@ export default function ProductCard({ product }) {
             disabled={product.inStock === false}
             style={{ opacity: product.inStock === false ? 0.5 : 1, cursor: product.inStock === false ? 'not-allowed' : 'pointer' }}
           >
-            {product.inStock === false ? 'Out of Stock' : 'Quick Add'}
+            {product.inStock === false ? t('out_of_stock') : t('quick_add')}
           </button>
         </div>
       </div>
@@ -45,6 +49,7 @@ export default function ProductCard({ product }) {
       <div className={styles.info}>
         <p className={styles.brand}>{product.brand}</p>
         <h3 className={styles.name}>{product.name}</h3>
+        <ProductRating productId={product.id} />
         <p className={styles.price}>
           Rs. {product.price}
           {product.originalPrice && product.originalPrice > product.price && (

@@ -11,6 +11,7 @@ export default function AccountPage() {
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState(null);
   const [activeTab, setActiveTab] = useState('overview');
+  const [orderFilter, setOrderFilter] = useState('All');
   
   // Profile edit states
   const [editMode, setEditMode] = useState(false);
@@ -204,6 +205,18 @@ export default function AccountPage() {
             <h1 className={styles.sectionTitle}>Order History</h1>
             <p className={styles.subtitle}>Track and manage your previous purchases.</p>
             
+            <div className={styles.orderTabs}>
+              {['All', 'To Ship', 'To Receive', 'To Review', 'Returns', 'Cancelled'].map(tab => (
+                <button 
+                  key={tab}
+                  onClick={() => setOrderFilter(tab)} 
+                  className={orderFilter === tab ? styles.orderTabBtnActive : styles.orderTabBtn}
+                >
+                  {tab}
+                </button>
+              ))}
+            </div>
+
             {orders.length === 0 ? (
               <div className={styles.emptyState}>
                 <p>You haven't placed any orders yet.</p>
@@ -211,7 +224,17 @@ export default function AccountPage() {
               </div>
             ) : (
               <div className={styles.ordersList}>
-                {orders.map(order => (
+                {orders
+                  .filter(o => {
+                    if (orderFilter === 'All') return true;
+                    if (orderFilter === 'To Ship') return o.status === 'Pending';
+                    if (orderFilter === 'To Receive') return o.status === 'Shipped';
+                    if (orderFilter === 'To Review') return o.status === 'Delivered';
+                    if (orderFilter === 'Returns') return o.status === 'Returned';
+                    if (orderFilter === 'Cancelled') return o.status === 'Cancelled';
+                    return true;
+                  })
+                  .map(order => (
                   <div key={order.id} className={styles.fullOrderCard}>
                     <div className={styles.cardHeader}>
                       <div className={styles.idGroup}>
@@ -229,9 +252,36 @@ export default function AccountPage() {
                         </div>
                       </div>
                       <div className={styles.badgeGroup}>
-                         <span className={`${styles.statusBadge} ${order.status === 'Delivered' ? styles.delivered : styles.pending}`}>
+                         <span className={`${styles.statusBadge} ${styles[order.status.toLowerCase()] || styles.pending}`}>
                            {order.status}
                          </span>
+                         {order.status === 'Pending' && (
+                           <button 
+                            className={styles.cancelOrderBtn} 
+                            onClick={async () => {
+                              if (!confirm('Are you sure you want to cancel this order?')) return;
+                              const res = await fetch('/api/user/orders/cancel', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ orderId: order.id })
+                              });
+                              if (res.ok) {
+                                toast.success('Order cancelled');
+                                fetchMyOrders(user.email);
+                              } else {
+                                toast.error('Cancellation failed. Order might already be shipping.');
+                              }
+                            }}
+                           >
+                            Cancel Order
+                           </button>
+                         )}
+                         {order.status === 'Delivered' && (
+                           <Link href={`/products/${order.items[0]?.productId}`} className={styles.reviewBtn}>Leave Review</Link>
+                         )}
+                         {(order.status === 'Shipped' || order.status === 'Processing') && (
+                           <span className={styles.lockHint}>🔒 Shipped: Cannot Cancel</span>
+                         )}
                       </div>
                     </div>
                     <div className={styles.cardBody}>
