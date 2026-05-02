@@ -36,13 +36,27 @@ export default function BeeChatWidget() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ message, sessionId, language })
       });
+      
       const data = await res.json();
+      
+      if (!res.ok) {
+        setMessages(prev => [...prev, { 
+          sender: 'ai', 
+          content: data.error || "Bzzzt! Something went wrong. Please try again." 
+        }]);
+        return;
+      }
+
       if (data.sessionId) setSessionId(data.sessionId);
       if (data.reply) {
         setMessages(prev => [...prev, { sender: 'ai', content: data.reply }]);
       }
     } catch (e) {
       console.error(e);
+      setMessages(prev => [...prev, { 
+        sender: 'ai', 
+        content: "I'm having trouble connecting right now. Please check your internet or try again later. 🐝" 
+      }]);
     } finally {
       setLoading(false);
     }
