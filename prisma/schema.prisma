@@ -138,3 +138,11 @@ model ShippingZone {
   fee         Int      @default(0)
   createdAt   DateTime @default(now())
 }
+
+model Brand {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  logo      String
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+}

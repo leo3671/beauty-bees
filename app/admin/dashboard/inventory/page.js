@@ -27,8 +27,24 @@ export default function InventoryManagement() {
     isBestSeller: false
   });
 
+  const [dbBrands, setDbBrands] = useState([]);
   const [isCustomCategory, setIsCustomCategory] = useState(false);
   const skinTypes = ['Oily', 'Dry', 'Sensitive', 'Combination'];
+
+  useEffect(() => {
+    const fetchDbBrands = async () => {
+      try {
+        const res = await fetch('/api/brands');
+        if (res.ok) {
+          const data = await res.json();
+          setDbBrands(data);
+        }
+      } catch (e) {
+        console.error("Failed to fetch brands", e);
+      }
+    };
+    fetchDbBrands();
+  }, []);
 
   const handleSkinTypeToggle = (type) => {
     setFormData(prev => ({
@@ -162,7 +178,7 @@ export default function InventoryManagement() {
               <div>
                 <label style={{ display: 'block', marginBottom: '5px' }}>Brand</label>
                 <select 
-                  value={!formData.brand || !Array.from(new Set([...brands, ...products.map(p => p.brand)])).includes(formData.brand) ? 'Other' : formData.brand} 
+                  value={!formData.brand || !Array.from(new Set([...brands, ...dbBrands.map(b => b.name), ...products.map(p => p.brand)])).includes(formData.brand) ? 'Other' : formData.brand} 
                   onChange={e => {
                     if (e.target.value === 'Other') {
                       setFormData({...formData, brand: ''});
@@ -173,12 +189,12 @@ export default function InventoryManagement() {
                   style={{ width: '100%', padding: '8px' }}
                 >
                   <option value="" disabled>Select Brand</option>
-                  {Array.from(new Set([...brands, ...products.map(p => p.brand)])).filter(b => b).map(brand => (
+                  {Array.from(new Set([...brands, ...dbBrands.map(b => b.name), ...products.map(p => p.brand)])).filter(b => b).map(brand => (
                     <option key={brand} value={brand}>{brand}</option>
                   ))}
                   <option value="Other">Add New Brand...</option>
                 </select>
-                {(!formData.brand || !Array.from(new Set([...brands, ...products.map(p => p.brand)])).includes(formData.brand)) && (
+                {(!formData.brand || !Array.from(new Set([...brands, ...dbBrands.map(b => b.name), ...products.map(p => p.brand)])).includes(formData.brand)) && (
                   <input 
                     placeholder="Enter new brand name" 
                     value={formData.brand} 

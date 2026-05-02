@@ -66,6 +66,9 @@ export default function DashboardLayout({ children }) {
           <Link href="/admin/dashboard/users" className={`${styles.navLink} ${pathname === '/admin/dashboard/users' ? styles.active : ''}`}>
             User Management
           </Link>
+          <Link href="/admin/dashboard/brands" className={`${styles.navLink} ${pathname === '/admin/dashboard/brands' ? styles.active : ''}`}>
+            Brands & Logos
+          </Link>
           <Link href="/admin/dashboard/orders" className={`${styles.navLink} ${pathname === '/admin/dashboard/orders' ? styles.active : ''}`}>
             Orders
           </Link>

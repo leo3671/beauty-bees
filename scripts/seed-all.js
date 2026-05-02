@@ -72,7 +72,22 @@ async function main() {
     });
   }
   
-  console.log(`✅ Seeding Complete! Seeded ${data.length} products, ${zones.length} zones, and ${vouchers.length} vouchers.`);
+  console.log('🌱 Seeding Brands...');
+  const brands = [
+    { name: 'Anua', logo: '/images/brand_anua.png' },
+    { name: 'Skin1004', logo: '/images/brand_skin1004.png' },
+    { name: 'Haru Haru Wonder', logo: '/images/brand_haruharu.png' },
+    { name: 'Cosrx', logo: '/images/brand_cosrx.png' }
+  ];
+  for (const b of brands) {
+    await prisma.brand.upsert({
+      where: { name: b.name },
+      update: { logo: b.logo },
+      create: b
+    });
+  }
+  
+  console.log(`✅ Seeding Complete! Seeded ${data.length} products, ${zones.length} zones, ${vouchers.length} vouchers, and ${brands.length} brands.`);
 }
 
 main()
