@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useProducts } from '../../../../lib/ProductContext';
+import { brands } from '../../../../lib/data';
 import styles from '../page.module.css';
 
 export default function InventoryManagement() {
@@ -160,7 +161,31 @@ export default function InventoryManagement() {
               </div>
               <div>
                 <label style={{ display: 'block', marginBottom: '5px' }}>Brand</label>
-                <input required value={formData.brand} onChange={e => setFormData({...formData, brand: e.target.value})} style={{ width: '100%', padding: '8px' }} />
+                <select 
+                  value={!formData.brand || !Array.from(new Set([...brands, ...products.map(p => p.brand)])).includes(formData.brand) ? 'Other' : formData.brand} 
+                  onChange={e => {
+                    if (e.target.value === 'Other') {
+                      setFormData({...formData, brand: ''});
+                    } else {
+                      setFormData({...formData, brand: e.target.value});
+                    }
+                  }} 
+                  style={{ width: '100%', padding: '8px' }}
+                >
+                  <option value="" disabled>Select Brand</option>
+                  {Array.from(new Set([...brands, ...products.map(p => p.brand)])).filter(b => b).map(brand => (
+                    <option key={brand} value={brand}>{brand}</option>
+                  ))}
+                  <option value="Other">Add New Brand...</option>
+                </select>
+                {(!formData.brand || !Array.from(new Set([...brands, ...products.map(p => p.brand)])).includes(formData.brand)) && (
+                  <input 
+                    placeholder="Enter new brand name" 
+                    value={formData.brand} 
+                    onChange={e => setFormData({...formData, brand: e.target.value})} 
+                    style={{ width: '100%', padding: '8px', marginTop: '10px' }} 
+                  />
+                )}
               </div>
               <div>
                 <label style={{ display: 'block', marginBottom: '5px' }}>Category</label>

@@ -3,6 +3,7 @@ import styles from "./page.module.css";
 import HomeProductTabs from "../components/HomeProductTabs";
 import ShopByCategory from "../components/ShopByCategory";
 import Recommendations from "../components/Recommendations";
+import ShopByBrand from "../components/ShopByBrand";
 import prisma from "@/lib/prisma";
 
 export default async function Home() {
@@ -78,6 +79,9 @@ export default async function Home() {
 
       {/* ===== RECOMMENDED FOR YOU ===== */}
       <Recommendations />
+
+      {/* ===== SHOP BY BRAND ===== */}
+      <ShopByBrand />
 
       {/* ===== BEST SELLERS / NEW ARRIVALS TABS ===== */}
       <section className={`container ${styles.sectionBlock}`}>
