@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import styles from "./page.module.css";
 import HomeProductTabs from "../components/HomeProductTabs";
 import ShopByCategory from "../components/ShopByCategory";
@@ -32,7 +33,14 @@ export default async function Home() {
       <section className={styles.heroSlider}>
         <div className={styles.heroSlide}>
           <div className={styles.heroImageSide}>
-            <img src="/images/hero_banner_secondary.png" alt="K-Beauty Collection" />
+            <Image 
+              src="/images/hero_banner_secondary.png" 
+              alt="K-Beauty Collection" 
+              width={800} 
+              height={600} 
+              priority 
+              style={{ width: '100%', height: 'auto', objectFit: 'cover' }}
+            />
           </div>
           <div className={styles.heroTextSide}>
             <span className={styles.heroBadge}>NEW COLLECTION</span>

@@ -19,9 +19,71 @@ export default function Checkout() {
     lastName: '',
     email: '',
     phone: '',
+    area: '',
+    landmark: '',
     city: 'Kathmandu',
-    street: ''
+    deliveryRemarks: ''
   });
+
+  const handleSubmitOrder = async () => {
+    // 1. Submit order to Live API
+    try {
+      if (paymentMethod === 'qr' && !paymentScreenshotBase64) {
+        alert("Please upload a screenshot of your payment receipt.");
+        return;
+      }
+      const orderData = {
+        customer: `${formData.firstName} ${formData.lastName}`.trim() || 'Guest User',
+        email: formData.email || 'guest@example.com',
+        location: `${selectedZone?.name}, ${formData.city}, ${formData.area}, ${formData.landmark}`,
+        deliveryRemarks: formData.deliveryRemarks,
+        paymentMethod: paymentMethod === 'qr' ? 'Paid (QR)' : 'Cash on Delivery',
+        paymentScreenshotBase64: paymentScreenshotBase64,
+        total: finalTotal,
+        discountAmount: discount,
+        discountCode: appliedVoucher?.code || null,
+        shippingFee: shippingFee,
+        items: cartItems.map(item => ({ id: item.id, name: item.name, quantity: item.quantity || 1 }))
+      };
+      
+      const res = await fetch('/api/orders', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(orderData)
+      });
+
+      if (!res.ok) throw new Error("Order submission failed");
+    } catch (e) {
+      console.error("Could not place order", e);
+      alert("Failed to place order. Please try again.");
+      return;
+    }
+
+    // 2. Save purchased categories and brands to local storage
+    try {
+      const existingHistoryStr = localStorage.getItem('beautyBees_history');
+      let history = existingHistoryStr ? JSON.parse(existingHistoryStr) : { categories: [], brands: [], productIds: [] };
+      
+      cartItems.forEach(item => {
+        if (!history.categories.includes(item.category)) history.categories.push(item.category);
+        if (!history.brands.includes(item.brand)) history.brands.push(item.brand);
+        if (!history.productIds.includes(item.id)) history.productIds.push(item.id);
+      });
+      
+      localStorage.setItem('beautyBees_history', JSON.stringify(history));
+    } catch (e) {
+      console.error("Could not save order history", e);
+    }
+
+    // 3. Clear cart and show success
+    toast.success('Order Placed Successfully!', { duration: 5000 });
+    if (setCartItems) {
+      setCartItems([]);
+    }
+    setTimeout(() => {
+      window.location.href = '/checkout/success';
+    }, 2000);
+  };
   const [paymentScreenshotBase64, setPaymentScreenshotBase64] = useState('');
   const [shippingZones, setShippingZones] = useState([]);
   const [selectedZone, setSelectedZone] = useState(null);
@@ -89,6 +151,7 @@ export default function Checkout() {
     };
     checkAuth();
   }, []);
+
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -189,10 +252,10 @@ export default function Checkout() {
               <input type="text" placeholder="Last Name" required className={styles.inputField} value={formData.lastName} onChange={e => setFormData({...formData, lastName: e.target.value})} />
             </div>
             <div className={styles.formGroup}>
-              <input type="email" placeholder="Email Address" required className={styles.inputField} value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} />
+              <input type="email" placeholder="Email Address" required inputMode="email" className={styles.inputField} value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} />
             </div>
             <div className={styles.formGroup}>
-              <input type="tel" placeholder="Phone Number" required className={styles.inputField} value={formData.phone} onChange={e => setFormData({...formData, phone: e.target.value})} />
+              <input type="tel" placeholder="Phone Number" required inputMode="tel" className={styles.inputField} value={formData.phone} onChange={e => setFormData({...formData, phone: e.target.value})} />
             </div>
           </section>
 
@@ -216,9 +279,31 @@ export default function Checkout() {
                 </select>
               </div>
               <div className={styles.fieldGroup}>
-                <label>Street Address</label>
-                <input type="text" placeholder="Street Address / Landmark" required className={styles.inputField} value={formData.street} onChange={e => setFormData({...formData, street: e.target.value})} />
+                <label>City / Municipality</label>
+                <input type="text" placeholder="e.g. Kathmandu" required className={styles.inputField} value={formData.city} onChange={e => setFormData({...formData, city: e.target.value})} />
               </div>
+            </div>
+
+            <div className={styles.formRow}>
+              <div className={styles.fieldGroup}>
+                <label>Area / Tole</label>
+                <input type="text" placeholder="e.g. New Baneshwor" required className={styles.inputField} value={formData.area} onChange={e => setFormData({...formData, area: e.target.value})} />
+              </div>
+              <div className={styles.fieldGroup}>
+                <label>Landmark / House No.</label>
+                <input type="text" placeholder="e.g. Near Civil Bank" required className={styles.inputField} value={formData.landmark} onChange={e => setFormData({...formData, landmark: e.target.value})} />
+              </div>
+            </div>
+
+            <div className={styles.formGroup} style={{ marginTop: '20px' }}>
+              <label>Delivery Remarks / Instructions (Optional)</label>
+              <textarea 
+                placeholder="e.g. Near the big pipal tree, call before arriving, or gate color."
+                className={styles.textArea}
+                value={formData.deliveryRemarks}
+                onChange={e => setFormData({...formData, deliveryRemarks: e.target.value})}
+                rows="3"
+              ></textarea>
             </div>
           </section>
 
@@ -297,127 +382,109 @@ export default function Checkout() {
           </section>
 
           <button 
-            className={styles.primaryBtn} 
-            disabled={cartItems.length === 0}
-            onClick={async () => {
-              // 1. Submit order to Live API
-              try {
-                if (paymentMethod === 'qr' && !paymentScreenshotBase64) {
-                  alert("Please upload a screenshot of your payment receipt.");
-                  return;
-                }
-                const orderData = {
-                  customer: `${formData.firstName} ${formData.lastName}`.trim() || 'Guest User',
-                  email: formData.email || 'guest@example.com',
-                  location: `${selectedZone?.name}, ${formData.street}`,
-                  paymentMethod: paymentMethod === 'qr' ? 'Paid (QR)' : 'Cash on Delivery',
-                  paymentScreenshotBase64: paymentScreenshotBase64,
-                  total: finalTotal,
-                  discountAmount: discount,
-                  discountCode: appliedVoucher?.code || null,
-                  shippingFee: shippingFee,
-                  items: cartItems.map(item => ({ id: item.id, name: item.name, quantity: item.quantity || 1 }))
-                };
-                
-                await fetch('/api/orders', {
-                  method: 'POST',
-                  headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify(orderData)
-                });
-              } catch (e) {
-                console.error("Could not place order", e);
-                alert("Failed to place order. Please try again.");
-                return;
-              }
-
-              // 2. Save purchased categories and brands to local storage
-              try {
-                const existingHistoryStr = localStorage.getItem('beautyBees_history');
-                let history = existingHistoryStr ? JSON.parse(existingHistoryStr) : { categories: [], brands: [], productIds: [] };
-                
-                cartItems.forEach(item => {
-                  if (!history.categories.includes(item.category)) history.categories.push(item.category);
-                  if (!history.brands.includes(item.brand)) history.brands.push(item.brand);
-                  if (!history.productIds.includes(item.id)) history.productIds.push(item.id);
-                });
-                
-                localStorage.setItem('beautyBees_history', JSON.stringify(history));
-              } catch (e) {
-                console.error("Could not save order history", e);
-              }
-
-              // 3. Clear cart and show success
-              toast.success('Order Placed Successfully!', { duration: 5000 });
-              if (setCartItems) {
-                setCartItems([]);
-              }
-              setTimeout(() => {
-                window.location.href = '/checkout/success';
-              }, 2000);
-            }}
+            className={styles.luxuryConfirmBtn} 
+            disabled={cartItems.length === 0 || !formData.area}
+            onClick={handleSubmitOrder}
           >
-            Confirm Order
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+            </svg>
+            Confirm Secure Order
           </button>
         </div>
 
-        {/* Right Side: Order Summary */}
+        {/* Right Side: Order Summary (Boutique Invoice Style) */}
         <aside className={styles.sidebar}>
-          <div className={styles.summaryCard}>
-            <h2>Order Summary</h2>
+          <div className={styles.invoiceCard}>
+            <div className={styles.invoiceHeader}>
+              <h3>Order Summary</h3>
+              <span className={styles.itemCount}>{cartItems.length} Items</span>
+            </div>
             
-            <div className={styles.itemsList}>
+            <div className={styles.invoiceBody}>
               {cartItems.map((item, index) => (
-                <div key={index} className={styles.summaryItem}>
-                  <div className={styles.itemImageWrap}>
+                <div key={index} className={styles.invoiceItem}>
+                  <div className={styles.itemThumb}>
                     <img src={item.image} alt={item.name} />
                   </div>
-                  <div className={styles.itemDetails}>
-                    <p className={styles.itemName}>{item.name}</p>
-                    <p className={styles.itemPrice}>Rs. {item.price}</p>
+                  <div className={styles.itemMeta}>
+                    <span className={styles.itemName}>{item.name}</span>
+                    <div className={styles.itemSub}>
+                      <span>Qty: 1</span>
+                      <span className={styles.itemPrice}>Rs. {item.price.toLocaleString()}</span>
+                    </div>
                   </div>
                 </div>
               ))}
             </div>
 
-            <div className={styles.voucherArea}>
+            <div className={styles.invoiceDivider}></div>
+
+            <div className={styles.voucherBox}>
               <input 
                 type="text" 
-                placeholder="Discount Code" 
+                placeholder="PROMO CODE" 
+                className={styles.voucherInput}
                 value={voucherCode} 
                 onChange={e => setVoucherCode(e.target.value)}
                 disabled={appliedVoucher}
               />
-              <button onClick={applyVoucher} disabled={appliedVoucher || checkingVoucher}>
-                {appliedVoucher ? 'Applied' : 'Apply'}
+              <button className={styles.voucherBtn} onClick={applyVoucher} disabled={appliedVoucher || checkingVoucher}>
+                {appliedVoucher ? 'APPLIED' : 'APPLY'}
               </button>
             </div>
 
-            <div className={styles.totals}>
-              <div className={styles.totalRow}>
+            <div className={styles.invoiceFooter}>
+              <div className={styles.calcRow}>
                 <span>Subtotal</span>
-                <span>Rs. {subtotal}</span>
+                <span>Rs. {subtotal.toLocaleString()}</span>
               </div>
-              <div className={styles.totalRow}>
+              <div className={styles.calcRow}>
                 <span>Shipping ({selectedZone?.name})</span>
-                <span style={{ color: shippingFee === 0 ? '#16a34a' : 'inherit', fontWeight: shippingFee === 0 ? '600' : 'normal' }}>
-                  {shippingFee === 0 ? 'Free' : `Rs. ${shippingFee}`}
+                <span className={shippingFee === 0 ? styles.freeText : ''}>
+                  {shippingFee === 0 ? 'COMPLIMENTARY' : `Rs. ${shippingFee.toLocaleString()}`}
                 </span>
               </div>
               {discount > 0 && (
-                <div className={`${styles.totalRow} ${styles.discountRow}`}>
+                <div className={`${styles.calcRow} ${styles.discountRow}`}>
                   <span>Discount ({appliedVoucher?.code})</span>
-                  <span>- Rs. {discount}</span>
+                  <span>- Rs. {discount.toLocaleString()}</span>
                 </div>
               )}
-              <div className={`${styles.totalRow} ${styles.finalTotalRow}`}>
-                <span>Total Amount</span>
-                <span>Rs. {finalTotal}</span>
+              <div className={styles.grandTotal}>
+                <span>Grand Total</span>
+                <span>Rs. {finalTotal.toLocaleString()}</span>
               </div>
             </div>
 
-            <CheckoutCrossSell />
+            <div className={styles.desktopAction}>
+              <button 
+                className={styles.luxuryConfirmBtn} 
+                disabled={cartItems.length === 0 || !formData.area}
+                onClick={() => document.getElementById('mainConfirmBtn')?.click()}
+              >
+                Place Secure Order
+              </button>
+            </div>
           </div>
         </aside>
+      </div>
+
+      {/* Sticky Bottom Bar for Mobile */}
+      <div className={styles.stickyBottomBar}>
+        <div className={styles.stickyInfo}>
+          <span className={styles.stickyLabel}>Total Amount</span>
+          <span className={styles.stickyPrice}>Rs. {finalTotal.toLocaleString()}</span>
+        </div>
+        <button 
+          id="mainConfirmBtn"
+          className={styles.stickyConfirmBtn}
+          disabled={cartItems.length === 0 || !formData.area}
+          onClick={handleSubmitOrder}
+        >
+          Confirm Secure Order
+        </button>
       </div>
     </div>
   );

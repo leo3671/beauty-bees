@@ -47,18 +47,15 @@ export default function Contact() {
         </div>
       </section>
 
-      <section style={{ padding: '40px 20px', background: '#fafafa' }}>
+      <section style={{ padding: '40px 20px', background: '#fafafa', textAlign: 'center' }}>
         <div className="container">
-          <div style={{ width: '100%', height: '400px', borderRadius: '24px', overflow: 'hidden', boxShadow: '0 10px 30px rgba(0,0,0,0.05)' }}>
-            <iframe 
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3532.748366970732!2d85.3400599!3d27.6915196!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39eb199859f7b0f7%3A0x6b4f7a77f98c47b!2sNew%20Baneshwor%2C%20Kathmandu%2044600!5e0!3m2!1sen!2snp!4v1715000000000!5m2!1sen!2snp" 
-              width="100%" 
-              height="100%" 
-              style={{ border: 0 }} 
-              allowFullScreen="" 
-              loading="lazy" 
-              referrerPolicy="no-referrer-when-downgrade"
-            ></iframe>
+          <div style={{ padding: '40px', background: 'white', borderRadius: '24px', boxShadow: '0 10px 30px rgba(0,0,0,0.05)' }}>
+            <div style={{ width: '50px', height: '50px', background: '#fdf2f8', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px', color: '#be185d' }}>
+              <MapPin size={24} />
+            </div>
+            <h3 style={{ marginBottom: '10px' }}>Our Location</h3>
+            <p style={{ color: '#8a7b7e' }}>New Baneshwor, Kathmandu, Nepal</p>
+            <p style={{ color: '#999', fontSize: '0.9rem', marginTop: '5px' }}>Visit us for authentic Korean skincare consultation.</p>
           </div>
         </div>
       </section>

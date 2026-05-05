@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
-import fs from 'fs';
-import path from 'path';
+import cloudinary from '@/lib/cloudinary';
+import { verifyAdmin, unauthorizedResponse } from '@/lib/admin-auth';
 
 export async function GET() {
   try {
@@ -17,11 +17,17 @@ export async function GET() {
 
 export async function POST(request) {
   try {
+    const admin = await verifyAdmin();
+    if (!admin) return unauthorizedResponse();
+
     const newProduct = await request.json();
 
     // Handle image upload if base64 provided
     if (newProduct.imageBase64) {
-      newProduct.image = newProduct.imageBase64;
+      const uploadResponse = await cloudinary.uploader.upload(newProduct.imageBase64, {
+        folder: 'beauty-bees/products',
+      });
+      newProduct.image = uploadResponse.secure_url;
       delete newProduct.imageBase64;
     }
 
@@ -53,6 +59,9 @@ export async function POST(request) {
 
 export async function DELETE(request) {
   try {
+    const admin = await verifyAdmin();
+    if (!admin) return unauthorizedResponse();
+
     const { searchParams } = new URL(request.url);
     const id = searchParams.get('id');
     
@@ -73,6 +82,9 @@ export async function DELETE(request) {
 
 export async function PUT(request) {
   try {
+    const admin = await verifyAdmin();
+    if (!admin) return unauthorizedResponse();
+
     const updatedProduct = await request.json();
     const id = updatedProduct.id;
 
@@ -82,7 +94,10 @@ export async function PUT(request) {
 
     // Handle image upload if base64 provided
     if (updatedProduct.imageBase64) {
-      updatedProduct.image = updatedProduct.imageBase64;
+      const uploadResponse = await cloudinary.uploader.upload(updatedProduct.imageBase64, {
+        folder: 'beauty-bees/products',
+      });
+      updatedProduct.image = uploadResponse.secure_url;
       delete updatedProduct.imageBase64;
     }
 

@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import styles from './Footer.module.css';
 
 export default function Footer() {
@@ -6,7 +7,14 @@ export default function Footer() {
     <footer className={styles.footer}>
       <div className={`container ${styles.grid}`}>
         <div className={styles.brand}>
-          <img src="/logo_fixed.png" alt="Beauty Bees Cosmetics" style={{ height: '50px', marginBottom: '10px' }} />
+          <div style={{ height: '50px', width: '150px', position: 'relative', marginBottom: '10px' }}>
+            <Image 
+              src="/logo_fixed.png" 
+              alt="Beauty Bees Cosmetics" 
+              fill 
+              style={{ objectFit: 'contain' }} 
+            />
+          </div>
           <p>Your destination for authentic Korean beauty in Nepal. We believe in gentle, effective skincare.</p>
         </div>
         

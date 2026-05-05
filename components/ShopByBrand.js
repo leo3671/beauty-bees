@@ -2,6 +2,7 @@
 
 import styles from './ShopByBrand.module.css';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useState, useEffect } from 'react';
 
 export default function ShopByBrand() {
@@ -49,8 +50,14 @@ export default function ShopByBrand() {
             href={`/shop?brand=${brand.name}`}
             className={styles.brandCard}
           >
-            <div className={styles.logoWrapper}>
-              <img src={brand.logo} alt={brand.name} className={styles.brandLogo} />
+            <div className={styles.logoWrapper} style={{ position: 'relative', width: '100%', height: '60px' }}>
+              <Image 
+                src={brand.logo} 
+                alt={brand.name} 
+                fill
+                style={{ objectFit: 'contain' }}
+                loading="lazy"
+              />
             </div>
             <span className={styles.brandName}>{brand.name}</span>
           </Link>

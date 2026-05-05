@@ -21,10 +21,12 @@ export default function ProductRating({ productId, showCount = true }) {
       .catch(console.error);
   }, [productId]);
 
+  if (count === 0) return null;
+
   return (
     <div className={styles.container}>
       <StarRating initialRating={rating} readOnly={true} />
-      {showCount && count > 0 && <span className={styles.count}>({count})</span>}
+      {showCount && <span className={styles.count}>({count})</span>}
     </div>
   );
 }

@@ -1,14 +1,16 @@
 import { NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
-import fs from 'fs';
-import path from 'path';
-import { sendOrderConfirmation, sendPaymentVerificationEmail, sendOrderDelivered, sendOrderCancelled } from '../../../lib/email';
+import prisma from '@/lib/prisma';
+import { sendOrderConfirmation, sendPaymentVerificationEmail, sendOrderDelivered, sendOrderCancelled } from '@/lib/email';
+import { verifyAdmin, unauthorizedResponse } from '@/lib/admin-auth';
 
 const prisma = new PrismaClient();
 const imagesDir = path.join(process.cwd(), 'public', 'images');
 
 export async function GET() {
   try {
+    const admin = await verifyAdmin();
+    if (!admin) return unauthorizedResponse();
+
     const orders = await prisma.order.findMany({
       include: {
         items: true
@@ -71,6 +73,9 @@ export async function POST(request) {
 
 export async function PUT(request) {
   try {
+    const admin = await verifyAdmin();
+    if (!admin) return unauthorizedResponse();
+
     const { id, status, paymentStatus } = await request.json();
     
     if (!id) {

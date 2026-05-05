@@ -32,7 +32,15 @@ export default function ProductCard({ product }) {
       <div className={styles.imageContainer}>
         {product.originalPrice && product.originalPrice > product.price && <span className={`${styles.badge} ${styles.saleBadge}`}>Sale</span>}
         {!product.originalPrice && product.isNew && <span className={styles.badge}>New</span>}
-        <img src={product.image} alt={product.name} className={styles.image} style={{ opacity: product.inStock === false ? 0.5 : 1 }} />
+        <div className={styles.imageWrapper} style={{ opacity: product.stock <= 0 ? 0.5 : 1 }}>
+          <Image 
+            src={product.image} 
+            alt={product.name} 
+            fill
+            sizes="(max-width: 768px) 50vw, 25vw"
+            style={{ objectFit: 'cover' }}
+          />
+        </div>
         
         <div className={styles.overlay}>
           <button 

@@ -1,16 +1,17 @@
 "use client";
 
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, useEffect, Suspense } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import styles from './page.module.css';
 import Link from 'next/link';
 import { toast } from 'react-hot-toast';
 
-export default function AccountPage() {
+function AccountPageContent() {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState(null);
-  const [activeTab, setActiveTab] = useState('overview');
+  const searchParams = useSearchParams();
+  const [activeTab, setActiveTab] = useState(searchParams.get('tab') || 'overview');
   const [orderFilter, setOrderFilter] = useState('All');
   
   // Profile edit states
@@ -23,6 +24,13 @@ export default function AccountPage() {
   useEffect(() => {
     checkSession();
   }, []);
+
+  useEffect(() => {
+    const tab = searchParams.get('tab');
+    if (tab) {
+      setActiveTab(tab);
+    }
+  }, [searchParams]);
 
   useEffect(() => {
     if (user) {
@@ -90,9 +98,25 @@ export default function AccountPage() {
 
   if (loading) {
     return (
-      <div className={styles.loaderContainer}>
-        <div className={styles.spinner}></div>
-        <p>Loading your account...</p>
+      <div className={`container ${styles.accountPage}`}>
+        <aside className={styles.sidebar}>
+          <div className={styles.userProfile}>
+            <div className={`${styles.skeletonCircle}`} style={{ width: '80px', height: '80px', margin: '0 auto 15px' }}></div>
+            <div className={styles.skeleton} style={{ width: '120px', height: '24px', marginBottom: '8px' }}></div>
+            <div className={styles.skeleton} style={{ width: '180px', height: '16px' }}></div>
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginTop: '24px' }}>
+            {[1,2,3,4].map(i => <div key={i} className={styles.skeleton} style={{ height: '44px', borderRadius: '12px' }}></div>)}
+          </div>
+        </aside>
+        <main className={styles.mainContent}>
+          <div className={styles.skeleton} style={{ width: '300px', height: '48px', marginBottom: '8px' }}></div>
+          <div className={styles.skeleton} style={{ width: '200px', height: '24px', marginBottom: '40px' }}></div>
+          <div className={styles.statsGrid}>
+            {[1,2].map(i => <div key={i} className={styles.skeleton} style={{ flex: '1', height: '100px', borderRadius: '20px' }}></div>)}
+          </div>
+          <div className={styles.skeleton} style={{ width: '100%', height: '300px', borderRadius: '24px' }}></div>
+        </main>
       </div>
     );
   }
@@ -112,30 +136,82 @@ export default function AccountPage() {
             className={`${styles.navItem} ${activeTab === 'overview' ? styles.active : ''}`}
             onClick={() => setActiveTab('overview')}
           >
-            <span className={styles.icon}>🏠</span> Dashboard
+            <svg className={styles.icon} width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+              <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>
+            </svg>
+            Dashboard
           </button>
           <button 
             className={`${styles.navItem} ${activeTab === 'orders' ? styles.active : ''}`}
             onClick={() => setActiveTab('orders')}
           >
-            <span className={styles.icon}>📦</span> My Orders
+            <svg className={styles.icon} width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+              <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/>
+            </svg>
+            My Orders
           </button>
           <button 
             className={`${styles.navItem} ${activeTab === 'settings' ? styles.active : ''}`}
             onClick={() => setActiveTab('settings')}
           >
-            <span className={styles.icon}>⚙️</span> Account Settings
+            <svg className={styles.icon} width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+              <circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+            </svg>
+            Account Settings
           </button>
           {user?.role === 'admin' && (
             <Link href="/admin/dashboard" className={styles.navItem}>
-              <span className={styles.icon}>🛡️</span> Admin Panel
+              <svg className={styles.icon} width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+              </svg>
+              Admin Panel
             </Link>
           )}
           <button onClick={handleLogout} className={styles.logoutNavItem}>
-            <span className={styles.icon}>🚪</span> Logout
+            <svg className={styles.icon} width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>
+            </svg>
+            Logout
           </button>
         </nav>
       </aside>
+
+      {/* Mobile Bottom Navigation */}
+      <nav className={styles.mobileBottomNav}>
+        <button 
+          className={`${styles.bottomNavItem} ${activeTab === 'overview' ? styles.bottomActive : ''}`}
+          onClick={() => setActiveTab('overview')}
+        >
+          <svg className={styles.bottomIcon} width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+          </svg>
+          <span>Home</span>
+        </button>
+        <button 
+          className={`${styles.bottomNavItem} ${activeTab === 'orders' ? styles.bottomActive : ''}`}
+          onClick={() => setActiveTab('orders')}
+        >
+          <svg className={styles.bottomIcon} width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+          </svg>
+          <span>Orders</span>
+        </button>
+        <button 
+          className={`${styles.bottomNavItem} ${activeTab === 'settings' ? styles.bottomActive : ''}`}
+          onClick={() => setActiveTab('settings')}
+        >
+          <svg className={styles.bottomIcon} width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+            <circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+          </svg>
+          <span>Settings</span>
+        </button>
+        <button onClick={handleLogout} className={styles.bottomNavItem}>
+          <svg className={styles.bottomIcon} width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>
+          </svg>
+          <span>Logout</span>
+        </button>
+      </nav>
 
       <main className={styles.mainContent}>
         {activeTab === 'overview' && (
@@ -145,24 +221,21 @@ export default function AccountPage() {
             
             <div className={styles.statsGrid}>
               <div className={styles.statCard}>
-                <span className={styles.statIcon}>🛍️</span>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className={styles.statIconLine}>
+                  <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/>
+                </svg>
                 <div className={styles.statInfo}>
                   <h4>Total Orders</h4>
                   <p>{orders.length}</p>
                 </div>
               </div>
               <div className={styles.statCard}>
-                <span className={styles.statIcon}>🚛</span>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className={styles.statIconLine}>
+                  <rect x="1" y="3" width="15" height="13"/><polyline points="16 8 20 8 23 11 23 16 16 16"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/>
+                </svg>
                 <div className={styles.statInfo}>
                   <h4>In Transit</h4>
                   <p>{orders.filter(o => o.status === 'Shipped').length}</p>
-                </div>
-              </div>
-              <div className={styles.statCard}>
-                <span className={styles.statIcon}>⭐</span>
-                <div className={styles.statInfo}>
-                  <h4>Loyalty Points</h4>
-                  <p>150 pts</p>
                 </div>
               </div>
             </div>
@@ -174,20 +247,26 @@ export default function AccountPage() {
               </div>
               
               {orders.length > 0 ? (
-                <div className={styles.miniOrderCard}>
-                  <div className={styles.miniHeader}>
-                    <span className={styles.orderId}>{orders[0].id}</span>
-                    <span className={styles.badge}>{orders[0].status}</span>
+                <div key={orders[0].id} className={`${styles.orderCard} ${orders[0].status === 'Cancelled' ? styles.cancelled : ''}`}>
+                  <div className={styles.orderCardHeader}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                      <div className={styles.orderThumb}>
+                        <img src={orders[0].items[0]?.image || '/logo_fixed.png'} alt="Order item" />
+                      </div>
+                      <div className={styles.orderMeta}>
+                        <span className={styles.orderId}>Order #{orders[0].id}</span>
+                        <span className={styles.orderDate}>{new Date(orders[0].date).toLocaleDateString()}</span>
+                      </div>
+                    </div>
+                    <span className={`${styles.statusBadge} ${styles[orders[0].status?.toLowerCase()]}`}>
+                      {orders[0].status}
+                    </span>
                   </div>
-                  <div className={styles.miniItems}>
-                    {orders[0].items.slice(0, 2).map((item, i) => (
-                      <span key={i}>{item.name}{i < 1 && orders[0].items.length > 1 ? ', ' : ''}</span>
-                    ))}
-                    {orders[0].items.length > 2 && <span> +{orders[0].items.length - 2} more</span>}
+                  <div className={styles.orderCardBody}>
+                    <p className={styles.orderTotal}>Total: <strong>Rs. {orders[0].total.toLocaleString()}</strong></p>
                   </div>
-                  <div className={styles.miniFooter}>
-                    <span>{new Date(orders[0].date).toLocaleDateString()}</span>
-                    <strong>Rs. {orders[0].total.toLocaleString()}</strong>
+                  <div className={styles.orderCardFooter}>
+                    <button className={styles.viewOrderBtn} onClick={() => setActiveTab('orders')}>View Details</button>
                   </div>
                 </div>
               ) : (
@@ -205,22 +284,25 @@ export default function AccountPage() {
             <h1 className={styles.sectionTitle}>Order History</h1>
             <p className={styles.subtitle}>Track and manage your previous purchases.</p>
             
-            <div className={styles.orderTabs}>
-              {['All', 'To Ship', 'To Receive', 'To Review', 'Returns', 'Cancelled'].map(tab => (
-                <button 
-                  key={tab}
-                  onClick={() => setOrderFilter(tab)} 
-                  className={orderFilter === tab ? styles.orderTabBtnActive : styles.orderTabBtn}
-                >
-                  {tab}
-                </button>
-              ))}
+            <div className={styles.orderTabsWrapper}>
+              <div className={styles.orderTabs}>
+                {['All', 'To Ship', 'To Receive', 'To Review', 'Returns', 'Cancelled'].map(tab => (
+                  <button 
+                    key={tab}
+                    onClick={() => setOrderFilter(tab)} 
+                    className={orderFilter === tab ? styles.orderTabBtnActive : styles.orderTabBtn}
+                  >
+                    {tab}
+                  </button>
+                ))}
+              </div>
             </div>
 
             {orders.length === 0 ? (
               <div className={styles.emptyState}>
-                <p>You haven't placed any orders yet.</p>
-                <Link href="/shop" className={styles.shopBtn}>Start Shopping</Link>
+                <div className={styles.emptyIcon}>📦</div>
+                <p>No orders found in this category.</p>
+                <Link href="/shop" className={styles.shopBtn}>Continue Shopping</Link>
               </div>
             ) : (
               <div className={styles.ordersList}>
@@ -235,13 +317,19 @@ export default function AccountPage() {
                     return true;
                   })
                   .map(order => (
-                  <div key={order.id} className={styles.fullOrderCard}>
+                  <div key={order.id} className={`${styles.fullOrderCard} ${order.status === 'Cancelled' ? styles.cancelled : ''}`}>
                     <div className={styles.cardHeader}>
-                      <div className={styles.idGroup}>
-                        <span className={styles.idLabel}>Order ID</span>
-                        <span className={styles.idValue}>{order.id}</span>
+                      <div className={styles.orderHeaderTop}>
+                        <div className={styles.idGroup}>
+                          <span className={styles.idLabel}>Order ID</span>
+                          <span className={styles.idValue}>#{order.id}</span>
+                        </div>
+                        <span className={`${styles.statusBadge} ${styles[order.status.toLowerCase()] || styles.pending}`}>
+                           {order.status}
+                        </span>
                       </div>
-                      <div className={styles.metaGroup}>
+                      
+                      <div className={styles.orderHeaderBottom}>
                         <div className={styles.metaItem}>
                           <span className={styles.metaLabel}>Date</span>
                           <span className={styles.metaValue}>{new Date(order.date).toLocaleDateString()}</span>
@@ -251,10 +339,8 @@ export default function AccountPage() {
                           <span className={styles.metaValue}>Rs. {order.total.toLocaleString()}</span>
                         </div>
                       </div>
-                      <div className={styles.badgeGroup}>
-                         <span className={`${styles.statusBadge} ${styles[order.status.toLowerCase()] || styles.pending}`}>
-                           {order.status}
-                         </span>
+
+                      <div className={styles.actionGroup}>
                          {order.status === 'Pending' && (
                            <button 
                             className={styles.cancelOrderBtn} 
@@ -280,17 +366,22 @@ export default function AccountPage() {
                            <Link href={`/products/${order.items[0]?.productId}`} className={styles.reviewBtn}>Leave Review</Link>
                          )}
                          {(order.status === 'Shipped' || order.status === 'Processing') && (
-                           <span className={styles.lockHint}>🔒 Shipped: Cannot Cancel</span>
+                           <span className={styles.lockHint}>🔒 Shipping</span>
                          )}
                       </div>
                     </div>
+                    
                     <div className={styles.cardBody}>
-                      <div className={styles.itemsScroll}>
+                      <div className={styles.itemsList}>
                         {order.items.map((item, idx) => (
                           <div key={idx} className={styles.orderItemRow}>
-                            <div className={styles.itemDot}></div>
-                            <span className={styles.itemName}>{item.name}</span>
-                            <span className={styles.itemQty}>x{item.quantity}</span>
+                            <div className={styles.itemThumbSmall}>
+                              <img src={item.image || '/logo_fixed.png'} alt={item.name} />
+                            </div>
+                            <div className={styles.itemDetails}>
+                              <span className={styles.itemName}>{item.name}</span>
+                              <span className={styles.itemQty}>Qty: {item.quantity}</span>
+                            </div>
                           </div>
                         ))}
                       </div>
@@ -386,5 +477,13 @@ export default function AccountPage() {
         )}
       </main>
     </div>
+  );
+}
+
+export default function AccountPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <AccountPageContent />
+    </Suspense>
   );
 }

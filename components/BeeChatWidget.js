@@ -63,7 +63,7 @@ export default function BeeChatWidget() {
   };
 
   return (
-    <div className={styles.widgetContainer}>
+    <div className={`${styles.widgetContainer} bee-chat-widget`}>
       {isOpen ? (
         <div className={styles.chatWindow}>
           <div className={styles.header}>

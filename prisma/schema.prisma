@@ -73,6 +73,7 @@ model Order {
   discountAmount    Int         @default(0)
   discountCode      String?
   shippingFee       Int         @default(0)
+  deliveryRemarks   String?
   items             OrderItem[]
 
   @@index([email])

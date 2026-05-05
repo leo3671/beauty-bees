@@ -4,20 +4,28 @@ import AddToCartButton from '../../../components/AddToCartButton';
 import ProductCard from '../../../components/ProductCard';
 import ReviewSection from '../../../components/ReviewSection';
 import ProductRating from '../../../components/ProductRating';
+import Image from 'next/image';
 
 export default async function ProductDetails({ params }) {
-  // Await the params to avoid Next.js sync params error in newer versions
   const resolvedParams = await params;
-  const products = getLiveProducts();
-  const product = products.find(p => p.id === resolvedParams.id) || products[0];
+  const products = await getLiveProducts();
+  const product = products.find(p => p.id === resolvedParams.id);
 
-  // Logic: Find 4 related products from the same category or brand, excluding the current one
+  if (!product) {
+    return (
+      <div className="container" style={{ padding: '100px 20px', textAlign: 'center' }}>
+        <h2>Product not found</h2>
+        <p>The boutique item you're looking for may have been moved or is currently out of stock.</p>
+      </div>
+    );
+  }
+
+  // Related products logic
   let related = products.filter(p => 
     (p.category === product.category || p.brand === product.brand) && p.id !== product.id
   );
   
   if (related.length < 4) {
-    // Fallback to other best sellers if we don't have enough related ones
     const fillers = products.filter(p => p.id !== product.id && !related.includes(p));
     related = [...related, ...fillers];
   }
@@ -26,57 +34,99 @@ export default async function ProductDetails({ params }) {
 
   return (
     <div className={`container ${styles.productPage}`}>
+      <div className={styles.breadcrumb}>
+        <span>Shop</span> / <span>{product.brand}</span> / <span className={styles.active}>{product.name}</span>
+      </div>
+
       <div className={styles.grid}>
         <div className={styles.imageGallery}>
-          <div className={styles.mainImage}>
-            <img src={product.image} alt={product.name} />
+          <div className={styles.mainImageContainer}>
+             <Image 
+              src={product.image} 
+              alt={product.name} 
+              fill
+              priority
+              style={{ objectFit: 'contain' }}
+              sizes="(max-width: 768px) 100vw, 50vw"
+            />
           </div>
         </div>
         
         <div className={styles.details}>
-          <p className={styles.brand}>{product.brand}</p>
+          <div className={styles.brandBadge}>{product.brand}</div>
           <h1 className={styles.title}>
             {product.name}
             {product.originalPrice && product.originalPrice > product.price && (
-              <span style={{ backgroundColor: '#ef4444', color: 'white', padding: '4px 8px', fontSize: '0.4em', borderRadius: '4px', marginLeft: '10px', verticalAlign: 'middle' }}>SALE</span>
-            )}
-            {product.inStock === false && (
-              <span style={{ backgroundColor: '#666', color: 'white', padding: '4px 8px', fontSize: '0.4em', borderRadius: '4px', marginLeft: '10px', verticalAlign: 'middle' }}>OUT OF STOCK</span>
+              <span className={styles.saleTag}>SALE</span>
             )}
           </h1>
-          <ProductRating productId={product.id} />
+          
+          <div className={styles.ratingRow}>
+            <ProductRating productId={product.id} />
+            <span className={styles.stockStatus}>
+              {product.stock > 0 ? (
+                <span className={styles.inStock}>● In Stock ({product.stock} units)</span>
+              ) : (
+                <span className={styles.outOfStock}>● Temporarily Unavailable</span>
+              )}
+            </span>
+          </div>
+
           <p className={styles.price}>
-            Rs. {product.price}
+            <span className={styles.currency}>Rs.</span> {product.price.toLocaleString()}
             {product.originalPrice && product.originalPrice > product.price && (
-              <del style={{ color: '#999', fontSize: '0.8em', marginLeft: '12px' }}>Rs. {product.originalPrice}</del>
+              <del className={styles.originalPrice}>Rs. {product.originalPrice.toLocaleString()}</del>
             )}
           </p>
           
+          <div className={styles.divider}></div>
+
           <div className={styles.description}>
             <p>{product.description}</p>
-            <p className={styles.extraInfo}>
-              <strong>How to use:</strong> Apply an appropriate amount to cleansed skin and pat gently for absorption.
-            </p>
           </div>
 
           <AddToCartButton product={product} />
           
+          <div className={styles.guaranteeBox}>
+            <div className={styles.guaranteeItem}>
+              <span>✨</span>
+              <p>100% Authentic K-Beauty</p>
+            </div>
+            <div className={styles.guaranteeItem}>
+              <span>✈️</span>
+              <p>Fast Delivery Across Nepal</p>
+            </div>
+          </div>
+
           <div className={styles.accordion}>
+            <details open>
+              <summary>Product Information</summary>
+              <div className={styles.detailsContent}>
+                <p><strong>Category:</strong> {product.category}</p>
+                <p><strong>Best For:</strong> All skin types, particularly sensitive or redness-prone skin.</p>
+              </div>
+            </details>
             <details>
-              <summary>Ingredients</summary>
-              <p>Water, Glycerin, Centella Asiatica Extract, Butylene Glycol, 1,2-Hexanediol...</p>
+              <summary>How to Use</summary>
+              <div className={styles.detailsContent}>
+                <p>Apply an appropriate amount to cleansed skin (after toner) and pat gently for full absorption. Use morning and night for best results.</p>
+              </div>
             </details>
             <details>
               <summary>Shipping & Returns</summary>
-              <p>Free shipping on orders over Rs. 5000. Returns accepted within 14 days of purchase.</p>
+              <div className={styles.detailsContent}>
+                <p>Free shipping on orders over Rs. 10,000. Returns accepted within 7 days for unopened products. Authentic import from South Korea.</p>
+              </div>
             </details>
           </div>
         </div>
       </div>
 
-      {/* Recommended Products Section */}
       <div className={styles.recommendationSection}>
-        <h2>You May Also Like</h2>
+        <div className={styles.sectionHeader}>
+          <h2>You May Also Like</h2>
+          <p>Hand-picked additions to your skincare ritual.</p>
+        </div>
         <div className={styles.relatedGrid}>
           {recommendedProducts.map(p => (
             <ProductCard key={p.id} product={p} />
@@ -84,7 +134,6 @@ export default async function ProductDetails({ params }) {
         </div>
       </div>
 
-      {/* Product Reviews Section */}
       <ReviewSection productId={product.id} />
     </div>
   );

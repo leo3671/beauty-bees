@@ -2,15 +2,17 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import styles from './Header.module.css';
 import { useCart } from '../lib/CartContext';
+import { useAuth } from '../lib/AuthContext';
 import { useLanguage } from '../lib/LanguageContext';
 import SearchBar from './SearchBar';
 
 export default function Header() {
   const { openCart, cartItems = [] } = useCart() || {};
   const { language, toggleLanguage, t } = useLanguage();
-  const [user, setUser] = useState(null);
+  const { user } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
 
@@ -24,21 +26,6 @@ export default function Header() {
     if (isMenuOpen) setIsMenuOpen(false);
   };
 
-  useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        const res = await fetch('/api/auth/me', { cache: 'no-store' });
-        if (res.ok) {
-          const data = await res.json();
-          setUser(data.user);
-        }
-      } catch (e) {
-        // Not logged in
-      }
-    };
-    checkAuth();
-  }, []);
-
   // Calculate total items in cart
   const cartCount = cartItems.length;
 
@@ -49,24 +36,22 @@ export default function Header() {
       </div>
       <div className={`container ${styles.navContainer}`}>
         <div className={styles.mobileMenu}>
-          <button onClick={toggleMenu} aria-label="Toggle Menu">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              {isMenuOpen ? (
-                <path d="M18 6L6 18M6 6l12 12" />
-              ) : (
-                <path d="M3 12h18M3 6h18M3 18h18" />
-              )}
-            </svg>
+          <button onClick={toggleMenu} aria-label="Toggle Menu" className={styles.burgerBtn}>
+            <div className={`${styles.burgerLine} ${isMenuOpen ? styles.burgerOpen : ''}`}></div>
+            <div className={`${styles.burgerLine} ${isMenuOpen ? styles.burgerOpen : ''}`}></div>
+            <div className={`${styles.burgerLine} ${isMenuOpen ? styles.burgerOpen : ''}`}></div>
           </button>
         </div>
         
         <div className={styles.logo}>
           <Link href="/">
-            <div style={{ height: '60px', display: 'flex', alignItems: 'center' }}>
-              <img 
+            <div style={{ height: '60px', display: 'flex', alignItems: 'center', position: 'relative', width: '150px' }}>
+              <Image 
                 src="/logo_fixed.png" 
                 alt="Beauty Bees Cosmetics Logo" 
-                style={{ height: '100%', width: 'auto', objectFit: 'contain' }} 
+                fill
+                priority
+                style={{ objectFit: 'contain' }} 
               />
             </div>
           </Link>

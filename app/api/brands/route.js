@@ -1,5 +1,7 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
+import cloudinary from '@/lib/cloudinary';
+import { verifyAdmin, unauthorizedResponse } from '@/lib/admin-auth';
 
 export async function GET(req) {
   try {
@@ -19,6 +21,9 @@ export async function GET(req) {
 
 export async function PATCH(req) {
   try {
+    const admin = await verifyAdmin();
+    if (!admin) return unauthorizedResponse();
+
     const { id, isActive } = await req.json();
     const brand = await prisma.brand.update({
       where: { id },
@@ -33,16 +38,27 @@ export async function PATCH(req) {
 
 export async function POST(req) {
   try {
+    const admin = await verifyAdmin();
+    if (!admin) return unauthorizedResponse();
+
     const { name, logo } = await req.json();
     
     if (!name || !logo) {
       return NextResponse.json({ error: "Name and Logo are required" }, { status: 400 });
     }
 
+    let logoUrl = logo;
+    if (logo && logo.startsWith('data:image')) {
+      const uploadResponse = await cloudinary.uploader.upload(logo, {
+        folder: 'beauty-bees/brands',
+      });
+      logoUrl = uploadResponse.secure_url;
+    }
+
     const brand = await prisma.brand.upsert({
       where: { name },
-      update: { logo },
-      create: { name, logo }
+      update: { logo: logoUrl },
+      create: { name, logo: logoUrl }
     });
 
     return NextResponse.json(brand);
@@ -54,6 +70,9 @@ export async function POST(req) {
 
 export async function DELETE(req) {
   try {
+    const admin = await verifyAdmin();
+    if (!admin) return unauthorizedResponse();
+
     const { id } = await req.json();
     await prisma.brand.delete({ where: { id } });
     return NextResponse.json({ success: true });

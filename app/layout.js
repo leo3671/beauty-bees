@@ -3,6 +3,7 @@ import "./globals.css";
 import { CartProvider } from "../lib/CartContext";
 import { ProductProvider } from "../lib/ProductContext";
 import { LanguageProvider } from "../lib/LanguageContext";
+import { AuthProvider } from "../lib/AuthContext";
 import ClientLayout from "../components/ClientLayout";
 
 const dmSans = DM_Sans({
@@ -34,13 +35,15 @@ export default function RootLayout({ children }) {
     <html lang="en" className={`${dmSans.variable} ${outfit.variable}`}>
       <body>
         <LanguageProvider>
-          <ProductProvider>
-            <CartProvider>
-              <ClientLayout>
-                {children}
-              </ClientLayout>
-            </CartProvider>
-          </ProductProvider>
+          <AuthProvider>
+            <ProductProvider>
+              <CartProvider>
+                <ClientLayout>
+                  {children}
+                </ClientLayout>
+              </CartProvider>
+            </ProductProvider>
+          </AuthProvider>
         </LanguageProvider>
       </body>
     </html>

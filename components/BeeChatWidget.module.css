@@ -8,7 +8,7 @@
 
 @media (max-width: 768px) {
   .widgetContainer {
-    bottom: 15px;
+    bottom: 90px; /* Higher to avoid sticky bars */
     right: 15px;
   }
 }
