@@ -98,7 +98,7 @@ export default async function Home() {
 
       {/* ===== FULL WIDTH IMAGE BANNER ===== */}
       <section className={styles.fullBanner}>
-        <img src="/images/hero_banner_main.png" alt="Beauty Bees Collection" className={styles.fullBannerImg} />
+        <img src="/images/hero_banner_main.png" alt="Beauty Bees Cosmetics Collection" className={styles.fullBannerImg} />
         <div className={styles.fullBannerOverlay}>
           <h2>Science Meets Beauty</h2>
           <p>Every product in our store is backed by Korean dermatological research and loved by millions worldwide. We bring you the latest innovations in skincare technology from the heart of Seoul.</p>
@@ -111,7 +111,7 @@ export default async function Home() {
         <div className={`container`}>
           <div className={styles.sectionHeader}>
             <span className={styles.sectionTag}>WHY US</span>
-            <h2>The Beauty Bees Difference</h2>
+            <h2>The Beauty Bees Cosmetics Difference</h2>
           </div>
           <div className={styles.whyGrid}>
             <div className={styles.whyCard}>
@@ -141,7 +141,7 @@ export default async function Home() {
       {/* ===== NEWSLETTER SIGNUP ===== */}
       <section className={styles.newsletter}>
         <div className={styles.newsletterContent}>
-          <h2>Join the Beauty Bees Family</h2>
+          <h2>Join the Beauty Bees Cosmetics Family</h2>
           <p>Subscribe for exclusive drops, skincare tips, and members-only discounts.</p>
           <div className={styles.newsletterForm}>
             <input type="email" placeholder="Enter your email address" className={styles.newsletterInput} />

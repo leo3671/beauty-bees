@@ -8,7 +8,7 @@ export default function About() {
           <span className={styles.sectionTag}>OUR STORY</span>
           <h1 style={{ fontSize: '3rem', marginBottom: '20px', color: 'var(--text-color)' }}>Authentic K-Beauty for Nepal</h1>
           <p style={{ maxWidth: '800px', margin: '0 auto', fontSize: '1.2rem', lineHeight: '1.8', color: '#6b5b5e' }}>
-            Beauty Bees was born from a simple realization: finding 100% authentic Korean skincare in Nepal shouldn't be a challenge. We are dedicated to bringing you the gold standard of skincare—directly from Seoul to your doorstep.
+            Beauty Bees Cosmetics was born from a simple realization: finding 100% authentic Korean skincare in Nepal shouldn't be a challenge. We are dedicated to bringing you the gold standard of skincare—directly from Seoul to your doorstep.
           </p>
         </div>
       </section>
@@ -22,7 +22,7 @@ export default function About() {
             </p>
           </div>
           <div>
-            <h2 style={{ fontSize: '2rem', marginBottom: '20px', color: 'var(--text-color)' }}>Why "Beauty Bees"?</h2>
+            <h2 style={{ fontSize: '2rem', marginBottom: '20px', color: 'var(--text-color)' }}>Why "Beauty Bees Cosmetics"?</h2>
             <p style={{ lineHeight: '1.7', color: '#8a7b7e' }}>
               Just like bees carefully curate the best nectar to create honey, we meticulously select the best skincare innovations from South Korea to bring you sweetness and glow for your skin journey.
             </p>

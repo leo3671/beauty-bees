@@ -143,12 +143,12 @@ export default function Login() {
           {/* Brand Identity */}
           <div className={styles.brandLogo}>
             <Link href="/">
-              <img src="/logo_fixed.png" alt="Beauty Bees" />
+              <img src="/logo_fixed.png" alt="Beauty Bees Cosmetics" />
             </Link>
           </div>
 
           <div className={styles.mobileLogo}>
-             Beauty Bees
+             Beauty Bees Cosmetics
           </div>
 
           <div className={styles.formHeader}>
@@ -157,7 +157,7 @@ export default function Login() {
             </h1>
             <p>
               {authState === 'LOGIN' 
-                ? 'Welcome back to Beauty Bees. Your beauty journey continues here.' 
+                ? 'Welcome back to Beauty Bees Cosmetics. Your beauty journey continues here.' 
                 : `A verification code has been sent to ${email}`}
             </p>
           </div>
@@ -270,7 +270,7 @@ export default function Login() {
                 Browse as Guest
               </button>
               <p className={styles.switchAuth}>
-                New to Beauty Bees? <Link href="/register">Create an account</Link>
+                New to Beauty Bees Cosmetics? <Link href="/register">Create an account</Link>
               </p>
             </>
           )}

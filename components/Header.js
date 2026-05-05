@@ -65,7 +65,7 @@ export default function Header() {
             <div style={{ height: '60px', display: 'flex', alignItems: 'center' }}>
               <img 
                 src="/logo_fixed.png" 
-                alt="Beauty Bees Logo" 
+                alt="Beauty Bees Cosmetics Logo" 
                 style={{ height: '100%', width: 'auto', objectFit: 'contain' }} 
               />
             </div>
@@ -99,9 +99,6 @@ export default function Header() {
             </svg>
           </button>
 
-          <button className={styles.langToggle} onClick={toggleLanguage}>
-            {language === 'en' ? 'नेपाली' : 'English'}
-          </button>
           
           <Link href={user ? "/account" : "/login"} className={styles.iconBtn} aria-label={user ? "My Account" : "Login"}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>

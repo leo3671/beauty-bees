@@ -1,8 +1,8 @@
-# 🐝 Beauty Bees — Authentic Korean Skincare in Nepal
+# 🐝 Beauty Bees Cosmetics — Authentic Korean Skincare in Nepal
 
-Beauty Bees is a premium, full-stack e-commerce platform dedicated to bringing high-quality, authentic Korean beauty products to the Nepalese market. Built with performance, security, and aesthetics in mind.
+Beauty Bees Cosmetics is a premium, full-stack e-commerce platform dedicated to bringing high-quality, authentic Korean beauty products to the Nepalese market. Built with performance, security, and aesthetics in mind.
 
-![Beauty Bees Banner](public/images/hero_banner_main.png)
+![Beauty Bees Cosmetics Banner](public/images/hero_banner_main.png)
 
 ## ✨ Top-Tier Features
 

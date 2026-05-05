@@ -53,7 +53,7 @@ export default function DashboardLayout({ children }) {
     <div className={styles.adminContainer}>
       <aside className={styles.sidebar}>
         <div className={styles.logo}>
-          <h2>Beauty Bees</h2>
+          <h2>Beauty Bees Cosmetics</h2>
           <span>Admin Panel</span>
         </div>
         <nav className={styles.nav}>

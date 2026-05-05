@@ -43,7 +43,7 @@ export default function AdminLogin() {
   return (
     <div className={styles.loginContainer}>
       <div className={styles.loginBox}>
-        <h2>Beauty Bees Admin</h2>
+        <h2>Beauty Bees Cosmetics Admin</h2>
         <p>Log in to manage your store.</p>
         
         <form onSubmit={handleLogin} className={styles.form}>

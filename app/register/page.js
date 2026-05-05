@@ -163,7 +163,7 @@ export default function Register() {
         <div className={styles.imageOverlay}>
           <div className={styles.imageContent}>
             <div className={styles.logoMark}>🐝</div>
-            <h2>Join the<br/>Beauty Bees Family</h2>
+            <h2>Join the<br/>Beauty Bees Cosmetics Family</h2>
             <p>Create your account for a personalized skincare experience, order tracking, and exclusive member deals.</p>
           </div>
         </div>
@@ -173,7 +173,7 @@ export default function Register() {
       <div className={styles.formSide}>
         <div className={styles.formContainer}>
           <div className={styles.mobileLogo}>
-            <span>🐝</span> Beauty Bees
+            <span>🐝</span> Beauty Bees Cosmetics
           </div>
 
           <div className={styles.formHeader}>

@@ -36,7 +36,7 @@ export default function FAQ() {
         <div className="container">
           <span className={styles.sectionTag}>HELP CENTER</span>
           <h1 style={{ fontSize: '3rem', marginBottom: '16px' }}>Frequently Asked Questions</h1>
-          <p style={{ color: '#6b5b5e' }}>Everything you need to know about Beauty Bees and K-Beauty.</p>
+          <p style={{ color: '#6b5b5e' }}>Everything you need to know about Beauty Bees Cosmetics and K-Beauty.</p>
         </div>
       </section>
 

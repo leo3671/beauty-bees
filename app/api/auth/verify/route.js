@@ -5,19 +5,20 @@ import { getSession } from '@/lib/session';
 
 export async function POST(request) {
   try {
-    const { email, token, type } = await request.json(); // type: 'EMAIL_VERIFICATION' or 'MFA'
+    const { email, token, type } = await request.json(); 
+    const normalizedEmail = email?.toLowerCase().trim();
 
-    if (!email || !token || !type) {
+    if (!normalizedEmail || !token || !type) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
-    const isValid = await verifyOTP(email, token, type);
+    const isValid = await verifyOTP(normalizedEmail, token, type);
 
     if (!isValid) {
       return NextResponse.json({ error: 'Invalid or expired code' }, { status: 400 });
     }
 
-    const user = await prisma.user.findUnique({ where: { email } });
+    const user = await prisma.user.findUnique({ where: { email: normalizedEmail } });
     if (!user) return NextResponse.json({ error: 'User not found' }, { status: 404 });
 
     if (type === 'EMAIL_VERIFICATION' || type === 'PHONE_VERIFICATION') {

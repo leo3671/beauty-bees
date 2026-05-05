@@ -9,7 +9,7 @@ export default function Terms() {
           
           <div style={{ color: '#4a3b3e', lineHeight: '1.8' }}>
             <h2 style={{ fontSize: '1.5rem', marginTop: '40px', marginBottom: '16px' }}>1. Authenticity Guarantee</h2>
-            <p>All products sold on Beauty Bees are 100% authentic and sourced directly from official distributors in South Korea. We do not deal in counterfeit or expired products.</p>
+            <p>All products sold on Beauty Bees Cosmetics are 100% authentic and sourced directly from official distributors in South Korea. We do not deal in counterfeit or expired products.</p>
 
             <h2 style={{ fontSize: '1.5rem', marginTop: '40px', marginBottom: '16px' }}>2. Pricing and Payments</h2>
             <p>Prices are listed in Nepalese Rupees (Rs.). We accept Cash on Delivery (selected areas), Fonepay, and Bank Transfers. Prices are subject to change based on international shipping and currency fluctuations.</p>
@@ -21,7 +21,7 @@ export default function Terms() {
             <p>Your personal data (name, email, phone, address) is collected solely for the purpose of processing your orders and improving your shopping experience. We do not sell your data to third parties.</p>
 
             <h2 style={{ fontSize: '1.5rem', marginTop: '40px', marginBottom: '16px' }}>5. Product Use</h2>
-            <p>While we provide recommendations, we advise all customers to perform a patch test before using any new skincare product. Beauty Bees is not liable for individual skin reactions.</p>
+            <p>While we provide recommendations, we advise all customers to perform a patch test before using any new skincare product. Beauty Bees Cosmetics is not liable for individual skin reactions.</p>
           </div>
         </div>
       </section>

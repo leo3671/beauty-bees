@@ -59,6 +59,7 @@ function ResetPasswordForm() {
                 placeholder="Enter Code"
                 maxLength={6}
                 required
+                autoComplete="one-time-code"
               />
             </div>
             <div className={styles.inputGroup}>
@@ -69,6 +70,7 @@ function ResetPasswordForm() {
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="New Password"
                 required
+                autoComplete="new-password"
               />
             </div>
             <div className={styles.inputGroup}>
@@ -79,6 +81,7 @@ function ResetPasswordForm() {
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 placeholder="Confirm Password"
                 required
+                autoComplete="new-password"
               />
             </div>
             <button type="submit" className={styles.submitBtn} disabled={loading}>

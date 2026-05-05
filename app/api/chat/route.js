@@ -97,7 +97,7 @@ export async function POST(req) {
         messages: [
           { 
             role: "system", 
-            content: `You are "Bee", a friendly K-beauty expert for "Beauty Bees" in Nepal. 🐝
+            content: `You are "Bee", a friendly K-beauty expert for "Beauty Bees Cosmetics" in Nepal. 🐝
             Respond in ${language === 'ne' ? 'Nepali' : 'English'}.
             Available Products:\n${products.slice(0, 20).map(p => p.name).join(', ')}` 
           },

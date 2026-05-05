@@ -6,7 +6,7 @@ export default function Footer() {
     <footer className={styles.footer}>
       <div className={`container ${styles.grid}`}>
         <div className={styles.brand}>
-          <img src="/logo_fixed.png" alt="Beauty Bees" style={{ height: '50px', marginBottom: '10px' }} />
+          <img src="/logo_fixed.png" alt="Beauty Bees Cosmetics" style={{ height: '50px', marginBottom: '10px' }} />
           <p>Your destination for authentic Korean beauty in Nepal. We believe in gentle, effective skincare.</p>
         </div>
         
@@ -48,7 +48,7 @@ export default function Footer() {
 
       </div>
       <div className={styles.bottom}>
-        <p>&copy; {new Date().getFullYear()} Beauty Bees. All rights reserved.</p>
+        <p>&copy; {new Date().getFullYear()} Beauty Bees Cosmetics. All rights reserved.</p>
       </div>
     </footer>
   );

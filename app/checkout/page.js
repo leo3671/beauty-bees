@@ -196,20 +196,10 @@ export default function Checkout() {
             </div>
           </section>
 
-          {/* Delivery Location (Map) */}
+          {/* Delivery Details */}
           <section className={styles.section}>
-            <h2>Delivery Location (Nepal)</h2>
-            <p className={styles.subtext}>Pinpoint your exact location for faster delivery.</p>
-            
-            {/* Simulated Google Map Integration */}
-            <div className={styles.mapContainer}>
-              <div className={styles.mapOverlay}>
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="var(--primary-olive)">
-                  <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
-                </svg>
-                <span>Google Maps Integrated (Click to set Pin)</span>
-              </div>
-            </div>
+            <h2>Delivery Details (Nepal)</h2>
+            <p className={styles.subtext}>Enter your destination for premium doorstep delivery.</p>
             
             <div className={styles.formRow}>
               <div className={styles.fieldGroup}>
@@ -281,15 +271,13 @@ export default function Checkout() {
                   padding: '40px',
                   gap: '12px'
                 }}>
-                  <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#64748b" strokeWidth="1.5">
-                    <rect x="3" y="3" width="7" height="7" />
-                    <rect x="14" y="3" width="7" height="7" />
-                    <rect x="3" y="14" width="7" height="7" />
-                    <rect x="14" y="14" width="7" height="7" />
-                    <path d="M7 7h.01M17 7h.01M7 17h.01" />
-                  </svg>
-                  <span style={{ color: '#64748b', fontWeight: '500', fontSize: '0.9rem' }}>Merchant QR (eSewa/Fonepay)</span>
-                  <small style={{ color: '#94a3b8' }}>Image will appear here in production</small>
+                  <img 
+                    src="/qr_code.png" 
+                    alt="Merchant QR Code" 
+                    style={{ width: '220px', height: 'auto', borderRadius: '8px' }} 
+                  />
+                  <span style={{ color: '#64748b', fontWeight: '600', fontSize: '1rem', marginTop: '10px' }}>Beauty Bees Cosmetics Merchant QR</span>
+                  <p style={{ color: '#94a3b8', fontSize: '0.85rem' }}>Scan to pay via eSewa / Fonepay</p>
                 </div>
                 <div style={{ marginTop: '20px', padding: '15px', backgroundColor: '#f8fafc', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
                   <label style={{ display: 'block', fontWeight: 'bold', marginBottom: '10px' }}>Upload Payment Screenshot</label>
@@ -368,7 +356,7 @@ export default function Checkout() {
               }, 2000);
             }}
           >
-            Complete Order
+            Confirm Order
           </button>
         </div>
 
