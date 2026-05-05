@@ -1,11 +1,11 @@
 :root {
-  /* Premium K-Beauty Pink Palette */
-  --bg-color: #FFF8F9;          /* Very soft blush background */
-  --text-color: #4A3B3E;        /* Deep charcoal with warm undertones */
-  --primary-pink: #F2B6C1;      /* Soft Rose pink for accents */
-  --primary-pink-hover: #D994A0;
-  --accent-peach: #FCE4E8;      /* Extremely light pink for subtle backgrounds */
-  --border-light: #F7D6DB;      /* Soft pink border */
+  /* Premium Baby Pink Light Palette */
+  --bg-color: #FFF5F7;          /* Softest Baby Pink background */
+  --text-color: #5D454A;        /* Warm brownish-charcoal for readability */
+  --primary-pink: #FFB7C5;      /* Signature Baby Pink */
+  --primary-pink-hover: #F8A3B5;
+  --accent-peach: #FFF0F3;      /* Lighter blush accent */
+  --border-light: #FFD1DC;      /* Delicate pink border */
   --white: #ffffff;
   
   --font-main-fallback: sans-serif;
