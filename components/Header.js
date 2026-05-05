@@ -58,18 +58,37 @@ export default function Header() {
         </div>
 
         <nav className={`${styles.navLinks} ${isMenuOpen ? styles.mobileActive : ''}`}>
+          <div className={styles.mobileDrawerHeader}>
+            <button onClick={toggleMenu} className={styles.closeDrawerBtn} aria-label="Close Menu">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M18 6L6 18M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
           <Link href="/" className={styles.link} onClick={() => setIsMenuOpen(false)}>
             {t('nav.home')}
+            <svg className={styles.navArrow} width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M9 18l6-6-6-6" />
+            </svg>
           </Link>
           <Link href="/shop" className={styles.link} onClick={() => setIsMenuOpen(false)}>
             {t('nav.shop')}
+            <svg className={styles.navArrow} width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M9 18l6-6-6-6" />
+            </svg>
           </Link>
           <Link href="/shop?filter=brands" className={styles.link} onClick={() => setIsMenuOpen(false)}>
             {t('nav.brands')}
+            <svg className={styles.navArrow} width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M9 18l6-6-6-6" />
+            </svg>
           </Link>
           {user?.role === 'admin' && (
-            <Link href="/admin/dashboard" className={styles.link} onClick={() => setIsMenuOpen(false)} style={{color: 'var(--primary-pink)', fontWeight: '600'}}>
-              Dashboard
+            <Link href="/admin/dashboard" className={styles.link} onClick={() => setIsMenuOpen(false)} style={{color: 'var(--primary-pink)', fontWeight: '700'}}>
+              ADMIN DASHBOARD
+              <svg className={styles.navArrow} width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M9 18l6-6-6-6" />
+              </svg>
             </Link>
           )}
         </nav>

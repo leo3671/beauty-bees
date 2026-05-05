@@ -1,8 +1,8 @@
 .header {
   position: sticky;
   top: 0;
-  z-index: 50;
-  background-color: rgba(255, 248, 249, 0.85); /* Semi-transparent bg-color */
+  z-index: 1000;
+  background-color: rgba(255, 248, 249, 0.95);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border-bottom: 1px solid rgba(247, 214, 219, 0.5); /* Soft border */
@@ -56,6 +56,13 @@
   text-transform: uppercase;
   letter-spacing: 0.5px;
   position: relative;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.navArrow {
+  display: none; /* Hidden on desktop */
 }
 
 .link::after {
@@ -135,7 +142,7 @@
   border: none;
   padding: 10px;
   cursor: pointer;
-  z-index: 1001;
+  z-index: 2002; /* Above navLinks (2000) and backdrop (1999) */
 }
 
 .burgerLine {
@@ -147,7 +154,7 @@
 
 .burgerOpen:nth-child(1) {
   transform: translateY(7px) rotate(45deg);
-  background-color: var(--white);
+  background-color: var(--text-color);
 }
 
 .burgerOpen:nth-child(2) {
@@ -156,7 +163,7 @@
 
 .burgerOpen:nth-child(3) {
   transform: translateY(-7px) rotate(-45deg);
-  background-color: var(--white);
+  background-color: var(--text-color);
 }
 
 @media (max-width: 767px) {
@@ -169,7 +176,7 @@
     flex: 1;
     display: flex;
     justify-content: center;
-    transform: translateX(-12px); /* Offset for burger button to center logo better */
+    /* Removed translate offset for cleaner flex centering */
   }
 
   .logo img {
@@ -189,16 +196,17 @@
     top: 0;
     left: 0;
     bottom: 0;
-    width: 300px;
-    background: #1a1a1a; /* High-contrast charcoal */
+    width: 280px; /* 80% width approx */
+    background: var(--bg-color); /* Soft pink #FFF5F7 */
     flex-direction: column;
-    padding: 100px 40px;
-    z-index: 1000;
+    padding: 100px 30px;
+    z-index: 2001; /* Higher than backdrop */
     transform: translateX(-100%);
-    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     display: flex;
-    gap: 30px;
-    box-shadow: 20px 0 50px rgba(0,0,0,0.3);
+    gap: 0; /* Gaps handled by padding on links */
+    box-shadow: 10px 0 30px rgba(0,0,0,0.05);
+    border-right: 1px solid var(--border-light);
   }
 
   .mobileActive {
@@ -207,43 +215,54 @@
 
   .backdrop {
     position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0,0,0,0.6);
-    z-index: 999;
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
+    inset: 0; /* Full coverage */
+    background: rgba(0,0,0,0.4);
+    z-index: 2000; /* Between header content and nav drawer */
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
     animation: fadeIn 0.3s ease-out;
   }
 
   .link {
-    font-size: 1.4rem;
-    font-weight: 300;
-    letter-spacing: 2px;
-    color: var(--white);
+    font-size: 1.1rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+    color: var(--text-color);
     text-transform: uppercase;
-    border-bottom: 1px solid rgba(255,255,255,0.1);
-    padding: 12px 0; /* Increased tap target */
-    display: block;
+    border-bottom: 1px solid rgba(247, 214, 219, 0.6);
+    padding: 20px 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
     min-height: 44px;
+    width: 100%;
   }
-}
 
-.langToggle {
-  background: #fdf2f8;
-  border: 1px solid #fce7f3;
-  padding: 5px 12px;
-  border-radius: 20px;
-  font-size: 0.8rem;
-  font-weight: 600;
-  color: #be185d;
-  cursor: pointer;
-  transition: all 0.2s;
-  white-space: nowrap;
-}
+  .link:last-child {
+    border-bottom: none;
+  }
 
-.langToggle:hover {
-  background: #fce7f3;
+  .navArrow {
+    display: block;
+    opacity: 0.3;
+  }
+
+  .mobileDrawerHeader {
+    display: flex;
+    justify-content: flex-end;
+    padding-bottom: 20px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid rgba(247, 214, 219, 0.8);
+  }
+
+  .closeDrawerBtn {
+    background: none;
+    border: none;
+    color: var(--text-color);
+    cursor: pointer;
+    padding: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
 }

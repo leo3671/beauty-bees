@@ -3,9 +3,7 @@ import prisma from '@/lib/prisma';
 import { sendOrderConfirmation, sendPaymentVerificationEmail, sendOrderDelivered, sendOrderCancelled } from '@/lib/email';
 import { verifyAdmin, unauthorizedResponse } from '@/lib/admin-auth';
 
-const prisma = new PrismaClient();
-const imagesDir = path.join(process.cwd(), 'public', 'images');
-
+// Administrative order management endpoints
 export async function GET() {
   try {
     const admin = await verifyAdmin();
