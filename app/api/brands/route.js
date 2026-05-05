@@ -1,16 +1,33 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 
-export async function GET() {
+export async function GET(req) {
   try {
+    const { searchParams } = new URL(req.url);
+    const all = searchParams.get('all') === 'true';
+
     const brands = await prisma.brand.findMany({
-      where: { isActive: true },
+      where: all ? {} : { isActive: true },
       orderBy: { name: 'asc' }
     });
     return NextResponse.json(brands);
   } catch (error) {
     console.error("GET Brands Error:", error);
     return NextResponse.json({ error: "Failed to fetch brands" }, { status: 500 });
+  }
+}
+
+export async function PATCH(req) {
+  try {
+    const { id, isActive } = await req.json();
+    const brand = await prisma.brand.update({
+      where: { id },
+      data: { isActive }
+    });
+    return NextResponse.json(brand);
+  } catch (error) {
+    console.error("PATCH Brand Error:", error);
+    return NextResponse.json({ error: "Failed to update brand" }, { status: 500 });
   }
 }
 

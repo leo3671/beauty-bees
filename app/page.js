@@ -83,6 +83,9 @@ export default async function Home() {
       {/* ===== SHOP BY BRAND ===== */}
       <ShopByBrand />
 
+      {/* ===== SHOP BY CATEGORY ===== */}
+      <ShopByCategory />
+
       {/* ===== BEST SELLERS / NEW ARRIVALS TABS ===== */}
       <section className={`container ${styles.sectionBlock}`}>
         <div className={styles.sectionHeader}>

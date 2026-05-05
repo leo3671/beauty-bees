@@ -270,8 +270,26 @@ export default function Checkout() {
             {paymentMethod === 'qr' && (
               <div className={styles.qrDisplay}>
                 <p>Scan the QR below to pay <strong>Rs. {finalTotal}</strong></p>
-                <div className={styles.qrPlaceholder}>
-                  <span>[Merchant QR Code Image Here]</span>
+                <div className={styles.qrPlaceholder} style={{ 
+                  backgroundColor: '#f1f5f9', 
+                  border: '2px dashed #cbd5e1', 
+                  borderRadius: '12px',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  padding: '40px',
+                  gap: '12px'
+                }}>
+                  <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#64748b" strokeWidth="1.5">
+                    <rect x="3" y="3" width="7" height="7" />
+                    <rect x="14" y="3" width="7" height="7" />
+                    <rect x="3" y="14" width="7" height="7" />
+                    <rect x="14" y="14" width="7" height="7" />
+                    <path d="M7 7h.01M17 7h.01M7 17h.01" />
+                  </svg>
+                  <span style={{ color: '#64748b', fontWeight: '500', fontSize: '0.9rem' }}>Merchant QR (eSewa/Fonepay)</span>
+                  <small style={{ color: '#94a3b8' }}>Image will appear here in production</small>
                 </div>
                 <div style={{ marginTop: '20px', padding: '15px', backgroundColor: '#f8fafc', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
                   <label style={{ display: 'block', fontWeight: 'bold', marginBottom: '10px' }}>Upload Payment Screenshot</label>
@@ -346,7 +364,7 @@ export default function Checkout() {
                 setCartItems([]);
               }
               setTimeout(() => {
-                window.location.href = '/';
+                window.location.href = '/checkout/success';
               }, 2000);
             }}
           >

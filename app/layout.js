@@ -16,8 +16,17 @@ const outfit = Outfit({
 });
 
 export const metadata = {
-  title: "Beauty Bees | Authentic Korean Skincare in Nepal",
-  description: "Shop Beauty Bees — your destination for authentic Korean skincare and beauty in Nepal. Discover the best K-beauty products.",
+  title: "Beauty Bees | Authentic Korean Skincare in Nepal 🐝",
+  description: "Your destination for 100% authentic Korean skincare & beauty in Nepal. Shop brands like Skin1004, Anua, and more. Fast delivery across Nepal.",
+  keywords: ["K-beauty Nepal", "Korean Skincare Nepal", "Authentic Cosmetics Nepal", "Beauty Bees", "Skin1004 Nepal", "Anua Nepal"],
+  openGraph: {
+    title: "Beauty Bees | Authentic K-Beauty Nepal",
+    description: "Discover the best of Korean skincare, handpicked for you.",
+    url: "https://beautybees.com.np",
+    siteName: "Beauty Bees",
+    locale: "en_US",
+    type: "website",
+  },
 };
 
 export default function RootLayout({ children }) {

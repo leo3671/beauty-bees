@@ -89,7 +89,7 @@ export default function SearchBar({ isOpen, onClose }) {
             {!loading && results.length === 0 && query.length >= 2 && (
               <div className={styles.noResults}>No products found for "{query}"</div>
             )}
-            {results.map((product) => (
+            {Array.isArray(results) && results.map((product) => (
               <Link 
                 key={product.id} 
                 href={`/products/${product.id}`}

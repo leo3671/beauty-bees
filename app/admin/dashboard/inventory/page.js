@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useProducts } from '../../../../lib/ProductContext';
 import { brands } from '../../../../lib/data';
 import styles from '../page.module.css';

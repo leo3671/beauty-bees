@@ -50,7 +50,12 @@ export async function POST(req) {
         ? "नमस्ते! म बी हुँ। म तपाईंलाई मद्दत गर्न यहाँ छु! 🐝" 
         : "Bzzzz! I'm Bee, your K-beauty expert! 🐝 How can I help with your routine today?";
 
-      if (input.includes('oily') || input.includes('चिल्लो')) {
+      if ((input.includes('sun') || input.includes('घाम')) && (input.includes('oily') || input.includes('चिल्लो'))) {
+        const product = products.find(p => p.category === 'Sunscreen' && p.name.toLowerCase().includes('water-fit'));
+        reply = isNepali 
+          ? `चिल्लो छालाको लागि, ${product?.name || 'Skin1004 Hyalu-Cica Sun Serum'} उत्तम छ। यो पानी जस्तै हलुका छ र चिल्लोपना छोड्दैन! ☀️`
+          : `For oily skin, the ${product?.name || 'Skin1004 Hyalu-Cica Water-fit Sun Serum'} is perfect! It's water-based, super lightweight, and won't make your skin greasy. ☀️`;
+      } else if (input.includes('oily') || input.includes('चिल्लो')) {
         const product = products.find(p => p.name.toLowerCase().includes('pore') || p.name.toLowerCase().includes('cleansing oil'));
         reply = isNepali 
           ? `चिल्लो छालाको लागि, म ${product?.name || 'Anua Heartleaf Oil'} सिफारिस गर्छु। यसले प्वालहरू सफा राख्न मद्दत गर्दछ! ✨`

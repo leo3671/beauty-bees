@@ -17,13 +17,29 @@ export default function BrandsManagement() {
 
   const fetchBrands = async () => {
     try {
-      const res = await fetch('/api/brands');
+      const res = await fetch('/api/brands?all=true');
       const data = await res.json();
       setBrands(data);
     } catch (e) {
       toast.error("Failed to load brands");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleToggleStatus = async (id, currentStatus) => {
+    try {
+      const res = await fetch('/api/brands', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id, isActive: !currentStatus })
+      });
+      if (res.ok) {
+        toast.success("Status updated");
+        fetchBrands();
+      }
+    } catch (e) {
+      toast.error("Failed to update status");
     }
   };
 
@@ -110,7 +126,20 @@ export default function BrandsManagement() {
                   <img src={brand.logo} alt={brand.name} style={{ width: '50px', height: '50px', objectFit: 'contain' }} />
                 </td>
                 <td>{brand.name}</td>
-                <td><span className={styles.badge} style={{ backgroundColor: '#f0fdf4', color: '#166534' }}>Active</span></td>
+                <td>
+                  <button 
+                    onClick={() => handleToggleStatus(brand.id, brand.isActive)}
+                    className={styles.badge} 
+                    style={{ 
+                      backgroundColor: brand.isActive ? '#f0fdf4' : '#fef2f2', 
+                      color: brand.isActive ? '#166534' : '#991b1b',
+                      border: 'none',
+                      cursor: 'pointer'
+                    }}
+                  >
+                    {brand.isActive ? 'Active' : 'Hidden'}
+                  </button>
+                </td>
                 <td>
                   <button onClick={() => handleDelete(brand.id)} style={{ color: '#ef4444', border: 'none', background: 'none', cursor: 'pointer' }}>Delete</button>
                 </td>
