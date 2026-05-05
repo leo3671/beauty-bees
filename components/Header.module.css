@@ -24,6 +24,8 @@
   align-items: center;
   justify-content: space-between;
   height: 70px;
+  gap: 12px;
+  padding: 0 16px;
 }
 
 .logo h1 {
@@ -77,15 +79,43 @@
   gap: 16px;
 }
 
+.iconBtn, .mobileSearchBtn {
+  background: none;
+  border: none;
+  color: var(--text-color);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  transition: color 0.2s;
+}
+
+.iconBtn:hover, .mobileSearchBtn:hover {
+  color: var(--primary-pink);
+}
+
+.mobileSearchBtn {
+  display: flex;
+}
+
+@media (min-width: 768px) {
+  .mobileSearchBtn {
+    display: none;
+  }
+}
+
 .cartButton {
   position: relative;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text-color);
 }
 
 .cartCount {
   position: absolute;
   top: -6px;
   right: -8px;
-  background-color: var(--primary-olive);
+  background-color: var(--primary-pink);
   color: var(--white);
   font-size: 0.7rem;
   font-weight: bold;
@@ -102,9 +132,34 @@
   border: none;
   cursor: pointer;
   padding: 5px;
+  color: var(--text-color);
 }
 
 @media (max-width: 767px) {
+  .navContainer {
+    height: 60px;
+    padding: 0 12px;
+  }
+
+  .logo {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    transform: translateX(-12px); /* Offset for burger button to center logo better */
+  }
+
+  .logo img {
+    height: 35px !important;
+  }
+
+  .icons {
+    gap: 12px;
+  }
+
+  .langToggle {
+    display: none; /* Hide on mobile to save space */
+  }
+
   .navLinks {
     position: fixed;
     top: 0;
@@ -146,13 +201,14 @@
 .langToggle {
   background: #fdf2f8;
   border: 1px solid #fce7f3;
-  padding: 5px 10px;
+  padding: 5px 12px;
   border-radius: 20px;
   font-size: 0.8rem;
   font-weight: 600;
   color: #be185d;
   cursor: pointer;
   transition: all 0.2s;
+  white-space: nowrap;
 }
 
 .langToggle:hover {

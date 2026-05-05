@@ -97,8 +97,8 @@ export default async function Home() {
       <section className={styles.fullBanner}>
         <img src="/images/hero_banner_main.png" alt="Beauty Bees Collection" className={styles.fullBannerImg} />
         <div className={styles.fullBannerOverlay}>
-          <h2>Where Science Meets Beauty</h2>
-          <p>Every product in our store is backed by Korean dermatological research and loved by millions worldwide.</p>
+          <h2>Science Meets Beauty</h2>
+          <p>Every product in our store is backed by Korean dermatological research and loved by millions worldwide. We bring you the latest innovations in skincare technology from the heart of Seoul.</p>
           <Link href="/shop" className={styles.ctaWhite}>Explore All Products</Link>
         </div>
       </section>
@@ -111,24 +111,26 @@ export default async function Home() {
             <h2>The Beauty Bees Difference</h2>
           </div>
           <div className={styles.whyGrid}>
-            <div className={styles.whyIcon}>🇰🇷</div>
-            <h3>Direct from Korea</h3>
-            <p>We source directly from official Korean distributors. Zero middlemen, zero counterfeits.</p>
-          </div>
-          <div className={styles.whyCard}>
-            <div className={styles.whyIcon}>🧪</div>
-            <h3>Dermatologist Tested</h3>
-            <p>Every brand in our catalog is clinically tested and approved by Korean dermatologists.</p>
-          </div>
-          <div className={styles.whyCard}>
-            <div className={styles.whyIcon}>🌿</div>
-            <h3>Clean Ingredients</h3>
-            <p>No parabens, no sulfates, no animal testing. Just pure, effective skincare.</p>
-          </div>
-          <div className={styles.whyCard}>
-            <div className={styles.whyIcon}>💬</div>
-            <h3>Expert Support</h3>
-            <p>Not sure what to buy? Our skincare experts help you find the perfect routine.</p>
+            <div className={styles.whyCard}>
+              <div className={styles.whyIcon}>🇰🇷</div>
+              <h3>Direct from Korea</h3>
+              <p>We source directly from official Korean distributors. Zero middlemen, zero counterfeits. 100% authenticity guaranteed.</p>
+            </div>
+            <div className={styles.whyCard}>
+              <div className={styles.whyIcon}>🧪</div>
+              <h3>Dermatologist Tested</h3>
+              <p>Every brand in our catalog is clinically tested and approved by Korean dermatologists for sensitive skin.</p>
+            </div>
+            <div className={styles.whyCard}>
+              <div className={styles.whyIcon}>🌿</div>
+              <h3>Clean Ingredients</h3>
+              <p>No parabens, no sulfates, no animal testing. Just pure, effective skincare derived from nature.</p>
+            </div>
+            <div className={styles.whyCard}>
+              <div className={styles.whyIcon}>💬</div>
+              <h3>Expert Support</h3>
+              <p>Not sure what to buy? Our skincare experts and AI assistant Bee help you find the perfect routine for your skin.</p>
+            </div>
           </div>
         </div>
       </section>

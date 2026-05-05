@@ -60,7 +60,7 @@ export async function POST(request) {
     }
 
     // Verify password
-    const isValidPassword = await bcrypt.compare(password.trim(), user.password);
+    const isValidPassword = await bcrypt.compare(password, user.password);
     if (!isValidPassword) {
       console.log(`[AUTH] Login failed: Password mismatch (${sanitizedEmail})`);
       return NextResponse.json({ error: 'Invalid email or password' }, { status: 401 });

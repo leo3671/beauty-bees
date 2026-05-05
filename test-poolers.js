@@ -1,39 +1,41 @@
 const { PrismaClient } = require('@prisma/client');
 
+const clusters = ['aws-0', 'aws-1'];
 const regions = [
-  'aws-0-us-east-1',
-  'aws-0-us-west-1',
-  'aws-0-eu-central-1',
-  'aws-0-eu-west-1',
-  'aws-0-eu-west-2',
-  'aws-0-ap-southeast-1',
-  'aws-0-ap-south-1',
-  'aws-0-ap-northeast-1',
-  'aws-0-sa-east-1',
-  'aws-0-ca-central-1'
+  'ap-south-1',
+  'ap-southeast-1',
+  'us-east-1',
+  'us-west-1',
+  'eu-central-1'
 ];
 
-async function checkRegion(region) {
-  const url = `postgresql://postgres.ekogbzacmtwdjwbobeuj:Beauty%40bees12@${region}.pooler.supabase.com:6543/postgres?pgbouncer=true`;
+async function checkRegion(cluster, region) {
+  const host = `${cluster}-${region}.pooler.supabase.com`;
+  const url = `postgresql://postgres.ekogbzacmtwdjwbobeuj:Beauty%40bees12@${host}:6543/postgres?pgbouncer=true`;
   const prisma = new PrismaClient({ datasources: { db: { url } } });
   try {
+    console.log(`Checking ${host}...`);
     await prisma.$connect();
     await prisma.user.count();
-    console.log(`✅ SUCCESS IN REGION: ${region}`);
-    console.log(`URL: ${url}`);
+    console.log(`\n✅ SUCCESS!`);
+    console.log(`DATABASE_URL="${url}"`);
     process.exit(0);
   } catch(e) {
-    // console.log(`Failed ${region}`);
+    if (!e.message.includes("Authentication failed")) {
+       console.log(`  - Error: ${e.message.slice(0, 100)}`);
+    }
   } finally {
     await prisma.$disconnect();
   }
 }
 
 async function run() {
-  console.log("Testing regions...");
-  for (const r of regions) {
-    await checkRegion(r);
+  console.log("Brute-forcing Supabase Pooler hosts...");
+  for (const c of clusters) {
+    for (const r of regions) {
+      await checkRegion(c, r);
+    }
   }
-  console.log("❌ All regions failed.");
+  console.log("\n❌ All known hosts failed. This usually means the password 'Beauty@bees12' is incorrect.");
 }
 run();

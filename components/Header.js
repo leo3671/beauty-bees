@@ -12,8 +12,17 @@ export default function Header() {
   const { language, toggleLanguage, t } = useLanguage();
   const [user, setUser] = useState(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
 
-  const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen);
+    if (isSearchOpen) setIsSearchOpen(false);
+  };
+
+  const toggleSearch = () => {
+    setIsSearchOpen(!isSearchOpen);
+    if (isMenuOpen) setIsMenuOpen(false);
+  };
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -72,10 +81,18 @@ export default function Header() {
         </nav>
 
         <div className={styles.icons}>
+          <SearchBar isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
+          
+          <button className={styles.mobileSearchBtn} onClick={toggleSearch} aria-label="Toggle Search">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <circle cx="11" cy="11" r="8" />
+              <path d="M21 21l-4.3-4.3" />
+            </svg>
+          </button>
+
           <button className={styles.langToggle} onClick={toggleLanguage}>
             {language === 'en' ? 'नेपाली' : 'English'}
           </button>
-          <SearchBar />
           
           <Link href={user ? "/account" : "/login"} className={styles.iconBtn} aria-label={user ? "My Account" : "Login"}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
@@ -83,10 +100,8 @@ export default function Header() {
                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                 <circle cx="12" cy="7" r="4"></circle>
               </svg>
-              {user && <span style={{ fontSize: '0.85em', fontWeight: '500', display: 'none', '@media (min-width: 768px)': { display: 'block' } }}>{user.name || 'Account'}</span>}
             </div>
           </Link>
-
           <button aria-label="Cart" className={styles.cartButton} onClick={openCart}>
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" />

@@ -6,6 +6,13 @@
   font-family: var(--font-main);
 }
 
+@media (max-width: 768px) {
+  .widgetContainer {
+    bottom: 15px;
+    right: 15px;
+  }
+}
+
 .launcher {
   background: #facc15;
   border: none;
@@ -42,6 +49,20 @@
   box-shadow: 0 8px 32px rgba(0,0,0,0.2);
   overflow: hidden;
   animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@media (max-width: 768px) {
+  .chatWindow {
+    width: calc(100vw - 30px);
+    height: 400px;
+    bottom: 70px;
+  }
+  .label {
+    display: none;
+  }
+  .launcher {
+    padding: 12px;
+  }
 }
 
 @keyframes popIn {

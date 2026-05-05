@@ -13,18 +13,19 @@ export default function Footer() {
         <div className={styles.links}>
           <h3>Shop</h3>
           <ul>
-            <li><Link href="/skincare">Skincare</Link></li>
-            <li><Link href="/makeup">Makeup</Link></li>
-            <li><Link href="/best-sellers">Best Sellers</Link></li>
+            <li><Link href="/shop?category=skincare">Skincare</Link></li>
+            <li><Link href="/shop?category=makeup">Makeup</Link></li>
+            <li><Link href="/shop?filter=best-seller">Best Sellers</Link></li>
           </ul>
         </div>
 
         <div className={styles.links}>
           <h3>Contact & Info</h3>
           <ul>
-            <li><span>Phone: 9867772341</span></li>
-            <li><Link href="/shipping">Shipping Policy</Link></li>
+            <li><Link href="/about">About Us</Link></li>
+            <li><Link href="/contact">Contact Us</Link></li>
             <li><Link href="/faq">FAQ</Link></li>
+            <li><Link href="/terms">Terms & Privacy</Link></li>
           </ul>
         </div>
         
