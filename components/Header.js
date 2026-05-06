@@ -62,7 +62,7 @@ export default function Header() {
         <div className={styles.logo}>
           <Link href="/">
             {siteSettings.logoUrl && !imgError ? (
-              <div style={{ height: '50px', display: 'flex', alignItems: 'center', position: 'relative', width: '140px' }}>
+              <div className={styles.logoWrapper}>
                 <Image 
                   src={siteSettings.logoUrl} 
                   alt={`${siteSettings.siteName} Official Logo`} 
@@ -73,7 +73,7 @@ export default function Header() {
                 />
               </div>
             ) : (
-              <h1 style={{ margin: 0, fontSize: '1.5rem', fontWeight: '700', color: 'var(--text-color)', letterSpacing: '1px' }}>
+              <h1 style={{ margin: 0, fontSize: '1.2rem', fontWeight: '700', color: 'var(--text-color)', letterSpacing: '1px' }}>
                 {siteSettings.siteName.toUpperCase()}
               </h1>
             )}
