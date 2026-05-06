@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
-import cloudinary from '@/lib/cloudinary';
-import { verifyAdmin, unauthorizedResponse } from '@/lib/admin-auth';
+import { uploadToSupabase } from '@/lib/supabase';
 
 export async function GET() {
   try {
@@ -24,12 +23,9 @@ export async function POST(request) {
 
     // Handle image upload if base64 provided
     if (newProduct.imageBase64) {
-      const uploadResponse = await cloudinary.uploader.upload(newProduct.imageBase64, {
-        folder: 'beauty-bees/products',
-        quality: 'auto',
-        fetch_format: 'auto'
-      });
-      newProduct.image = uploadResponse.secure_url;
+      const fileName = `${newProduct.id || Date.now()}-${Math.random().toString(36).substring(7)}.png`;
+      const publicUrl = await uploadToSupabase(newProduct.imageBase64, 'products', fileName);
+      newProduct.image = publicUrl;
       delete newProduct.imageBase64;
     }
 
@@ -96,12 +92,9 @@ export async function PUT(request) {
 
     // Handle image upload if base64 provided
     if (updatedProduct.imageBase64) {
-      const uploadResponse = await cloudinary.uploader.upload(updatedProduct.imageBase64, {
-        folder: 'beauty-bees/products',
-        quality: 'auto',
-        fetch_format: 'auto'
-      });
-      updatedProduct.image = uploadResponse.secure_url;
+      const fileName = `${id}-${Date.now()}.png`;
+      const publicUrl = await uploadToSupabase(updatedProduct.imageBase64, 'products', fileName);
+      updatedProduct.image = publicUrl;
       delete updatedProduct.imageBase64;
     }
 

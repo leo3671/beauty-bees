@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
-import cloudinary from '@/lib/cloudinary';
-import { verifyAdmin, unauthorizedResponse } from '@/lib/admin-auth';
+import { uploadToSupabase } from '@/lib/supabase';
 
 export async function GET(req) {
   try {
@@ -49,12 +48,8 @@ export async function POST(req) {
 
     let logoUrl = logo;
     if (logo && logo.startsWith('data:image')) {
-      const uploadResponse = await cloudinary.uploader.upload(logo, {
-        folder: 'beauty-bees/brands',
-        quality: 'auto',
-        fetch_format: 'auto'
-      });
-      logoUrl = uploadResponse.secure_url;
+      const fileName = `${name.toLowerCase().replace(/\s+/g, '-')}-${Date.now()}.png`;
+      logoUrl = await uploadToSupabase(logo, 'brands', fileName);
     }
 
     const brand = await prisma.brand.upsert({
