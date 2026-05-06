@@ -45,10 +45,10 @@ export default function Header() {
         
         <div className={styles.logo}>
           <Link href="/">
-            <div style={{ height: '60px', display: 'flex', alignItems: 'center', position: 'relative', width: '150px' }}>
+            <div style={{ height: '50px', display: 'flex', alignItems: 'center', position: 'relative', width: '140px' }}>
               <Image 
-                src="/logo_fixed.png" 
-                alt="Beauty Bees Cosmetics Logo" 
+                src="https://ekogbzacmtwdjwbobeuj.supabase.co/storage/v1/object/public/branding/logo.png" 
+                alt="Beauty Bees Cosmetics Official Logo" 
                 fill
                 priority
                 style={{ objectFit: 'contain' }} 
@@ -58,13 +58,6 @@ export default function Header() {
         </div>
 
         <nav className={`${styles.navLinks} ${isMenuOpen ? styles.mobileActive : ''}`}>
-          <div className={styles.mobileDrawerHeader}>
-            <button onClick={toggleMenu} className={styles.closeDrawerBtn} aria-label="Close Menu">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M18 6L6 18M6 6l12 12" />
-              </svg>
-            </button>
-          </div>
           <Link href="/" className={styles.link} onClick={() => setIsMenuOpen(false)}>
             {t('nav.home')}
             <svg className={styles.navArrow} width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">

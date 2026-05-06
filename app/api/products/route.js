@@ -26,6 +26,8 @@ export async function POST(request) {
     if (newProduct.imageBase64) {
       const uploadResponse = await cloudinary.uploader.upload(newProduct.imageBase64, {
         folder: 'beauty-bees/products',
+        quality: 'auto',
+        fetch_format: 'auto'
       });
       newProduct.image = uploadResponse.secure_url;
       delete newProduct.imageBase64;
@@ -96,6 +98,8 @@ export async function PUT(request) {
     if (updatedProduct.imageBase64) {
       const uploadResponse = await cloudinary.uploader.upload(updatedProduct.imageBase64, {
         folder: 'beauty-bees/products',
+        quality: 'auto',
+        fetch_format: 'auto'
       });
       updatedProduct.image = uploadResponse.secure_url;
       delete updatedProduct.imageBase64;

@@ -181,8 +181,16 @@ function ShopContent() {
             ))
           ) : (
             <div className={styles.noResults}>
-              <p>No products match your filters.</p>
-              <button onClick={() => { setActiveFilter('All'); setSkinType('All'); setSortBy('Newest'); }} className={styles.resetBtn}>Reset Filters</button>
+              <div className={styles.emptyIcon}>✨</div>
+              <h2>{activeFilter !== 'All' ? `${activeFilter} Collection Coming Soon` : 'No products found'}</h2>
+              <p>
+                {activeFilter !== 'All' 
+                  ? `We're currently hand-picking the best of ${activeFilter} for our Nepal collection. Check back soon for authentic K-beauty arrivals!`
+                  : 'We couldn\'t find any products matching your current filters.'}
+              </p>
+              <button onClick={() => { setActiveFilter('All'); setSkinType('All'); setSortBy('Newest'); }} className={styles.resetBtn}>
+                Back to Full Collection
+              </button>
             </div>
           )}
         </div>

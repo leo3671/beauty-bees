@@ -51,6 +51,8 @@ export async function POST(req) {
     if (logo && logo.startsWith('data:image')) {
       const uploadResponse = await cloudinary.uploader.upload(logo, {
         folder: 'beauty-bees/brands',
+        quality: 'auto',
+        fetch_format: 'auto'
       });
       logoUrl = uploadResponse.secure_url;
     }

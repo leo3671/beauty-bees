@@ -6,6 +6,28 @@ import ReviewSection from '../../../components/ReviewSection';
 import ProductRating from '../../../components/ProductRating';
 import Image from 'next/image';
 
+export async function generateMetadata({ params }) {
+  const resolvedParams = await params;
+  const products = await getLiveProducts();
+  const product = products.find(p => p.id === resolvedParams.id);
+
+  if (!product) {
+    return {
+      title: 'Product Not Found | Beauty Bees Cosmetics',
+    };
+  }
+
+  return {
+    title: `${product.name} | ${product.brand} | Beauty Bees Nepal`,
+    description: `Buy authentic ${product.brand} ${product.name} in Nepal. ${product.description?.slice(0, 150)}... 100% genuine K-beauty at Beauty Bees Cosmetics.`,
+    openGraph: {
+      title: product.name,
+      description: product.description,
+      images: [{ url: product.image }],
+    },
+  };
+}
+
 export default async function ProductDetails({ params }) {
   const resolvedParams = await params;
   const products = await getLiveProducts();
