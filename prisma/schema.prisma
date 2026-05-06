@@ -148,3 +148,11 @@ model Brand {
   isActive  Boolean  @default(true)
   createdAt DateTime @default(now())
 }
+
+model SiteSettings {
+  id        String   @id @default("global")
+  siteName  String   @default("Beauty Bees")
+  logoUrl   String?
+  favicon   String?
+  updatedAt DateTime @updatedAt
+}

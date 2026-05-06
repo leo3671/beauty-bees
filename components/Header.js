@@ -16,6 +16,22 @@ export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
 
+  const [siteSettings, setSiteSettings] = useState({ siteName: 'Beauty Bees', logoUrl: null });
+  const [imgError, setImgError] = useState(false);
+
+  useEffect(() => {
+    const fetchSettings = async () => {
+      try {
+        const res = await fetch('/api/settings');
+        const data = await res.json();
+        setSiteSettings(data);
+      } catch (e) {
+        console.error("Settings fetch failed", e);
+      }
+    };
+    fetchSettings();
+  }, []);
+
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
     if (isSearchOpen) setIsSearchOpen(false);
@@ -45,15 +61,22 @@ export default function Header() {
         
         <div className={styles.logo}>
           <Link href="/">
-            <div style={{ height: '50px', display: 'flex', alignItems: 'center', position: 'relative', width: '140px' }}>
-              <Image 
-                src="https://ekogbzacmtwdjwbobeuj.supabase.co/storage/v1/object/public/branding/logo.png" 
-                alt="Beauty Bees Cosmetics Official Logo" 
-                fill
-                priority
-                style={{ objectFit: 'contain' }} 
-              />
-            </div>
+            {siteSettings.logoUrl && !imgError ? (
+              <div style={{ height: '50px', display: 'flex', alignItems: 'center', position: 'relative', width: '140px' }}>
+                <Image 
+                  src={siteSettings.logoUrl} 
+                  alt={`${siteSettings.siteName} Official Logo`} 
+                  fill
+                  priority
+                  style={{ objectFit: 'contain' }} 
+                  onError={() => setImgError(true)}
+                />
+              </div>
+            ) : (
+              <h1 style={{ margin: 0, fontSize: '1.5rem', fontWeight: '700', color: 'var(--text-color)', letterSpacing: '1px' }}>
+                {siteSettings.siteName.toUpperCase()}
+              </h1>
+            )}
           </Link>
         </div>
 
