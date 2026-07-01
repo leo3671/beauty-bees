@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import { Plus, Minus } from 'lucide-react';
-import styles from '../page.module.css';
 
 const faqs = [
   {
@@ -31,48 +30,32 @@ export default function FAQ() {
   const [openIndex, setOpenIndex] = useState(0);
 
   return (
-    <div className={styles.page}>
-      <section style={{ padding: '80px 20px', textAlign: 'center', background: 'var(--bg-color)' }}>
-        <div className="container">
-          <span className={styles.sectionTag}>HELP CENTER</span>
-          <h1 style={{ fontSize: '3rem', marginBottom: '16px' }}>Frequently Asked Questions</h1>
-          <p style={{ color: '#6b5b5e' }}>Everything you need to know about Beauty Bees Cosmetics and K-Beauty.</p>
+    <div className="bg-bb-bg min-h-screen">
+      <section className="py-20 text-center bg-bb-peach/50 border-b border-bb-border/30">
+        <div className="container mx-auto px-4">
+          <span className="text-xs font-bold uppercase tracking-[4px] text-bb-pink mb-3 block">HELP CENTER</span>
+          <h1 className="font-heading text-4xl font-bold text-bb-heading mb-4">Frequently Asked Questions</h1>
+          <p className="text-slate-500 text-base max-w-md mx-auto">Everything you need to know about Beauty Bees Cosmetics and K-Beauty.</p>
         </div>
       </section>
 
-      <section style={{ padding: '60px 20px' }}>
-        <div className="container" style={{ maxWidth: '800px' }}>
-          <div style={{ display: 'grid', gap: '16px' }}>
+      <section className="py-16">
+        <div className="container mx-auto px-4 max-w-3xl">
+          <div className="flex flex-col gap-4">
             {faqs.map((faq, index) => (
               <div 
                 key={index} 
-                style={{ 
-                  background: 'white', 
-                  borderRadius: '16px', 
-                  border: '1px solid #eee',
-                  overflow: 'hidden',
-                  transition: 'all 0.3s'
-                }}
+                className="bg-white border border-bb-border/30 rounded-2xl overflow-hidden shadow-sm transition-all"
               >
                 <button 
                   onClick={() => setOpenIndex(openIndex === index ? -1 : index)}
-                  style={{
-                    width: '100%',
-                    padding: '24px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    background: 'none',
-                    border: 'none',
-                    cursor: 'pointer',
-                    textAlign: 'left'
-                  }}
+                  className="w-full px-6 py-5 flex items-center justify-between text-left bg-transparent border-none cursor-pointer text-bb-heading hover:text-bb-pink transition-colors"
                 >
-                  <span style={{ fontSize: '1.1rem', fontWeight: '600', color: 'var(--text-color)' }}>{faq.q}</span>
-                  {openIndex === index ? <Minus size={20} color="#be185d" /> : <Plus size={20} color="#8a7b7e" />}
+                  <span className="text-base font-semibold">{faq.q}</span>
+                  {openIndex === index ? <Minus size={18} className="text-bb-pink" /> : <Plus size={18} className="text-slate-400" />}
                 </button>
                 {openIndex === index && (
-                  <div style={{ padding: '0 24px 24px', color: '#6b5b5e', lineHeight: '1.7', fontSize: '1rem' }}>
+                  <div className="px-6 pb-6 text-sm text-slate-500 leading-relaxed animate-fade-in">
                     {faq.a}
                   </div>
                 )}

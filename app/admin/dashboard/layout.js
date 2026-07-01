@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter, usePathname } from 'next/navigation';
-import styles from './dashboardLayout.module.css';
+import { cn } from '@/lib/utils';
 
 export default function DashboardLayout({ children }) {
   const [isAdmin, setIsAdmin] = useState(false);
@@ -41,8 +41,9 @@ export default function DashboardLayout({ children }) {
 
   if (loading) {
     return (
-      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', background: '#f1f5f9' }}>
-        <p>Loading Admin Panel...</p>
+      <div className="min-h-screen flex items-center justify-center bg-slate-50">
+        <div className="inline-block w-8 h-8 border-4 border-bb-pink border-t-transparent rounded-full animate-spin mb-4"></div>
+        <p className="ml-3 text-slate-500 font-medium">Loading Admin Panel...</p>
       </div>
     );
   }
@@ -50,52 +51,58 @@ export default function DashboardLayout({ children }) {
   if (!isAdmin) return null;
 
   return (
-    <div className={styles.adminContainer}>
-      <aside className={styles.sidebar}>
-        <div className={styles.logo}>
-          <h2>Beauty Bees Cosmetics</h2>
-          <span>Admin Panel</span>
+    <div className="min-h-screen flex bg-slate-50">
+      {/* Sidebar */}
+      <aside className="w-64 bg-white border-r border-slate-200 flex flex-col p-6 flex-shrink-0 justify-between">
+        <div>
+          <div className="mb-8">
+            <h2 className="font-heading text-lg font-bold text-bb-heading">Beauty Bees</h2>
+            <span className="text-[10px] text-slate-400 font-bold tracking-wider uppercase">Admin Panel</span>
+          </div>
+          <nav className="flex flex-col gap-1">
+            {[
+              { href: '/admin/dashboard', label: 'Overview' },
+              { href: '/admin/dashboard/inventory', label: 'Inventory & Pricing' },
+              { href: '/admin/dashboard/users', label: 'User Management' },
+              { href: '/admin/dashboard/brands', label: 'Brands & Logos' },
+              { href: '/admin/dashboard/orders', label: 'Orders' },
+              { href: '/admin/dashboard/customers', label: 'Customers' },
+              { href: '/admin/dashboard/discounts', label: 'Discounts & Offers' },
+              { href: '/admin/dashboard/shipping', label: 'Shipping Zones' },
+              { href: '/admin/dashboard/support', label: 'AI & Support' },
+            ].map((link) => (
+              <Link 
+                key={link.href}
+                href={link.href} 
+                className={cn(
+                  "px-4 py-2.5 rounded-xl text-sm font-semibold transition-colors no-underline",
+                  pathname === link.href 
+                    ? "bg-bb-pink text-white" 
+                    : "text-bb-text/80 hover:bg-bb-peach/50 hover:text-bb-pink"
+                )}
+              >
+                {link.label}
+              </Link>
+            ))}
+          </nav>
         </div>
-        <nav className={styles.nav}>
-          <Link href="/admin/dashboard" className={`${styles.navLink} ${pathname === '/admin/dashboard' ? styles.active : ''}`}>
-            Overview
-          </Link>
-          <Link href="/admin/dashboard/inventory" className={`${styles.navLink} ${pathname === '/admin/dashboard/inventory' ? styles.active : ''}`}>
-            Inventory & Pricing
-          </Link>
-          <Link href="/admin/dashboard/users" className={`${styles.navLink} ${pathname === '/admin/dashboard/users' ? styles.active : ''}`}>
-            User Management
-          </Link>
-          <Link href="/admin/dashboard/brands" className={`${styles.navLink} ${pathname === '/admin/dashboard/brands' ? styles.active : ''}`}>
-            Brands & Logos
-          </Link>
-          <Link href="/admin/dashboard/orders" className={`${styles.navLink} ${pathname === '/admin/dashboard/orders' ? styles.active : ''}`}>
-            Orders
-          </Link>
-          <Link href="/admin/dashboard/customers" className={`${styles.navLink} ${pathname === '/admin/dashboard/customers' ? styles.active : ''}`}>
-            Customers
-          </Link>
-          <Link href="/admin/dashboard/discounts" className={`${styles.navLink} ${pathname === '/admin/dashboard/discounts' ? styles.active : ''}`}>
-            Discounts & Offers
-          </Link>
-          <Link href="/admin/dashboard/shipping" className={`${styles.navLink} ${pathname === '/admin/dashboard/shipping' ? styles.active : ''}`}>
-            Shipping Zones
-          </Link>
-          <Link href="/admin/dashboard/support" className={`${styles.navLink} ${pathname === '/admin/dashboard/support' ? styles.active : ''}`}>
-            AI & Support
-          </Link>
-        </nav>
-        <div className={styles.logout}>
-          <button onClick={handleLogout} className={styles.logoutBtn}>Logout</button>
+        <div className="border-t border-slate-100 pt-4 mt-6">
+          <button 
+            onClick={handleLogout} 
+            className="w-full bg-red-50 hover:bg-red-100 text-red-600 font-semibold py-2.5 rounded-xl transition-colors border-none cursor-pointer text-sm"
+          >
+            Logout
+          </button>
         </div>
       </aside>
       
-      <main className={styles.mainContent}>
-        <header className={styles.topbar}>
-          <h3>Dashboard</h3>
-          <div className={styles.profile}>Admin User</div>
+      {/* Main Content */}
+      <main className="flex-1 flex flex-col min-w-0">
+        <header className="h-16 border-b border-slate-200 bg-white px-8 flex items-center justify-between flex-shrink-0">
+          <h3 className="font-heading text-lg font-bold text-bb-heading">Dashboard</h3>
+          <div className="text-sm font-semibold text-bb-text">Admin User</div>
         </header>
-        <div className={styles.contentArea}>
+        <div className="p-8 overflow-y-auto flex-1">
           {children}
         </div>
       </main>

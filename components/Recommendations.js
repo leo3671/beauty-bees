@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react';
 import ProductCard from './ProductCard';
 import { useProducts } from '../lib/ProductContext';
-import styles from './Recommendations.module.css';
 
 export default function Recommendations() {
   const [recommendedProducts, setRecommendedProducts] = useState([]);
@@ -17,24 +16,24 @@ export default function Recommendations() {
       const historyStr = localStorage.getItem('beautyBees_history');
       if (historyStr) {
         const history = JSON.parse(historyStr);
-        
+
         if (history.categories && (history.categories.length > 0 || history.brands.length > 0)) {
           setHistoryExists(true);
-          
-          let recs = products.filter(p => 
+
+          let recs = products.filter(p =>
             (history.categories.includes(p.category) || history.brands.includes(p.brand)) &&
             !history.productIds.includes(p.id)
           );
 
           if (recs.length < 4) {
-            const extra = products.filter(p => 
+            const extra = products.filter(p =>
               p.isBestSeller && !history.productIds.includes(p.id) && !recs.find(r => r.id === p.id)
             );
             recs = [...recs, ...extra].slice(0, 4);
           } else {
             recs = recs.sort(() => 0.5 - Math.random()).slice(0, 4);
           }
-          
+
           setRecommendedProducts(recs);
           return;
         }
@@ -42,22 +41,19 @@ export default function Recommendations() {
     } catch (e) {
       console.error("Error loading recommendations", e);
     }
-    
-    // No history, no recommendations
+
     setHistoryExists(false);
   }, [products]);
 
-  if (!historyExists || recommendedProducts.length === 0) {
-    return null; // Don't render anything if no history
-  }
+  if (!historyExists || recommendedProducts.length === 0) return null;
 
   return (
-    <section className={`container ${styles.recSection}`}>
-      <div className={styles.sectionHeader}>
-        <h2>Recommended For You</h2>
-        <p>Based on your recent purchases</p>
+    <section className="container py-10">
+      <div className="text-center mb-8">
+        <h2 className="font-heading text-2xl font-bold text-bb-heading mb-1">Recommended For You</h2>
+        <p className="text-bb-text/70 text-sm">Based on your recent browsing</p>
       </div>
-      <div className={styles.productGrid}>
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
         {recommendedProducts.map(product => (
           <ProductCard key={product.id} product={product} />
         ))}

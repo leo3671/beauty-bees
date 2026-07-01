@@ -1,7 +1,7 @@
 "use client";
 
 import { useCart } from '../lib/CartContext';
-import styles from './AddToCartButton.module.css';
+import { Button } from '@/components/ui/button';
 import { toast } from 'react-hot-toast';
 
 export default function AddToCartButton({ product }) {
@@ -20,8 +20,11 @@ export default function AddToCartButton({ product }) {
   };
 
   return (
-    <button className={styles.button} onClick={handleAdd}>
-      Add to Cart - Rs. {product.price}
-    </button>
+    <Button
+      onClick={handleAdd}
+      className="w-full bg-bb-heading text-white hover:bg-bb-text font-bold text-sm py-3 h-auto rounded-xl"
+    >
+      Add to Cart — Rs. {product.price}
+    </Button>
   );
 }

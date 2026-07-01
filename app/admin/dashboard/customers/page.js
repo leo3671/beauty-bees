@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import styles from '../page.module.css';
+import { cn } from '@/lib/utils';
 
 export default function CustomerManagement() {
   const [orders, setOrders] = useState([]);
@@ -51,118 +51,102 @@ export default function CustomerManagement() {
 
   return (
     <div>
-      <h1 className={styles.title}>Customer Management</h1>
-      <p style={{ marginBottom: '20px', color: '#666' }}>
+      <h1 className="font-heading text-2xl font-bold text-bb-heading mb-1.5">Customer Management</h1>
+      <p className="text-sm text-slate-500 mb-6">
         View all registered customers and their complete purchase history.
       </p>
 
       {/* Customer Stats */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '15px', marginBottom: '25px' }}>
-        <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '10px', padding: '18px', textAlign: 'center' }}>
-          <div style={{ fontSize: '2em', fontWeight: 'bold', color: '#1e293b' }}>{customers.length}</div>
-          <div style={{ fontSize: '0.85em', color: '#64748b' }}>Total Customers</div>
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-8">
+        <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm text-center flex flex-col justify-center">
+          <div className="text-3xl font-bold text-bb-heading mb-1">{customers.length}</div>
+          <div className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Total Customers</div>
         </div>
-        <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '10px', padding: '18px', textAlign: 'center' }}>
-          <div style={{ fontSize: '2em', fontWeight: 'bold', color: '#1e293b' }}>Rs. {customers.reduce((s, c) => s + c.totalSpent, 0).toLocaleString()}</div>
-          <div style={{ fontSize: '0.85em', color: '#64748b' }}>Lifetime Revenue</div>
+        <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm text-center flex flex-col justify-center">
+          <div className="text-3xl font-bold text-bb-heading mb-1">Rs. {customers.reduce((s, c) => s + c.totalSpent, 0).toLocaleString()}</div>
+          <div className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Lifetime Revenue</div>
         </div>
-        <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '10px', padding: '18px', textAlign: 'center' }}>
-          <div style={{ fontSize: '2em', fontWeight: 'bold', color: '#1e293b' }}>{customers.length > 0 ? Math.round(customers.reduce((s, c) => s + c.totalSpent, 0) / customers.length) : 0}</div>
-          <div style={{ fontSize: '0.85em', color: '#64748b' }}>Avg. Customer Value (Rs.)</div>
+        <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm text-center flex flex-col justify-center">
+          <div className="text-3xl font-bold text-bb-heading mb-1">Rs. {customers.length > 0 ? Math.round(customers.reduce((s, c) => s + c.totalSpent, 0) / customers.length).toLocaleString() : 0}</div>
+          <div className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Avg. Customer Value</div>
         </div>
       </div>
 
-      <div className={styles.tableContainer}>
+      <div className="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
         {loading ? (
-          <p style={{ padding: '20px' }}>Loading customers...</p>
+          <p className="p-6 text-sm text-slate-500 font-medium">Loading customers...</p>
         ) : customers.length === 0 ? (
-          <p style={{ padding: '20px' }}>No customers found.</p>
+          <p className="p-6 text-sm text-slate-500 font-medium">No customers found.</p>
         ) : (
-          <table className={styles.table} style={{ borderCollapse: 'collapse' }}>
+          <table className="w-full text-left border-collapse">
             <thead>
-              <tr>
-                <th>Customer</th>
-                <th>Email</th>
-                <th>Total Orders</th>
-                <th>Total Spent</th>
-                <th>Last Order</th>
-                <th>Details</th>
+              <tr className="bg-slate-50 border-b border-slate-100">
+                <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Customer</th>
+                <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Email</th>
+                <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider text-center">Total Orders</th>
+                <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Total Spent</th>
+                <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Last Order</th>
+                <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Details</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody className="divide-y divide-slate-100">
               {customers.map(customer => (
                 <React.Fragment key={customer.email}>
-                  <tr style={{ borderBottom: expandedEmail === customer.email ? 'none' : '1px solid var(--border-light)' }}>
-                    <td style={{ fontWeight: '500' }}>{customer.name}</td>
-                    <td>
-                      <a href={`mailto:${customer.email}`} style={{ color: '#2563eb', fontSize: '0.9em' }}>{customer.email}</a>
+                  <tr className="hover:bg-slate-50/50 transition-colors">
+                    <td className="px-6 py-4 text-sm font-semibold text-bb-heading">{customer.name}</td>
+                    <td className="px-6 py-4 text-sm">
+                      <a href={`mailto:${customer.email}`} className="text-bb-pink hover:underline font-medium">{customer.email}</a>
                     </td>
-                    <td style={{ textAlign: 'center' }}>{customer.orders.length}</td>
-                    <td style={{ fontWeight: 'bold' }}>Rs. {customer.totalSpent.toLocaleString()}</td>
-                    <td>{new Date(customer.lastOrder).toLocaleDateString()}</td>
-                    <td>
+                    <td className="px-6 py-4 text-sm text-center font-medium text-slate-600">{customer.orders.length}</td>
+                    <td className="px-6 py-4 text-sm font-bold text-bb-heading">Rs. {customer.totalSpent.toLocaleString()}</td>
+                    <td className="px-6 py-4 text-sm text-slate-500 font-medium">{new Date(customer.lastOrder).toLocaleDateString()}</td>
+                    <td className="px-6 py-4 text-sm">
                       <button 
                         onClick={() => setExpandedEmail(expandedEmail === customer.email ? null : customer.email)}
-                        style={{ 
-                          padding: '6px 12px', 
-                          background: 'var(--text-dark)', 
-                          color: 'white', 
-                          border: 'none', 
-                          borderRadius: '4px',
-                          cursor: 'pointer' 
-                        }}
+                        className="bg-bb-heading hover:bg-bb-text text-white text-xs font-bold px-3 py-1.5 rounded-xl border-none cursor-pointer transition-colors shadow-sm"
                       >
                         {expandedEmail === customer.email ? 'Hide History' : 'View History'}
                       </button>
                     </td>
                   </tr>
                   {expandedEmail === customer.email && (
-                    <tr style={{ backgroundColor: '#f8fafc', borderBottom: '2px solid var(--border-light)' }}>
-                      <td colSpan="6" style={{ padding: '20px' }}>
-                        <h4 style={{ marginBottom: '15px', color: '#334155' }}>Purchase History for {customer.name}</h4>
-                        {customer.orders.map(order => (
-                          <div key={order.id} style={{ 
-                            border: '1px solid #e2e8f0', 
-                            borderRadius: '8px', 
-                            padding: '15px', 
-                            marginBottom: '10px',
-                            backgroundColor: 'white'
-                          }}>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
-                              <div>
-                                <strong>{order.id}</strong>
-                                <span style={{ color: '#64748b', marginLeft: '15px' }}>{new Date(order.date).toLocaleString()}</span>
+                    <tr className="bg-slate-50/50">
+                      <td colSpan="6" className="px-6 py-6 border-t border-slate-100">
+                        <h4 className="font-heading text-sm font-bold text-slate-700 mb-4">Purchase History for {customer.name}</h4>
+                        <div className="flex flex-col gap-3">
+                          {customer.orders.map(order => (
+                            <div key={order.id} className="border border-slate-200 bg-white rounded-xl p-4 shadow-sm">
+                              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3">
+                                <div className="text-xs font-semibold text-bb-heading">
+                                  <strong>Order #{order.id}</strong>
+                                  <span className="text-slate-400 ml-3">{new Date(order.date).toLocaleString()}</span>
+                                </div>
+                                <div className="flex gap-3 items-center">
+                                  <span className={cn(
+                                    "text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider",
+                                    order.status === 'Delivered' && "bg-green-50 text-green-700",
+                                    order.status === 'Cancelled' && "bg-red-50 text-red-700",
+                                    order.status === 'Shipped' && "bg-blue-50 text-blue-700",
+                                    order.status === 'Pending' && "bg-amber-50 text-amber-700"
+                                  )}>
+                                    {order.status}
+                                  </span>
+                                  <span className="font-bold text-sm text-bb-heading">Rs. {order.total.toLocaleString()}</span>
+                                </div>
                               </div>
-                              <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-                                <span style={{ 
-                                  padding: '4px 8px', 
-                                  borderRadius: '12px', 
-                                  fontSize: '0.8em', 
-                                  fontWeight: '600',
-                                  backgroundColor: order.status === 'Delivered' ? '#dcfce7' : 
-                                                   order.status === 'Cancelled' ? '#fee2e2' : 
-                                                   order.status === 'Shipped' ? '#dbeafe' : '#fef3c7',
-                                  color: order.status === 'Delivered' ? '#16a34a' : 
-                                         order.status === 'Cancelled' ? '#ef4444' : 
-                                         order.status === 'Shipped' ? '#2563eb' : '#d97706'
-                                }}>
-                                  {order.status}
-                                </span>
-                                <span style={{ fontWeight: 'bold' }}>Rs. {order.total.toLocaleString()}</span>
+                              <div className="text-xs text-slate-500 leading-relaxed">
+                                {order.items && order.items.map((item, idx) => (
+                                  <span key={idx}>
+                                    {item.quantity}x {item.name}{idx < order.items.length - 1 ? ', ' : ''}
+                                  </span>
+                                ))}
+                              </div>
+                              <div className="text-[10px] font-semibold text-slate-400 mt-2 border-t border-slate-100 pt-2">
+                                Payment: {order.paymentMethod || 'COD'} • Status: {order.paymentStatus || 'Pending'}
                               </div>
                             </div>
-                            <div style={{ fontSize: '0.9em', color: '#475569' }}>
-                              {order.items && order.items.map((item, idx) => (
-                                <span key={idx}>
-                                  {item.quantity}x {item.name}{idx < order.items.length - 1 ? ', ' : ''}
-                                </span>
-                              ))}
-                            </div>
-                            <div style={{ fontSize: '0.8em', color: '#94a3b8', marginTop: '8px' }}>
-                              Payment: {order.paymentMethod || 'COD'} • Status: {order.paymentStatus || 'Pending'}
-                            </div>
-                          </div>
-                        ))}
+                          ))}
+                        </div>
                       </td>
                     </tr>
                   )}

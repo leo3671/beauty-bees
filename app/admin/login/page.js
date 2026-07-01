@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import styles from './login.module.css';
 
 export default function AdminLogin() {
   const [email, setEmail] = useState('');
@@ -41,34 +40,44 @@ export default function AdminLogin() {
   };
 
   return (
-    <div className={styles.loginContainer}>
-      <div className={styles.loginBox}>
-        <h2>Beauty Bees Cosmetics Admin</h2>
-        <p>Log in to manage your store.</p>
+    <div className="min-h-screen flex items-center justify-center bg-bb-bg px-4 py-12">
+      <div className="max-w-md w-full bg-white p-8 md:p-10 rounded-2xl border border-bb-border/30 shadow-sm text-center">
+        <h2 className="font-heading text-2xl font-bold text-bb-heading mb-1.5">Beauty Bees Cosmetics Admin</h2>
+        <p className="text-sm text-slate-500 mb-6">Log in to manage your store.</p>
         
-        <form onSubmit={handleLogin} className={styles.form}>
-          {error && <div style={{ color: '#ef4444', background: '#fee2e2', padding: '10px', borderRadius: '4px', marginBottom: '15px', fontSize: '0.9rem' }}>{error}</div>}
-          <div className={styles.inputGroup}>
-            <label>Email Address</label>
+        <form onSubmit={handleLogin} className="flex flex-col gap-4 text-left">
+          {error && (
+            <div className="color-red-700 bg-red-50 border border-red-200 px-4 py-3 rounded-xl text-sm">
+              {error}
+            </div>
+          )}
+          <div className="flex flex-col gap-1.5">
+            <label className="text-xs font-semibold text-bb-text">Email Address</label>
             <input 
               type="email" 
               value={email} 
               onChange={(e) => setEmail(e.target.value)} 
               placeholder="admin@beautybees.com" 
               required 
+              className="w-full bg-bb-bg border border-bb-border/60 rounded-xl px-4 py-3 text-sm text-bb-text outline-none focus:border-bb-pink transition-all placeholder:text-slate-400"
             />
           </div>
-          <div className={styles.inputGroup}>
-            <label>Password</label>
+          <div className="flex flex-col gap-1.5">
+            <label className="text-xs font-semibold text-bb-text">Password</label>
             <input 
               type="password" 
               value={password} 
               onChange={(e) => setPassword(e.target.value)} 
               placeholder="Enter your password" 
               required 
+              className="w-full bg-bb-bg border border-bb-border/60 rounded-xl px-4 py-3 text-sm text-bb-text outline-none focus:border-bb-pink transition-all placeholder:text-slate-400"
             />
           </div>
-          <button type="submit" className={styles.loginBtn} disabled={loading}>
+          <button 
+            type="submit" 
+            className="w-full bg-bb-heading hover:bg-bb-text text-white font-bold py-3.5 rounded-xl border-none cursor-pointer shadow-sm transition-colors mt-2 disabled:opacity-50" 
+            disabled={loading}
+          >
             {loading ? 'Signing in...' : 'Sign In'}
           </button>
         </form>

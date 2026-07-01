@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react';
 import { useCart } from '../../lib/CartContext';
-import styles from './page.module.css';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-hot-toast';
@@ -172,12 +171,9 @@ export default function Checkout() {
   // Loading state
   if (authLoading) {
     return (
-      <div className={`container ${styles.checkoutContainer}`} style={{ textAlign: 'center', padding: '80px 20px' }}>
-        <div style={{ 
-          width: '40px', height: '40px', border: '3px solid #e8dfe0', borderTopColor: 'var(--primary-pink)',
-          borderRadius: '50%', animation: 'spin 0.6s linear infinite', margin: '0 auto 20px'
-        }}></div>
-        <p style={{ color: '#94a3b8' }}>Preparing checkout...</p>
+      <div className="container mx-auto px-4 py-32 text-center">
+        <div className="inline-block w-8 h-8 border-4 border-bb-pink border-t-transparent rounded-full animate-spin mb-4"></div>
+        <p className="text-slate-500 font-medium">Preparing checkout...</p>
       </div>
     );
   }
@@ -185,40 +181,28 @@ export default function Checkout() {
   // Not logged in — show sign-in gate
   if (!user) {
     return (
-      <div className={`container ${styles.checkoutContainer}`} style={{ textAlign: 'center', padding: '60px 20px' }}>
-        <div style={{ 
-          maxWidth: '460px', margin: '0 auto', background: 'white', padding: '50px 40px', 
-          borderRadius: '16px', border: '1px solid var(--border-light)', 
-          boxShadow: '0 4px 20px rgba(0,0,0,0.04)' 
-        }}>
-          <div style={{ fontSize: '3rem', marginBottom: '16px' }}>🔒</div>
-          <h2 style={{ fontSize: '1.6rem', marginBottom: '10px', fontWeight: '600' }}>Sign in to Checkout</h2>
-          <p style={{ color: '#94a3b8', marginBottom: '30px', lineHeight: '1.6' }}>
+      <div className="container mx-auto px-4 py-20 flex justify-center items-center">
+        <div className="max-w-[460px] w-full bg-white p-8 md:p-12 rounded-2xl border border-bb-border/30 shadow-md text-center">
+          <div className="text-5xl mb-6">🔒</div>
+          <h2 className="font-heading text-2xl font-bold text-bb-heading mb-3">Sign in to Checkout</h2>
+          <p className="text-slate-500 text-sm leading-relaxed mb-8">
             Please sign in or create an account to complete your purchase. This helps us track your orders and provide a better experience.
           </p>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+          <div className="flex flex-col gap-3">
             <Link 
               href="/login" 
-              style={{ 
-                display: 'block', padding: '14px', background: 'linear-gradient(135deg, var(--primary-pink), var(--primary-pink-hover))',
-                color: 'white', borderRadius: '10px', fontWeight: '600', textDecoration: 'none',
-                boxShadow: '0 4px 14px rgba(242, 182, 193, 0.35)', transition: 'all 0.3s ease'
-              }}
+              className="block w-full py-3.5 bg-bb-pink text-white rounded-xl font-semibold text-center no-underline shadow-md hover:bg-bb-pink-hover transition-colors"
             >
               Sign In
             </Link>
             <Link 
               href="/register" 
-              style={{ 
-                display: 'block', padding: '14px', background: 'transparent', color: 'var(--text-color)',
-                borderRadius: '10px', fontWeight: '500', textDecoration: 'none',
-                border: '1.5px solid #e8dfe0', transition: 'all 0.3s ease'
-              }}
+              className="block w-full py-3.5 bg-white text-bb-text border border-bb-border rounded-xl font-medium text-center no-underline hover:bg-bb-bg transition-colors"
             >
               Create an Account
             </Link>
           </div>
-          <p style={{ marginTop: '24px', fontSize: '0.85em', color: '#c0aeb2' }}>
+          <p className="mt-6 text-xs text-slate-400">
             Your cart items will be saved while you sign in.
           </p>
         </div>
@@ -228,47 +212,47 @@ export default function Checkout() {
 
   if (cartItems.length === 0) {
     return (
-      <div className={`container ${styles.checkoutContainer}`}>
-        <h2>Checkout</h2>
-        <p>Your cart is empty. Please add items to checkout.</p>
-        <Link href="/shop" className={styles.primaryBtn} style={{display: 'inline-block', marginTop: '20px'}}>Back to Shop</Link>
+      <div className="container mx-auto px-4 py-20 text-center bg-white border border-bb-border/30 rounded-2xl max-w-xl">
+        <h2 className="font-heading text-2xl font-bold text-bb-heading mb-3">Checkout</h2>
+        <p className="text-slate-500 text-sm mb-6">Your cart is empty. Please add items to checkout.</p>
+        <Link href="/shop" className="inline-block bg-bb-heading text-white font-bold text-sm px-6 py-2.5 rounded-xl no-underline hover:bg-bb-text transition-colors">Back to Shop</Link>
       </div>
     );
   }
 
   return (
-    <div className={`container ${styles.checkoutContainer}`}>
-      <h1 className={styles.pageTitle}>Checkout</h1>
+    <div className="container mx-auto px-4 py-8 max-w-6xl">
+      <h1 className="font-heading text-3xl font-bold text-bb-heading mb-8 border-b border-bb-border/20 pb-4">Checkout</h1>
       
-      <div className={styles.layout}>
-        {/* Left Side: Forms & Map */}
-        <div className={styles.mainContent}>
+      <div className="flex flex-col lg:flex-row gap-8 relative pb-20 lg:pb-0">
+        {/* Left Side: Forms & Payment details */}
+        <div className="flex-1 flex flex-col gap-8">
           
           {/* Contact Info */}
-          <section className={styles.section}>
-            <h2>Contact Information</h2>
-            <div style={{display: 'flex', gap: '15px', marginBottom: '15px'}}>
-              <input type="text" placeholder="First Name" required className={styles.inputField} value={formData.firstName} onChange={e => setFormData({...formData, firstName: e.target.value})} />
-              <input type="text" placeholder="Last Name" required className={styles.inputField} value={formData.lastName} onChange={e => setFormData({...formData, lastName: e.target.value})} />
+          <section className="bg-white border border-bb-border/30 rounded-2xl p-6 shadow-sm">
+            <h2 className="font-heading text-lg font-bold text-bb-heading mb-4 pb-2 border-b border-bb-border/10">Contact Information</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+              <input type="text" placeholder="First Name" required className="w-full bg-bb-bg border border-bb-border/60 rounded-xl px-4 py-3 text-sm text-bb-text outline-none focus:border-bb-pink focus:shadow-[0_0_0_3px_rgba(255,183,197,0.2)] transition-all" value={formData.firstName} onChange={e => setFormData({...formData, firstName: e.target.value})} />
+              <input type="text" placeholder="Last Name" required className="w-full bg-bb-bg border border-bb-border/60 rounded-xl px-4 py-3 text-sm text-bb-text outline-none focus:border-bb-pink focus:shadow-[0_0_0_3px_rgba(255,183,197,0.2)] transition-all" value={formData.lastName} onChange={e => setFormData({...formData, lastName: e.target.value})} />
             </div>
-            <div className={styles.formGroup}>
-              <input type="email" placeholder="Email Address" required inputMode="email" className={styles.inputField} value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} />
+            <div className="mb-4">
+              <input type="email" placeholder="Email Address" required inputMode="email" className="w-full bg-bb-bg border border-bb-border/60 rounded-xl px-4 py-3 text-sm text-bb-text outline-none focus:border-bb-pink focus:shadow-[0_0_0_3px_rgba(255,183,197,0.2)] transition-all" value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} />
             </div>
-            <div className={styles.formGroup}>
-              <input type="tel" placeholder="Phone Number" required inputMode="tel" className={styles.inputField} value={formData.phone} onChange={e => setFormData({...formData, phone: e.target.value})} />
+            <div>
+              <input type="tel" placeholder="Phone Number" required inputMode="tel" className="w-full bg-bb-bg border border-bb-border/60 rounded-xl px-4 py-3 text-sm text-bb-text outline-none focus:border-bb-pink focus:shadow-[0_0_0_3px_rgba(255,183,197,0.2)] transition-all" value={formData.phone} onChange={e => setFormData({...formData, phone: e.target.value})} />
             </div>
           </section>
 
           {/* Delivery Details */}
-          <section className={styles.section}>
-            <h2>Delivery Details (Nepal)</h2>
-            <p className={styles.subtext}>Enter your destination for premium doorstep delivery.</p>
+          <section className="bg-white border border-bb-border/30 rounded-2xl p-6 shadow-sm">
+            <h2 className="font-heading text-lg font-bold text-bb-heading mb-1">Delivery Details (Nepal)</h2>
+            <p className="text-xs text-slate-400 mb-4">Enter your destination for premium doorstep delivery.</p>
             
-            <div className={styles.formRow}>
-              <div className={styles.fieldGroup}>
-                <label>District / Zone</label>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+              <div className="flex flex-col gap-1.5">
+                <label className="text-xs font-semibold text-bb-text">District / Zone</label>
                 <select 
-                  className={styles.inputField} 
+                  className="w-full bg-bb-bg border border-bb-border/60 rounded-xl px-4 py-3 text-sm text-bb-text outline-none focus:border-bb-pink transition-all" 
                   value={selectedZone?.id} 
                   onChange={e => setSelectedZone(shippingZones.find(z => z.id === e.target.value))}
                   required
@@ -278,28 +262,28 @@ export default function Checkout() {
                   ))}
                 </select>
               </div>
-              <div className={styles.fieldGroup}>
-                <label>City / Municipality</label>
-                <input type="text" placeholder="e.g. Kathmandu" required className={styles.inputField} value={formData.city} onChange={e => setFormData({...formData, city: e.target.value})} />
+              <div className="flex flex-col gap-1.5">
+                <label className="text-xs font-semibold text-bb-text">City / Municipality</label>
+                <input type="text" placeholder="e.g. Kathmandu" required className="w-full bg-bb-bg border border-bb-border/60 rounded-xl px-4 py-3 text-sm text-bb-text outline-none focus:border-bb-pink transition-all" value={formData.city} onChange={e => setFormData({...formData, city: e.target.value})} />
               </div>
             </div>
 
-            <div className={styles.formRow}>
-              <div className={styles.fieldGroup}>
-                <label>Area / Tole</label>
-                <input type="text" placeholder="e.g. New Baneshwor" required className={styles.inputField} value={formData.area} onChange={e => setFormData({...formData, area: e.target.value})} />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+              <div className="flex flex-col gap-1.5">
+                <label className="text-xs font-semibold text-bb-text">Area / Tole</label>
+                <input type="text" placeholder="e.g. New Baneshwor" required className="w-full bg-bb-bg border border-bb-border/60 rounded-xl px-4 py-3 text-sm text-bb-text outline-none focus:border-bb-pink transition-all" value={formData.area} onChange={e => setFormData({...formData, area: e.target.value})} />
               </div>
-              <div className={styles.fieldGroup}>
-                <label>Landmark / House No.</label>
-                <input type="text" placeholder="e.g. Near Civil Bank" required className={styles.inputField} value={formData.landmark} onChange={e => setFormData({...formData, landmark: e.target.value})} />
+              <div className="flex flex-col gap-1.5">
+                <label className="text-xs font-semibold text-bb-text">Landmark / House No.</label>
+                <input type="text" placeholder="e.g. Near Civil Bank" required className="w-full bg-bb-bg border border-bb-border/60 rounded-xl px-4 py-3 text-sm text-bb-text outline-none focus:border-bb-pink transition-all" value={formData.landmark} onChange={e => setFormData({...formData, landmark: e.target.value})} />
               </div>
             </div>
 
-            <div className={styles.formGroup} style={{ marginTop: '20px' }}>
-              <label>Delivery Remarks / Instructions (Optional)</label>
+            <div className="flex flex-col gap-1.5 mt-4">
+              <label className="text-xs font-semibold text-bb-text">Delivery Remarks / Instructions (Optional)</label>
               <textarea 
                 placeholder="e.g. Near the big pipal tree, call before arriving, or gate color."
-                className={styles.textArea}
+                className="w-full bg-bb-bg border border-bb-border/60 rounded-xl px-4 py-3 text-sm text-bb-text outline-none focus:border-bb-pink transition-all resize-none"
                 value={formData.deliveryRemarks}
                 onChange={e => setFormData({...formData, deliveryRemarks: e.target.value})}
                 rows="3"
@@ -308,85 +292,85 @@ export default function Checkout() {
           </section>
 
           {/* Payment Method */}
-          <section className={styles.section}>
-            <h2>Payment Method</h2>
+          <section className="bg-white border border-bb-border/30 rounded-2xl p-6 shadow-sm">
+            <h2 className="font-heading text-lg font-bold text-bb-heading mb-4 pb-2 border-b border-bb-border/10">Payment Method</h2>
             
-            <div className={styles.paymentOptions}>
-              <label className={`${styles.paymentOption} ${paymentMethod === 'cod' ? styles.active : ''}`}>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+              <label className={cn(
+                "flex items-center gap-3 p-4 rounded-xl border border-bb-border/40 cursor-pointer bg-white transition-all hover:bg-bb-peach/20",
+                paymentMethod === 'cod' && "border-bb-pink bg-bb-peach/30 shadow-sm"
+              )}>
                 <input 
                   type="radio" 
                   name="payment" 
                   value="cod" 
                   checked={paymentMethod === 'cod'} 
                   onChange={() => setPaymentMethod('cod')} 
+                  className="accent-bb-pink w-4 h-4"
                 />
-                <div className={styles.paymentInfo}>
-                  <span className={styles.paymentTitle}>Cash on Delivery (COD)</span>
-                  <span className={styles.paymentDesc}>Pay with cash upon delivery.</span>
+                <div className="flex flex-col">
+                  <span className="text-sm font-semibold text-bb-heading">Cash on Delivery (COD)</span>
+                  <span className="text-xs text-slate-500">Pay with cash upon delivery.</span>
                 </div>
               </label>
 
-              <label className={`${styles.paymentOption} ${paymentMethod === 'qr' ? styles.active : ''}`}>
+              <label className={cn(
+                "flex items-center gap-3 p-4 rounded-xl border border-bb-border/40 cursor-pointer bg-white transition-all hover:bg-bb-peach/20",
+                paymentMethod === 'qr' && "border-bb-pink bg-bb-peach/30 shadow-sm"
+              )}>
                 <input 
                   type="radio" 
                   name="payment" 
                   value="qr" 
                   checked={paymentMethod === 'qr'} 
                   onChange={() => setPaymentMethod('qr')} 
+                  className="accent-bb-pink w-4 h-4"
                 />
-                <div className={styles.paymentInfo}>
-                  <span className={styles.paymentTitle}>Pay via Merchant QR</span>
-                  <span className={styles.paymentDesc}>Scan our QR code (eSewa/Fonepay)</span>
+                <div className="flex flex-col">
+                  <span className="text-sm font-semibold text-bb-heading">Pay via Merchant QR</span>
+                  <span className="text-xs text-slate-500">Scan our QR code (eSewa/Fonepay)</span>
                 </div>
               </label>
             </div>
 
             {/* Conditional QR Display */}
             {paymentMethod === 'qr' && (
-              <div className={styles.qrDisplay}>
-                <p>Scan the QR below to pay <strong>Rs. {finalTotal}</strong></p>
-                <div className={styles.qrPlaceholder} style={{ 
-                  backgroundColor: '#f1f5f9', 
-                  border: '2px dashed #cbd5e1', 
-                  borderRadius: '12px',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  padding: '40px',
-                  gap: '12px'
-                }}>
+              <div className="space-y-4 animate-fade-in">
+                <p className="text-sm text-bb-text font-medium">Scan the QR below to pay <strong className="text-bb-pink">Rs. {finalTotal}</strong></p>
+                <div className="bg-slate-50 border-2 border-dashed border-slate-200 rounded-2xl flex flex-col items-center justify-center p-6 gap-2">
                   <img 
                     src="/qr_code.png" 
                     alt="Merchant QR Code" 
-                    style={{ width: '220px', height: 'auto', borderRadius: '8px' }} 
+                    className="w-[200px] h-auto rounded-lg shadow-sm" 
                   />
-                  <span style={{ color: '#64748b', fontWeight: '600', fontSize: '1rem', marginTop: '10px' }}>Beauty Bees Cosmetics Merchant QR</span>
-                  <p style={{ color: '#94a3b8', fontSize: '0.85rem' }}>Scan to pay via eSewa / Fonepay</p>
+                  <span className="text-bb-heading font-semibold text-sm mt-2">Beauty Bees Cosmetics Merchant QR</span>
+                  <p className="text-slate-400 text-xs">Scan to pay via eSewa / Fonepay</p>
                 </div>
-                <div style={{ marginTop: '20px', padding: '15px', backgroundColor: '#f8fafc', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
-                  <label style={{ display: 'block', fontWeight: 'bold', marginBottom: '10px' }}>Upload Payment Screenshot</label>
+                <div className="p-4 bg-slate-50 rounded-xl border border-slate-200">
+                  <label className="block text-sm font-bold mb-2">Upload Payment Screenshot</label>
                   <input 
                     type="file" 
                     accept="image/*" 
                     onChange={handleImageChange}
                     required
-                    style={{ width: '100%' }}
+                    className="w-full text-sm file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-bb-pink file:text-white hover:file:bg-bb-pink-hover"
                   />
                   {paymentScreenshotBase64 && (
-                    <div style={{ marginTop: '10px', color: '#16a34a', fontSize: '0.9em', fontWeight: '500' }}>Screenshot attached ✓</div>
+                    <div className="mt-2 text-green-600 text-xs font-semibold">Screenshot attached ✓</div>
                   )}
                 </div>
               </div>
             )}
           </section>
 
+          <CheckoutCrossSell />
+
           <button 
-            className={styles.luxuryConfirmBtn} 
+            className="w-full bg-bb-heading text-white hover:bg-bb-text font-bold py-4 rounded-xl shadow-md transition-all flex items-center justify-center gap-2 border-none cursor-pointer max-lg:hidden"
             disabled={cartItems.length === 0 || !formData.area}
             onClick={handleSubmitOrder}
           >
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
               <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
             </svg>
@@ -394,73 +378,75 @@ export default function Checkout() {
           </button>
         </div>
 
-        {/* Right Side: Order Summary (Boutique Invoice Style) */}
-        <aside className={styles.sidebar}>
-          <div className={styles.invoiceCard}>
-            <div className={styles.invoiceHeader}>
-              <h3>Order Summary</h3>
-              <span className={styles.itemCount}>{cartItems.length} Items</span>
+        {/* Right Side: Order Summary */}
+        <aside className="w-full lg:w-96 flex-shrink-0">
+          <div className="bg-white border border-bb-border/30 rounded-2xl p-6 shadow-sm lg:sticky lg:top-24 flex flex-col gap-5">
+            <div className="flex items-center justify-between pb-3 border-b border-bb-border/10">
+              <h3 className="font-heading font-bold text-bb-heading text-lg">Order Summary</h3>
+              <span className="text-xs bg-bb-peach text-bb-text font-semibold px-2.5 py-1 rounded-full">{cartItems.length} Items</span>
             </div>
             
-            <div className={styles.invoiceBody}>
+            <div className="flex flex-col gap-4 max-h-[280px] overflow-y-auto pr-1 scrollbar-thin">
               {cartItems.map((item, index) => (
-                <div key={index} className={styles.invoiceItem}>
-                  <div className={styles.itemThumb}>
-                    <img src={item.image} alt={item.name} />
+                <div key={index} className="flex gap-3">
+                  <div className="w-12 h-12 rounded-lg overflow-hidden flex-shrink-0 bg-slate-50 border border-slate-100">
+                    <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
                   </div>
-                  <div className={styles.itemMeta}>
-                    <span className={styles.itemName}>{item.name}</span>
-                    <div className={styles.itemSub}>
+                  <div className="flex-1 min-w-0 flex flex-col justify-between">
+                    <span className="text-xs font-semibold text-bb-heading truncate block">{item.name}</span>
+                    <div className="flex justify-between items-center text-xs text-slate-400">
                       <span>Qty: 1</span>
-                      <span className={styles.itemPrice}>Rs. {item.price.toLocaleString()}</span>
+                      <span className="font-semibold text-bb-text">Rs. {item.price.toLocaleString()}</span>
                     </div>
                   </div>
                 </div>
               ))}
             </div>
 
-            <div className={styles.invoiceDivider}></div>
-
-            <div className={styles.voucherBox}>
+            <div className="border-t border-bb-border/20 pt-4 flex gap-2">
               <input 
                 type="text" 
                 placeholder="PROMO CODE" 
-                className={styles.voucherInput}
+                className="flex-1 bg-bb-bg border border-bb-border/60 rounded-xl px-3 py-2 text-xs text-bb-text outline-none focus:border-bb-pink transition-all uppercase placeholder:normal-case"
                 value={voucherCode} 
                 onChange={e => setVoucherCode(e.target.value)}
                 disabled={appliedVoucher}
               />
-              <button className={styles.voucherBtn} onClick={applyVoucher} disabled={appliedVoucher || checkingVoucher}>
+              <button 
+                className="bg-bb-heading text-white font-bold text-xs px-4 py-2 rounded-xl border-none cursor-pointer hover:bg-bb-text transition-colors disabled:opacity-50"
+                onClick={applyVoucher} 
+                disabled={appliedVoucher || checkingVoucher}
+              >
                 {appliedVoucher ? 'APPLIED' : 'APPLY'}
               </button>
             </div>
 
-            <div className={styles.invoiceFooter}>
-              <div className={styles.calcRow}>
+            <div className="border-t border-bb-border/20 pt-4 flex flex-col gap-2.5">
+              <div className="flex justify-between items-center text-xs text-bb-text/80">
                 <span>Subtotal</span>
-                <span>Rs. {subtotal.toLocaleString()}</span>
+                <span className="font-semibold text-bb-heading">Rs. {subtotal.toLocaleString()}</span>
               </div>
-              <div className={styles.calcRow}>
-                <span>Shipping ({selectedZone?.name})</span>
-                <span className={shippingFee === 0 ? styles.freeText : ''}>
+              <div className="flex justify-between items-center text-xs text-bb-text/80">
+                <span>Shipping ({selectedZone?.name || 'Standard'})</span>
+                <span className={cn("font-semibold text-bb-heading", shippingFee === 0 && "text-green-600 uppercase font-bold text-[10px]")}>
                   {shippingFee === 0 ? 'COMPLIMENTARY' : `Rs. ${shippingFee.toLocaleString()}`}
                 </span>
               </div>
               {discount > 0 && (
-                <div className={`${styles.calcRow} ${styles.discountRow}`}>
+                <div className="flex justify-between items-center text-xs text-green-600 font-semibold">
                   <span>Discount ({appliedVoucher?.code})</span>
                   <span>- Rs. {discount.toLocaleString()}</span>
                 </div>
               )}
-              <div className={styles.grandTotal}>
+              <div className="flex justify-between items-center font-bold text-base text-bb-heading border-t border-bb-border/30 pt-4 mt-2">
                 <span>Grand Total</span>
-                <span>Rs. {finalTotal.toLocaleString()}</span>
+                <span className="text-lg text-bb-pink">Rs. {finalTotal.toLocaleString()}</span>
               </div>
             </div>
 
-            <div className={styles.desktopAction}>
+            <div className="max-lg:hidden">
               <button 
-                className={styles.luxuryConfirmBtn} 
+                className="w-full bg-bb-heading text-white hover:bg-bb-text font-bold py-3.5 rounded-xl shadow-md transition-all flex items-center justify-center gap-2 border-none cursor-pointer"
                 disabled={cartItems.length === 0 || !formData.area}
                 onClick={() => document.getElementById('mainConfirmBtn')?.click()}
               >
@@ -472,14 +458,14 @@ export default function Checkout() {
       </div>
 
       {/* Sticky Bottom Bar for Mobile */}
-      <div className={styles.stickyBottomBar}>
-        <div className={styles.stickyInfo}>
-          <span className={styles.stickyLabel}>Total Amount</span>
-          <span className={styles.stickyPrice}>Rs. {finalTotal.toLocaleString()}</span>
+      <div className="fixed bottom-0 inset-x-0 bg-white border-t border-bb-border/40 px-6 py-4 flex items-center justify-between z-50 lg:hidden shadow-[0_-4px_15px_rgba(0,0,0,0.06)]">
+        <div className="flex flex-col">
+          <span className="text-[10px] uppercase font-bold text-slate-400">Total Amount</span>
+          <span className="text-base font-bold text-bb-pink">Rs. {finalTotal.toLocaleString()}</span>
         </div>
         <button 
           id="mainConfirmBtn"
-          className={styles.stickyConfirmBtn}
+          className="bg-bb-pink hover:bg-bb-pink-hover text-white font-bold text-sm px-6 py-3 rounded-xl border-none cursor-pointer shadow-sm transition-colors disabled:opacity-50"
           disabled={cartItems.length === 0 || !formData.area}
           onClick={handleSubmitOrder}
         >

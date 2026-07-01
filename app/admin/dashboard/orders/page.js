@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import styles from '../page.module.css';
+import { cn } from '@/lib/utils';
 
 export default function OrderManagement() {
   const [orders, setOrders] = useState([]);
@@ -83,26 +83,29 @@ export default function OrderManagement() {
 
   return (
     <div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-        <h1 className={styles.title} style={{ marginBottom: 0 }}>Order Management</h1>
-        <button onClick={exportCSV} style={{ padding: '8px 16px', background: '#1e293b', color: 'white', border: 'none', borderRadius: '6px', cursor: 'pointer', fontWeight: '500' }}>
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="font-heading text-2xl font-bold text-bb-heading">Order Management</h1>
+        <button 
+          onClick={exportCSV} 
+          className="bg-bb-heading hover:bg-bb-text text-white text-sm font-bold px-4 py-2.5 rounded-xl border-none cursor-pointer transition-colors shadow-sm"
+        >
           📥 Export CSV
         </button>
       </div>
 
       {/* Search & Filter Bar */}
-      <div style={{ display: 'flex', gap: '12px', marginBottom: '20px', flexWrap: 'wrap' }}>
+      <div className="flex flex-col sm:flex-row gap-4 mb-6">
         <input 
           type="text" 
           placeholder="Search by Order ID, Customer, or Email..." 
           value={searchQuery}
           onChange={e => setSearchQuery(e.target.value)}
-          style={{ flex: 2, padding: '10px 14px', border: '1px solid #e2e8f0', borderRadius: '8px', fontSize: '0.9em', minWidth: '250px' }}
+          className="flex-[2] bg-bb-bg border border-bb-border/60 rounded-xl px-4 py-3 text-sm text-bb-text outline-none focus:border-bb-pink transition-all"
         />
         <select 
           value={statusFilter} 
           onChange={e => setStatusFilter(e.target.value)}
-          style={{ padding: '10px', border: '1px solid #e2e8f0', borderRadius: '8px', fontSize: '0.9em' }}
+          className="bg-bb-bg border border-bb-border/60 rounded-xl px-4 py-3 text-sm text-bb-text outline-none focus:border-bb-pink transition-all"
         >
           <option value="All">All Statuses</option>
           <option value="Pending">Pending</option>
@@ -113,7 +116,7 @@ export default function OrderManagement() {
         <select 
           value={paymentFilter} 
           onChange={e => setPaymentFilter(e.target.value)}
-          style={{ padding: '10px', border: '1px solid #e2e8f0', borderRadius: '8px', fontSize: '0.9em' }}
+          className="bg-bb-bg border border-bb-border/60 rounded-xl px-4 py-3 text-sm text-bb-text outline-none focus:border-bb-pink transition-all"
         >
           <option value="All">All Payments</option>
           <option value="Verified">Verified</option>
@@ -122,67 +125,54 @@ export default function OrderManagement() {
         </select>
       </div>
 
-      <p style={{ color: '#94a3b8', fontSize: '0.85em', marginBottom: '15px' }}>Showing {filteredOrders.length} of {orders.length} orders</p>
+      <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-4">Showing {filteredOrders.length} of {orders.length} orders</p>
       
-      <div className={styles.tableContainer}>
+      <div className="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
         {loading ? (
-          <p style={{ padding: '20px' }}>Loading live orders...</p>
+          <p className="p-6 text-sm text-slate-500 font-medium">Loading live orders...</p>
         ) : orders.length === 0 ? (
-          <p style={{ padding: '20px' }}>No orders have been placed yet.</p>
+          <p className="p-6 text-sm text-slate-500 font-medium">No orders have been placed yet.</p>
         ) : (
-          <table className={styles.table} style={{ borderCollapse: 'collapse' }}>
+          <table className="w-full text-left border-collapse">
             <thead>
-              <tr>
-                <th>Order ID</th>
-                <th>Customer</th>
-                <th>Payment Method</th>
-                <th>Date</th>
-                <th>Total</th>
-                <th>Fulfillment</th>
-                <th>Payment Verification</th>
-                <th>Details</th>
+              <tr className="bg-slate-50 border-b border-slate-100">
+                <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Order ID</th>
+                <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Customer</th>
+                <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Payment Method</th>
+                <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Date</th>
+                <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Total</th>
+                <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Fulfillment</th>
+                <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Payment Status</th>
+                <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider text-right">Actions</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody className="divide-y divide-slate-100">
               {filteredOrders.map(order => (
                 <React.Fragment key={order.id}>
-                  <tr style={{ borderBottom: expandedOrderId === order.id ? 'none' : '1px solid var(--border-light)' }}>
-                    <td style={{ fontWeight: '500' }}>{order.id}</td>
-                    <td>
-                      {order.customer}<br />
-                      <a href={`mailto:${order.email}`} style={{ color: '#2563eb', fontSize: '0.85em' }}>{order.email}</a>
+                  <tr className="hover:bg-slate-50/50 transition-colors">
+                    <td className="px-6 py-4 text-sm font-semibold text-bb-heading">{order.id}</td>
+                    <td className="px-6 py-4">
+                      <div className="text-sm font-bold text-bb-heading">{order.customer}</div>
+                      <a href={`mailto:${order.email}`} className="text-xs text-bb-pink hover:underline font-semibold">{order.email}</a>
                     </td>
-                    <td>
-                      <span style={{ 
-                        padding: '4px 10px', 
-                        borderRadius: '12px', 
-                        fontSize: '0.8em', 
-                        fontWeight: '600',
-                        backgroundColor: order.paymentMethod === 'Cash on Delivery' ? '#f1f5f9' : '#eff6ff',
-                        color: order.paymentMethod === 'Cash on Delivery' ? '#475569' : '#2563eb'
-                      }}>
+                    <td className="px-6 py-4">
+                      <span className="bg-slate-100 px-2.5 py-1 rounded-md text-xs font-bold text-slate-600 uppercase tracking-wider">
                         {order.paymentMethod || 'COD'}
                       </span>
                     </td>
-                    <td>{new Date(order.date).toLocaleString()}</td>
-                    <td style={{ fontWeight: 'bold' }}>Rs. {order.total.toLocaleString()}</td>
-                    <td>
+                    <td className="px-6 py-4 text-sm text-slate-500 font-medium">{new Date(order.date).toLocaleString()}</td>
+                    <td className="px-6 py-4 text-sm font-bold text-bb-heading">Rs. {order.total.toLocaleString()}</td>
+                    <td className="px-6 py-4">
                       <select 
                         value={order.status} 
                         onChange={(e) => updateOrderStatus(order.id, e.target.value)}
-                        style={{
-                          padding: '6px',
-                          borderRadius: '4px',
-                          border: '1px solid #ccc',
-                          backgroundColor: order.status === 'Pending' ? '#fffbeb' : 
-                                           order.status === 'Shipped' ? '#eff6ff' : 
-                                           order.status === 'Cancelled' ? '#fee2e2' : '#f0fdf4',
-                          color: order.status === 'Pending' ? '#d97706' : 
-                                 order.status === 'Shipped' ? '#2563eb' : 
-                                 order.status === 'Cancelled' ? '#ef4444' : '#16a34a',
-                          fontWeight: '500',
-                          cursor: 'pointer'
-                        }}
+                        className={cn(
+                          "px-2.5 py-1 rounded-xl text-xs font-bold uppercase tracking-wider border border-slate-200 outline-none cursor-pointer transition-colors",
+                          order.status === 'Pending' && "bg-amber-50 text-amber-700",
+                          order.status === 'Shipped' && "bg-blue-50 text-blue-700",
+                          order.status === 'Cancelled' && "bg-red-50 text-red-700",
+                          order.status === 'Delivered' && "bg-green-50 text-green-700"
+                        )}
                       >
                         <option value="Pending">Pending</option>
                         <option value="Shipped">Shipped</option>
@@ -191,34 +181,22 @@ export default function OrderManagement() {
                       </select>
                     </td>
                     {/* === PAYMENT VERIFICATION COLUMN === */}
-                    <td>
+                    <td className="px-6 py-4">
                       {(order.paymentMethod || 'Cash on Delivery') === 'Cash on Delivery' ? (
-                        <span style={{
-                          padding: '5px 12px',
-                          borderRadius: '12px',
-                          fontSize: '0.8em',
-                          fontWeight: '600',
-                          backgroundColor: '#f0fdf4',
-                          color: '#16a34a'
-                        }}>
-                          ✅ Auto-Verified (COD)
+                        <span className="bg-green-50 text-green-700 px-2.5 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider">
+                          COD Auto-Verified
                         </span>
                       ) : (
-                        <>
+                        <div className="flex flex-col gap-1 items-start">
                           <select 
                             value={order.paymentStatus || 'Pending Verification'} 
                             onChange={(e) => updatePaymentStatus(order.id, e.target.value)}
-                            style={{
-                              padding: '6px',
-                              borderRadius: '4px',
-                              border: '1px solid #ccc',
-                              backgroundColor: order.paymentStatus === 'Verified' ? '#f0fdf4' : 
-                                               order.paymentStatus === 'Failed' ? '#fee2e2' : '#fffbeb',
-                              color: order.paymentStatus === 'Verified' ? '#16a34a' : 
-                                     order.paymentStatus === 'Failed' ? '#ef4444' : '#d97706',
-                              fontWeight: '500',
-                              cursor: 'pointer'
-                            }}
+                            className={cn(
+                              "px-2.5 py-1 rounded-xl text-xs font-bold uppercase tracking-wider border border-slate-200 outline-none cursor-pointer transition-colors",
+                              order.paymentStatus === 'Verified' && "bg-green-50 text-green-700",
+                              order.paymentStatus === 'Failed' && "bg-red-50 text-red-700",
+                              (order.paymentStatus !== 'Verified' && order.paymentStatus !== 'Failed') && "bg-amber-50 text-amber-700"
+                            )}
                           >
                             <option value="Pending Verification">⏳ Pending</option>
                             <option value="Verified">✅ Verified</option>
@@ -229,25 +207,18 @@ export default function OrderManagement() {
                               href={order.paymentScreenshot} 
                               target="_blank" 
                               rel="noreferrer"
-                              style={{ display: 'block', fontSize: '0.75em', color: '#2563eb', marginTop: '4px', textDecoration: 'underline' }}
+                              className="text-[10px] text-bb-pink font-bold hover:underline mt-1"
                             >
-                              📎 View Receipt
+                              View Receipt
                             </a>
                           )}
-                        </>
+                        </div>
                       )}
                     </td>
-                    <td>
+                    <td className="px-6 py-4 text-right">
                       <button 
                         onClick={() => setExpandedOrderId(expandedOrderId === order.id ? null : order.id)}
-                        style={{ 
-                          padding: '6px 12px', 
-                          background: 'var(--text-dark)', 
-                          color: 'white', 
-                          border: 'none', 
-                          borderRadius: '4px',
-                          cursor: 'pointer' 
-                        }}
+                        className="bg-bb-heading hover:bg-bb-text text-white text-xs font-bold px-3 py-1.5 rounded-xl border-none cursor-pointer transition-colors shadow-sm"
                       >
                         {expandedOrderId === order.id ? 'Hide' : 'View'}
                       </button>
@@ -255,44 +226,39 @@ export default function OrderManagement() {
                   </tr>
                   {/* Expandable Order Details Row */}
                   {expandedOrderId === order.id && (
-                    <tr style={{ backgroundColor: '#f8fafc', borderBottom: '2px solid var(--border-light)' }}>
-                      <td colSpan="8" style={{ padding: '20px' }}>
-                        <div style={{ display: 'flex', gap: '40px' }}>
+                    <tr className="bg-slate-50/50">
+                      <td colSpan="8" className="px-6 py-6 border-t border-slate-100">
+                        <div className="flex flex-col md:flex-row gap-6">
                           {/* Order Items */}
-                          <div style={{ flex: 2 }}>
-                            <h4 style={{ marginBottom: '10px', color: '#334155' }}>Items in this order:</h4>
-                            <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+                          <div className="flex-[2]">
+                            <h4 className="font-heading text-sm font-bold text-slate-700 mb-3">Items in this order:</h4>
+                            <div className="bg-white border border-slate-200 rounded-xl divide-y divide-slate-100 shadow-sm overflow-hidden">
                               {order.items && order.items.map((item, idx) => (
-                                <li key={idx} style={{ 
-                                  display: 'flex', 
-                                  justifyContent: 'space-between', 
-                                  padding: '10px 0',
-                                  borderBottom: idx === order.items.length - 1 ? 'none' : '1px dashed #cbd5e1'
-                                }}>
-                                  <span>
-                                    <strong style={{ marginRight: '10px' }}>{item.quantity}x</strong> 
+                                <div key={idx} className="flex justify-between items-center p-4">
+                                  <span className="text-sm font-semibold text-slate-700">
+                                    <strong className="text-bb-pink mr-2">{item.quantity}x</strong> 
                                     {item.name}
                                   </span>
-                                  <span style={{ color: '#64748b' }}>Item ID: {item.id}</span>
-                                </li>
+                                  <span className="text-xs font-semibold text-slate-400">ID: {item.id}</span>
+                                </div>
                               ))}
-                            </ul>
+                            </div>
                           </div>
 
                           {/* Shipping & Payment Details */}
-                          <div style={{ flex: 1, backgroundColor: '#fff', padding: '15px', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
-                            <h4 style={{ marginBottom: '10px', color: '#334155' }}>Shipping & Payment</h4>
-                            <p style={{ margin: '0 0 15px 0', fontSize: '0.9em' }}>
-                              <strong>Location:</strong><br />
+                          <div className="flex-1 bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex flex-col gap-4">
+                            <h4 className="font-heading text-sm font-bold text-slate-700 border-b border-slate-100 pb-2">Shipping & Payment</h4>
+                            <div className="text-xs leading-relaxed text-slate-600">
+                              <span className="font-bold text-slate-500 uppercase tracking-wider block mb-1">Shipping Location</span>
                               {order.location || 'Not provided'}
-                            </p>
+                            </div>
                             
-                            <div style={{ marginBottom: '15px' }}>
-                              <label style={{ display: 'block', fontSize: '0.9em', fontWeight: 'bold', marginBottom: '5px' }}>Verify Payment Status:</label>
+                            <div className="flex flex-col gap-1.5">
+                              <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Verify Payment:</label>
                               <select 
                                 value={order.paymentStatus || 'Pending Verification'} 
                                 onChange={(e) => updatePaymentStatus(order.id, e.target.value)}
-                                style={{ padding: '6px', width: '100%', borderRadius: '4px', border: '1px solid #ccc' }}
+                                className="w-full bg-bb-bg border border-bb-border/60 rounded-xl px-3 py-2 text-xs text-bb-text outline-none focus:border-bb-pink transition-all"
                               >
                                 <option value="Pending Verification">Pending Verification</option>
                                 <option value="Verified">Verified</option>
@@ -301,16 +267,16 @@ export default function OrderManagement() {
                             </div>
 
                             {order.paymentScreenshot && (
-                              <div>
-                                <p style={{ fontSize: '0.9em', fontWeight: 'bold', marginBottom: '5px' }}>Payment Screenshot:</p>
-                                <a href={order.paymentScreenshot} target="_blank" rel="noreferrer">
+                              <div className="flex flex-col gap-2">
+                                <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">Receipt Screenshot</span>
+                                <a href={order.paymentScreenshot} target="_blank" rel="noreferrer" className="w-full h-40 bg-slate-50 border border-slate-100 rounded-lg overflow-hidden flex items-center justify-center p-1">
                                   <img 
                                     src={order.paymentScreenshot} 
                                     alt="Payment Receipt" 
-                                    style={{ width: '100%', maxHeight: '200px', objectFit: 'contain', border: '1px solid #e2e8f0', borderRadius: '4px' }} 
+                                    className="w-full h-full object-contain" 
                                   />
                                 </a>
-                                <small style={{ display: 'block', textAlign: 'center', marginTop: '4px', color: '#64748b' }}>Click image to enlarge</small>
+                                <small className="text-[10px] text-center text-slate-400 block font-semibold">Click image to enlarge</small>
                               </div>
                             )}
                           </div>

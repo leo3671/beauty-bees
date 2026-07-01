@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useProducts } from '../../../../lib/ProductContext';
-import styles from '../page.module.css';
+import { cn } from '@/lib/utils';
 
 export default function InventoryManagement() {
   const { products, loading, deleteProduct, addProduct, editProduct } = useProducts();
@@ -131,65 +131,45 @@ export default function InventoryManagement() {
     setShowAddModal(true);
   };
 
-  if (loading) return <div style={{ padding: '40px' }}>Loading premium inventory...</div>;
+  if (loading) return <div className="p-8 text-slate-500 font-medium">Loading premium inventory...</div>;
 
   const brandList = Array.from(new Set([...dbBrands.map(b => b.name), ...products.map(p => p.brand)])).filter(b => b);
 
   return (
-    <div style={{ padding: '20px' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '32px' }}>
+    <div>
+      <div className="flex justify-between items-center mb-6">
         <div>
-          <h1 className={styles.title} style={{ marginBottom: '4px' }}>Product Catalog</h1>
-          <p style={{ color: '#64748b', fontSize: '0.9rem' }}>Manage your inventory, pricing, and professional product photography.</p>
+          <h1 className="font-heading text-2xl font-bold text-bb-heading mb-1">Product Catalog</h1>
+          <p className="text-sm text-slate-500">Manage your inventory, pricing, and professional product photography.</p>
         </div>
         <button 
           onClick={() => { resetForm(); setShowAddModal(true); }}
-          style={{
-            backgroundColor: '#1a1a1a', 
-            color: 'white', 
-            padding: '12px 24px', 
-            borderRadius: '12px',
-            cursor: 'pointer',
-            border: 'none',
-            fontWeight: '600',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '8px',
-            boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
-          }}
+          className="bg-bb-heading hover:bg-bb-text text-white text-sm font-bold px-4 py-2.5 rounded-xl border-none cursor-pointer transition-colors shadow-sm"
         >
-          <span>+</span> Add New Product
+          + Add New Product
         </button>
       </div>
 
       {showAddModal && (
-        <div style={{
-          position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, 
-          backgroundColor: 'rgba(0,0,0,0.4)', backdropFilter: 'blur(4px)',
-          display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 2000
-        }}>
-          <div style={{
-            background: 'white', padding: '40px', borderRadius: '24px', 
-            width: '100%', maxWidth: '700px', maxHeight: '90vh', overflowY: 'auto',
-            boxShadow: '0 25px 50px -12px rgba(0,0,0,0.25)'
-          }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px' }}>
-              <h2 style={{ fontSize: '1.5rem', fontWeight: '700' }}>{editingProductId ? 'Edit Product' : 'Add New Product'}</h2>
-              <button onClick={() => setShowAddModal(false)} style={{ background: 'none', border: 'none', fontSize: '1.5rem', cursor: 'pointer', color: '#94a3b8' }}>&times;</button>
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex justify-center items-center z-[2000] p-4">
+          <div className="bg-white p-8 rounded-2xl max-w-2xl w-full border border-slate-100 shadow-xl max-h-[90vh] overflow-y-auto flex flex-col gap-6">
+            <div className="flex justify-between items-center border-b border-slate-100 pb-3">
+              <h2 className="font-heading text-lg font-bold text-bb-heading">{editingProductId ? 'Edit Product' : 'Add New Product'}</h2>
+              <button onClick={() => setShowAddModal(false)} className="background-none border-none text-2xl cursor-pointer text-slate-400 hover:text-slate-600">&times;</button>
             </div>
 
-            <form onSubmit={handleAddSubmit} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
-              <div style={{ gridColumn: 'span 2' }}>
-                <label style={{ display: 'block', marginBottom: '8px', fontWeight: '600', fontSize: '0.9rem' }}>Product Name</label>
-                <input required value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} placeholder="e.g., Heartleaf 77% Soothing Toner" style={{ width: '100%', padding: '12px', borderRadius: '10px', border: '1px solid #e2e8f0' }} />
+            <form onSubmit={handleAddSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-5">
+              <div className="md:col-span-2 flex flex-col gap-1.5">
+                <label className="text-xs font-semibold text-bb-text">Product Name</label>
+                <input required value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} placeholder="e.g., Heartleaf 77% Soothing Toner" className="w-full bg-bb-bg border border-bb-border/60 rounded-xl px-4 py-3 text-sm text-bb-text outline-none focus:border-bb-pink transition-all" />
               </div>
 
-              <div>
-                <label style={{ display: 'block', marginBottom: '8px', fontWeight: '600', fontSize: '0.9rem' }}>Brand</label>
+              <div className="flex flex-col gap-1.5">
+                <label className="text-xs font-semibold text-bb-text">Brand</label>
                 <select 
                   value={!formData.brand || !brandList.includes(formData.brand) ? 'Other' : formData.brand} 
                   onChange={e => setFormData({...formData, brand: e.target.value === 'Other' ? '' : e.target.value})} 
-                  style={{ width: '100%', padding: '12px', borderRadius: '10px', border: '1px solid #e2e8f0', background: 'white' }}
+                  className="w-full bg-bb-bg border border-bb-border/60 rounded-xl px-4 py-3 text-sm text-bb-text outline-none focus:border-bb-pink transition-all"
                 >
                   <option value="" disabled>Select Brand</option>
                   {brandList.map(brand => (
@@ -198,60 +178,60 @@ export default function InventoryManagement() {
                   <option value="Other">Custom Brand...</option>
                 </select>
                 {(!formData.brand || !brandList.includes(formData.brand)) && (
-                  <input placeholder="Enter new brand" value={formData.brand} onChange={e => setFormData({...formData, brand: e.target.value})} style={{ width: '100%', padding: '12px', borderRadius: '10px', border: '1px solid #e2e8f0', marginTop: '8px' }} />
+                  <input placeholder="Enter new brand" value={formData.brand} onChange={e => setFormData({...formData, brand: e.target.value})} className="w-full bg-bb-bg border border-bb-border/60 rounded-xl px-4 py-3 text-sm text-bb-text outline-none focus:border-bb-pink transition-all mt-2" />
                 )}
               </div>
 
-              <div>
-                <label style={{ display: 'block', marginBottom: '8px', fontWeight: '600', fontSize: '0.9rem' }}>Category</label>
+              <div className="flex flex-col gap-1.5">
+                <label className="text-xs font-semibold text-bb-text">Category</label>
                 <select 
                   value={isCustomCategory ? 'Other' : formData.category} 
                   onChange={e => {
                     if (e.target.value === 'Other') { setIsCustomCategory(true); setFormData({...formData, category: ''}); }
                     else { setIsCustomCategory(false); setFormData({...formData, category: e.target.value}); }
                   }} 
-                  style={{ width: '100%', padding: '12px', borderRadius: '10px', border: '1px solid #e2e8f0', background: 'white' }}
+                  className="w-full bg-bb-bg border border-bb-border/60 rounded-xl px-4 py-3 text-sm text-bb-text outline-none focus:border-bb-pink transition-all"
                 >
                   {categories.map(cat => <option key={cat} value={cat}>{cat}</option>)}
                   <option value="Other">Custom Category...</option>
                 </select>
                 {isCustomCategory && (
-                  <input placeholder="Enter category" value={formData.category} onChange={e => setFormData({...formData, category: e.target.value})} style={{ width: '100%', padding: '12px', borderRadius: '10px', border: '1px solid #e2e8f0', marginTop: '8px' }} />
+                  <input placeholder="Enter category" value={formData.category} onChange={e => setFormData({...formData, category: e.target.value})} className="w-full bg-bb-bg border border-bb-border/60 rounded-xl px-4 py-3 text-sm text-bb-text outline-none focus:border-bb-pink transition-all mt-2" />
                 )}
               </div>
 
-              <div>
-                <label style={{ display: 'block', marginBottom: '8px', fontWeight: '600', fontSize: '0.9rem' }}>Price (Rs.)</label>
-                <input required type="number" value={formData.price} onChange={e => setFormData({...formData, price: e.target.value})} style={{ width: '100%', padding: '12px', borderRadius: '10px', border: '1px solid #e2e8f0' }} />
+              <div className="flex flex-col gap-1.5">
+                <label className="text-xs font-semibold text-bb-text">Price (Rs.)</label>
+                <input required type="number" value={formData.price} onChange={e => setFormData({...formData, price: e.target.value})} className="w-full bg-bb-bg border border-bb-border/60 rounded-xl px-4 py-3 text-sm text-bb-text outline-none focus:border-bb-pink transition-all" />
               </div>
 
-              <div>
-                <label style={{ display: 'block', marginBottom: '8px', fontWeight: '600', fontSize: '0.9rem' }}>Stock Quantity</label>
-                <input required type="number" value={formData.stock} onChange={e => setFormData({...formData, stock: e.target.value})} style={{ width: '100%', padding: '12px', borderRadius: '10px', border: '1px solid #e2e8f0' }} />
+              <div className="flex flex-col gap-1.5">
+                <label className="text-xs font-semibold text-bb-text">Stock Quantity</label>
+                <input required type="number" value={formData.stock} onChange={e => setFormData({...formData, stock: e.target.value})} className="w-full bg-bb-bg border border-bb-border/60 rounded-xl px-4 py-3 text-sm text-bb-text outline-none focus:border-bb-pink transition-all" />
               </div>
 
-              <div style={{ gridColumn: 'span 2' }}>
-                <label style={{ display: 'block', marginBottom: '8px', fontWeight: '600', fontSize: '0.9rem' }}>Product Photography (Cloud Upload)</label>
-                <div style={{ display: 'flex', gap: '20px', alignItems: 'center' }}>
-                  <div style={{ width: '120px', height: '120px', borderRadius: '16px', background: '#f8fafc', border: '2px dashed #e2e8f0', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
-                    {formData.imagePreview ? <img src={formData.imagePreview} style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : <span style={{ color: '#94a3b8', fontSize: '2rem' }}>📷</span>}
+              <div className="md:col-span-2 flex flex-col gap-1.5">
+                <label className="text-xs font-semibold text-bb-text">Product Photography (Cloud Upload)</label>
+                <div className="flex gap-4 items-center">
+                  <div className="w-24 h-24 rounded-2xl bg-slate-50 border-2 border-dashed border-slate-200 flex items-center justify-center overflow-hidden flex-shrink-0">
+                    {formData.imagePreview ? <img src={formData.imagePreview} className="w-full h-full object-cover" /> : <span className="text-slate-300 text-3xl">📷</span>}
                   </div>
-                  <div style={{ flex: 1 }}>
-                    <input type="file" accept="image/*" onChange={handleImageChange} style={{ display: 'none' }} id="imageUpload" />
-                    <label htmlFor="imageUpload" style={{ display: 'inline-block', padding: '10px 20px', background: '#f1f5f9', borderRadius: '8px', cursor: 'pointer', fontWeight: '600', color: '#1a1a1a' }}>Choose File</label>
-                    <p style={{ fontSize: '0.75rem', color: '#64748b', marginTop: '8px' }}>High-res JPG or PNG with white background recommended.</p>
+                  <div className="flex-1">
+                    <input type="file" accept="image/*" onChange={handleImageChange} className="hidden" id="imageUpload" />
+                    <label htmlFor="imageUpload" className="inline-block px-4 py-2 bg-slate-100 hover:bg-slate-200 rounded-xl cursor-pointer font-semibold text-xs text-slate-700 transition-colors border-none">Choose File</label>
+                    <p className="text-[10px] text-slate-400 mt-1.5">High-res JPG or PNG with white background recommended.</p>
                   </div>
                 </div>
               </div>
 
-              <div style={{ gridColumn: 'span 2' }}>
-                <label style={{ display: 'block', marginBottom: '8px', fontWeight: '600', fontSize: '0.9rem' }}>Description</label>
-                <textarea required value={formData.description} onChange={e => setFormData({...formData, description: e.target.value})} style={{ width: '100%', padding: '12px', borderRadius: '10px', border: '1px solid #e2e8f0', minHeight: '100px' }} />
+              <div className="md:col-span-2 flex flex-col gap-1.5">
+                <label className="text-xs font-semibold text-bb-text">Description</label>
+                <textarea required value={formData.description} onChange={e => setFormData({...formData, description: e.target.value})} className="w-full bg-bb-bg border border-bb-border/60 rounded-xl px-4 py-3 text-sm text-bb-text outline-none focus:border-bb-pink transition-all resize-none" rows="3" />
               </div>
 
-              <div style={{ gridColumn: 'span 2', display: 'flex', gap: '16px', marginTop: '10px' }}>
-                <button type="button" onClick={() => setShowAddModal(false)} style={{ flex: 1, padding: '14px', borderRadius: '12px', border: '1px solid #e2e8f0', background: 'white', fontWeight: '600', cursor: 'pointer' }}>Cancel</button>
-                <button type="submit" disabled={isSubmitting} style={{ flex: 2, padding: '14px', borderRadius: '12px', border: 'none', background: '#1a1a1a', color: 'white', fontWeight: '700', cursor: 'pointer' }}>
+              <div className="md:col-span-2 flex gap-3 border-t border-slate-100 pt-4 mt-2">
+                <button type="button" onClick={() => setShowAddModal(false)} className="flex-1 bg-white border border-slate-200 hover:bg-slate-50 text-bb-text font-semibold py-3 rounded-xl transition-colors text-sm cursor-pointer">Cancel</button>
+                <button type="submit" disabled={isSubmitting} className="flex-[2] bg-bb-heading hover:bg-bb-text text-white font-bold py-3 rounded-xl shadow-md transition-colors text-sm border-none cursor-pointer">
                   {isSubmitting ? 'Processing Cloud Upload...' : 'Save Product & Update Catalog'}
                 </button>
               </div>
@@ -260,42 +240,47 @@ export default function InventoryManagement() {
         </div>
       )}
 
-      <div className={styles.tableContainer} style={{ borderRadius: '20px', border: 'none', boxShadow: '0 10px 30px rgba(0,0,0,0.05)' }}>
-        <table className={styles.table}>
+      <div className="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
+        <table className="w-full text-left border-collapse">
           <thead>
-            <tr>
-              <th style={{ paddingLeft: '32px' }}>Product</th>
-              <th>Brand</th>
-              <th>Price</th>
-              <th>Inventory</th>
-              <th style={{ paddingRight: '32px', textAlign: 'right' }}>Actions</th>
+            <tr className="bg-slate-50 border-b border-slate-100">
+              <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Product</th>
+              <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Brand</th>
+              <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Price</th>
+              <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Inventory</th>
+              <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider text-right">Actions</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody className="divide-y divide-slate-100">
             {products.map((product) => (
-              <tr key={product.id}>
-                <td style={{ paddingLeft: '32px' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-                    <img src={product.image} alt={product.name} style={{ width: '56px', height: '56px', objectFit: 'cover', borderRadius: '12px', background: '#f8fafc' }} />
+              <tr key={product.id} className="hover:bg-slate-50/50 transition-colors">
+                <td className="px-6 py-4">
+                  <div className="flex items-center gap-3">
+                    <img src={product.image} alt={product.name} className="w-12 h-12 object-cover rounded-lg border border-slate-100 bg-slate-50 flex-shrink-0" />
                     <div>
-                      <div style={{ fontWeight: '700', color: '#1a1a1a' }}>{product.name}</div>
-                      <div style={{ fontSize: '0.8rem', color: '#64748b' }}>{product.category}</div>
+                      <div className="text-sm font-bold text-bb-heading">{product.name}</div>
+                      <div className="text-xs text-slate-400">{product.category}</div>
                     </div>
                   </div>
                 </td>
-                <td><span style={{ background: '#f1f5f9', padding: '4px 10px', borderRadius: '6px', fontSize: '0.85rem', fontWeight: '600' }}>{product.brand}</span></td>
-                <td style={{ fontWeight: '700' }}>Rs. {product.price.toLocaleString()}</td>
-                <td>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <div style={{ width: '40px', height: '6px', background: '#f1f5f9', borderRadius: '3px', overflow: 'hidden' }}>
-                      <div style={{ width: `${Math.min((product.stock / 50) * 100, 100)}%`, height: '100%', background: product.stock > 10 ? '#22c55e' : '#ef4444' }}></div>
+                <td className="px-6 py-4">
+                  <span className="bg-slate-100 px-2.5 py-1 rounded-md text-xs font-semibold text-slate-600">{product.brand}</span>
+                </td>
+                <td className="px-6 py-4 text-sm font-bold text-bb-heading">Rs. {product.price.toLocaleString()}</td>
+                <td className="px-6 py-4">
+                  <div className="flex items-center gap-2">
+                    <div className="w-12 h-1.5 bg-slate-100 rounded-full overflow-hidden flex-shrink-0">
+                      <div 
+                        className={cn("h-full", product.stock > 10 ? 'bg-green-500' : 'bg-red-500')} 
+                        style={{ width: `${Math.min((product.stock / 50) * 100, 100)}%` }}
+                      ></div>
                     </div>
-                    <span style={{ fontSize: '0.85rem', fontWeight: '600' }}>{product.stock || 0}</span>
+                    <span className="text-xs font-semibold text-slate-500">{product.stock || 0}</span>
                   </div>
                 </td>
-                <td style={{ paddingRight: '32px', textAlign: 'right' }}>
-                  <button onClick={() => handleEditClick(product)} style={{ color: '#1a1a1a', fontWeight: '700', border: '1px solid #e2e8f0', background: 'white', padding: '8px 16px', borderRadius: '8px', cursor: 'pointer', marginRight: '8px' }}>Edit</button>
-                  <button onClick={() => handleDelete(product.id)} style={{ color: '#ef4444', fontWeight: '700', border: 'none', background: 'none', cursor: 'pointer' }}>Delete</button>
+                <td className="px-6 py-4 text-right">
+                  <button onClick={() => handleEditClick(product)} className="text-bb-heading hover:bg-slate-50 border border-slate-200 text-xs font-bold px-3 py-1.5 rounded-xl cursor-pointer transition-colors mr-2 bg-white">Edit</button>
+                  <button onClick={() => deleteProduct(product.id)} className="text-red-500 hover:text-red-700 text-xs font-bold bg-transparent border-none cursor-pointer">Delete</button>
                 </td>
               </tr>
             ))}

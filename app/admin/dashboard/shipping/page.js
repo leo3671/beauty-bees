@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import styles from './shipping.module.css';
 import { toast } from 'react-hot-toast';
 
 export default function ShippingManagement() {
@@ -79,71 +78,79 @@ export default function ShippingManagement() {
     }
   };
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) return <div className="p-8 text-slate-500 font-medium">Loading shipping zones...</div>;
 
   return (
-    <div className={styles.container}>
-      <header className={styles.header}>
-        <h1>Shipping Zones</h1>
-        <p>Pre-set shipping fees based on delivery districts.</p>
+    <div className="max-w-6xl mx-auto py-4">
+      <header className="mb-8">
+        <h1 className="font-heading text-2xl font-bold text-bb-heading mb-1.5">Shipping Zones</h1>
+        <p className="text-sm text-slate-500">Pre-set shipping fees based on delivery districts.</p>
       </header>
 
-      <div className={styles.grid}>
-        <div className={styles.formCard}>
-          <h2>{editingZone ? 'Edit Zone' : 'Add New Zone'}</h2>
-          <form onSubmit={editingZone ? handleUpdate : handleCreate}>
-            <div className={styles.field}>
-              <label>District/Location Name</label>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col gap-4 h-fit">
+          <h2 className="font-heading text-base font-bold text-bb-heading pb-2 border-b border-slate-100">{editingZone ? 'Edit Zone' : 'Add New Zone'}</h2>
+          <form onSubmit={editingZone ? handleUpdate : handleCreate} className="flex flex-col gap-4">
+            <div className="flex flex-col gap-1.5">
+              <label className="text-xs font-semibold text-bb-text">District/Location Name</label>
               <input 
                 type="text" 
                 placeholder="e.g. Kathmandu"
                 value={editingZone ? editingZone.name : newZone.name}
                 onChange={(e) => editingZone ? setEditingZone({...editingZone, name: e.target.value}) : setNewZone({...newZone, name: e.target.value})}
                 required
+                className="w-full bg-bb-bg border border-bb-border/60 rounded-xl px-4 py-3 text-sm text-bb-text outline-none focus:border-bb-pink transition-all"
               />
             </div>
-            <div className={styles.field}>
-              <label>Shipping Fee (Rs.)</label>
+            <div className="flex flex-col gap-1.5">
+              <label className="text-xs font-semibold text-bb-text">Shipping Fee (Rs.)</label>
               <input 
                 type="number" 
                 placeholder="e.g. 100"
                 value={editingZone ? editingZone.fee : newZone.fee}
                 onChange={(e) => editingZone ? setEditingZone({...editingZone, fee: e.target.value}) : setNewZone({...newZone, fee: e.target.value})}
                 required
+                className="w-full bg-bb-bg border border-bb-border/60 rounded-xl px-4 py-3 text-sm text-bb-text outline-none focus:border-bb-pink transition-all"
               />
             </div>
-            <div className={styles.actions}>
-              <button type="submit" className={styles.submitBtn}>
+            <div className="flex flex-col gap-2 mt-2">
+              <button type="submit" className="w-full bg-bb-heading hover:bg-bb-text text-white font-bold py-3.5 rounded-xl border-none cursor-pointer shadow-sm transition-colors text-sm">
                 {editingZone ? 'Update Zone' : 'Create Zone'}
               </button>
-              {editingZone && <button type="button" onClick={() => setEditingZone(null)} className={styles.cancelBtn}>Cancel</button>}
+              {editingZone && (
+                <button type="button" onClick={() => setEditingZone(null)} className="w-full bg-white border border-slate-200 hover:bg-slate-50 text-bb-text font-semibold py-3 rounded-xl transition-colors text-sm border-none cursor-pointer">
+                  Cancel
+                </button>
+              )}
             </div>
           </form>
         </div>
 
-        <div className={styles.listCard}>
-          <h2>Active Zones</h2>
-          <table className={styles.table}>
-            <thead>
-              <tr>
-                <th>Location</th>
-                <th>Fee</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {zones.map(z => (
-                <tr key={z.id}>
-                  <td>{z.name}</td>
-                  <td>Rs. {z.fee}</td>
-                  <td>
-                    <button onClick={() => setEditingZone(z)} className={styles.editBtn}>Edit</button>
-                    <button onClick={() => handleDelete(z.id)} className={styles.deleteBtn}>Delete</button>
-                  </td>
+        <div className="lg:col-span-2 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col gap-4">
+          <h2 className="font-heading text-base font-bold text-bb-heading pb-2 border-b border-slate-100">Active Zones</h2>
+          <div className="overflow-x-auto">
+            <table className="w-full text-left border-collapse">
+              <thead>
+                <tr className="bg-slate-50 border-b border-slate-100">
+                  <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Location</th>
+                  <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Fee</th>
+                  <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Actions</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody className="divide-y divide-slate-100">
+                {zones.map(z => (
+                  <tr key={z.id} className="hover:bg-slate-50/50 transition-colors">
+                    <td className="px-6 py-4 text-sm font-semibold text-bb-heading">{z.name}</td>
+                    <td className="px-6 py-4 text-sm font-semibold text-slate-600">Rs. {z.fee}</td>
+                    <td className="px-6 py-4 text-sm">
+                      <button onClick={() => setEditingZone(z)} className="text-bb-heading hover:underline text-sm font-semibold bg-transparent border-none cursor-pointer mr-3">Edit</button>
+                      <button onClick={() => handleDelete(z.id)} className="text-red-500 hover:text-red-700 text-sm font-semibold bg-transparent border-none cursor-pointer">Delete</button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>
