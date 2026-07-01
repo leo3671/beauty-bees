@@ -1,39 +1,56 @@
 import { NextResponse } from 'next/server';
+import { createSupabaseServerClient } from '@/lib/supabase';
 import prisma from '@/lib/prisma';
-import { verifyOTP } from '@/lib/auth-utils';
-import { getSession } from '@/lib/session';
 
 export async function POST(request) {
   try {
     const { email, token, type } = await request.json(); 
     const normalizedEmail = email?.toLowerCase().trim();
 
-    if (!normalizedEmail || !token || !type) {
+    if (!normalizedEmail || !token) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
-    const isValid = await verifyOTP(normalizedEmail, token, type);
+    // Call Supabase Auth verifyOtp
+    const supabase = await createSupabaseServerClient();
+    
+    // In Supabase, the verification type is 'signup' for email confirmations, and 'sms' for phone
+    const verifyType = type === 'PHONE_VERIFICATION' ? 'sms' : 'signup';
 
-    if (!isValid) {
-      return NextResponse.json({ error: 'Invalid or expired code' }, { status: 400 });
+    const { data, error } = await supabase.auth.verifyOtp({
+      email: normalizedEmail,
+      token,
+      type: verifyType
+    });
+
+    if (error) {
+      console.error(`[AUTH] Verification failed for ${normalizedEmail}: ${error.message}`);
+      return NextResponse.json({ error: error.message || 'Invalid or expired code' }, { status: 400 });
     }
 
-    const user = await prisma.user.findUnique({ where: { email: normalizedEmail } });
-    if (!user) return NextResponse.json({ error: 'User not found' }, { status: 404 });
-
-    if (type === 'EMAIL_VERIFICATION' || type === 'PHONE_VERIFICATION') {
-      await prisma.user.update({
-        where: { id: user.id },
-        data: { isVerified: true }
-      });
+    const supabaseUser = data.user;
+    if (!supabaseUser) {
+      return NextResponse.json({ error: 'Verification succeeded but user details were not returned' }, { status: 400 });
     }
 
-    // Create session if it was a verification or MFA success
-    const session = await getSession();
-    session.user = { id: user.id, email: user.email, name: user.name, role: user.role };
-    await session.save();
+    // Sync profile status in our local Prisma User table
+    const localUser = await prisma.user.upsert({
+      where: { email: normalizedEmail },
+      update: {
+        isVerified: true
+      },
+      create: {
+        id: supabaseUser.id,
+        email: normalizedEmail,
+        name: supabaseUser.user_metadata?.name || '',
+        phone: supabaseUser.user_metadata?.phone || '',
+        password: 'supabase_auth',
+        role: supabaseUser.user_metadata?.role || 'customer',
+        isVerified: true
+      }
+    });
 
-    return NextResponse.json({ success: true, role: user.role });
+    return NextResponse.json({ success: true, role: localUser.role });
   } catch (error) {
     console.error("Verify Error:", error);
     return NextResponse.json({ error: 'Verification failed' }, { status: 500 });

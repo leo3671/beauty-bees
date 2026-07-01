@@ -1,6 +1,4 @@
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
+import prisma from '@/lib/prisma';
 import { sendOrderCancelled } from '@/lib/email';
 
 export async function POST(req) {

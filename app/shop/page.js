@@ -5,6 +5,7 @@ import { useSearchParams } from 'next/navigation';
 import ProductCard from '../../components/ProductCard';
 import { Suspense } from 'react';
 import { useProducts } from '../../lib/ProductContext';
+import { cn } from '../../lib/utils';
 
 function ShopContent() {
   const searchParams = useSearchParams();

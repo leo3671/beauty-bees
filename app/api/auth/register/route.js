@@ -1,9 +1,6 @@
 import { NextResponse } from 'next/server';
-import { getSession } from '../../../../lib/session';
+import { createSupabaseServerClient } from '@/lib/supabase';
 import prisma from '@/lib/prisma';
-import bcrypt from 'bcryptjs';
-import { generateOTP, sendOTP } from '@/lib/auth-utils';
-import { sendSMS } from '@/lib/sms-utils';
 
 // Simple in-memory rate limiter
 const attempts = new Map();
@@ -85,41 +82,60 @@ export async function POST(request) {
       }, { status: 400 });
     }
 
-    // Check if user already exists
-    const existingUser = await prisma.user.findUnique({ where: { email: email.toLowerCase().trim() } });
-    if (existingUser) {
-      if (existingUser.isVerified) {
-        return NextResponse.json({ error: 'An account with this email already exists' }, { status: 409 });
-      }
-      // Delete unverified account so they can re-register
-      await prisma.user.delete({ where: { id: existingUser.id } });
-    }
+    const cleanEmail = email.toLowerCase().trim();
+    const cleanPhone = phone.replace(/[\s\-\(\)]/g, '');
 
-    // Hash password with bcrypt (cost factor 12)
-    const hashedPassword = await bcrypt.hash(password.trim(), 12);
-
-    // Create user
-    const user = await prisma.user.create({
-      data: {
-        name: sanitizedName,
-        email: email.toLowerCase().trim(),
-        phone: phone.replace(/[\s\-\(\)]/g, ''),
-        password: hashedPassword,
-        role: 'customer',
-        isVerified: false
+    // Call Supabase Auth signUp
+    const supabase = await createSupabaseServerClient();
+    const { data, error } = await supabase.auth.signUp({
+      email: cleanEmail,
+      password: password.trim(),
+      options: {
+        data: {
+          name: sanitizedName,
+          phone: cleanPhone,
+          role: 'customer'
+        }
       }
     });
 
-    // Send Verification OTP
-    const otp = generateOTP();
-    await sendOTP(user.email, otp, 'EMAIL_VERIFICATION');
+    if (error) {
+      console.error("Supabase Register Error:", error);
+      return NextResponse.json({ error: error.message }, { status: 400 });
+    }
+
+    const supabaseUser = data.user;
+    if (!supabaseUser) {
+      return NextResponse.json({ error: 'Failed to create account in auth service' }, { status: 500 });
+    }
+
+    // Upsert user details into local Prisma DB for relational integrity
+    const user = await prisma.user.upsert({
+      where: { email: cleanEmail },
+      update: {
+        name: sanitizedName,
+        phone: cleanPhone,
+        role: 'customer',
+        isVerified: supabaseUser.email_confirmed_at ? true : false,
+      },
+      create: {
+        id: supabaseUser.id,
+        name: sanitizedName,
+        email: cleanEmail,
+        phone: cleanPhone,
+        password: 'supabase_auth', // Placeholder to satisfy schema constraints
+        role: 'customer',
+        isVerified: supabaseUser.email_confirmed_at ? true : false,
+      }
+    });
+
+    const requiresVerification = !data.session && !supabaseUser.email_confirmed_at;
 
     return NextResponse.json({ 
       success: true, 
-      message: 'Account created. Please verify your email.',
-      requiresVerification: true,
-      email: user.email,
-      devOTP: (process.env.GMAIL_APP_PASSWORD && process.env.GMAIL_APP_PASSWORD !== 'PASTE_YOUR_APP_PASSWORD_HERE') ? null : otp 
+      message: requiresVerification ? 'Account created. Please verify your email.' : 'Account created successfully.',
+      requiresVerification,
+      email: cleanEmail
     }, { status: 201 });
   } catch (error) {
     console.error("Register Error:", error);

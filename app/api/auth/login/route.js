@@ -1,8 +1,6 @@
 import { NextResponse } from 'next/server';
-import { getSession } from '@/lib/session';
+import { createSupabaseServerClient } from '@/lib/supabase';
 import prisma from '@/lib/prisma';
-import bcrypt from 'bcryptjs';
-import { generateOTP, sendOTP } from '@/lib/auth-utils';
 
 // Simple in-memory rate limiter
 const attempts = new Map();
@@ -29,49 +27,66 @@ export async function POST(request) {
       return NextResponse.json({ error: 'Too many login attempts. Please wait 1 minute.' }, { status: 429 });
     }
 
-    const { email, password, rememberMe = false } = await request.json();
+    const { email, password } = await request.json();
 
     if (!email || !password) {
       return NextResponse.json({ error: 'Email and password are required' }, { status: 400 });
     }
 
-    // Sanitize email strictly
     const sanitizedEmail = email.toLowerCase().trim();
 
-    // Find user in database
-    const user = await prisma.user.findUnique({ where: { email: sanitizedEmail } });
-    
-    if (!user) {
-      console.log(`[AUTH] Login failed: User not found (${sanitizedEmail})`);
+    // Call Supabase Auth to establish the session
+    const supabase = await createSupabaseServerClient();
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email: sanitizedEmail,
+      password
+    });
+
+    if (error) {
+      console.log(`[AUTH] Login failed for ${sanitizedEmail}: ${error.message}`);
       return NextResponse.json({ error: 'Invalid email or password' }, { status: 401 });
     }
 
+    const supabaseUser = data.user;
+    if (!supabaseUser) {
+      return NextResponse.json({ error: 'Invalid email or password' }, { status: 401 });
+    }
+
+    // Sync user details to Prisma for relational consistency
+    const userRole = supabaseUser.user_metadata?.role || 'customer';
+    const userName = supabaseUser.user_metadata?.name || '';
+    const userPhone = supabaseUser.user_metadata?.phone || '';
+
+    const localUser = await prisma.user.upsert({
+      where: { email: sanitizedEmail },
+      update: {
+        name: userName,
+        phone: userPhone,
+        role: userRole,
+        isVerified: supabaseUser.email_confirmed_at ? true : false,
+      },
+      create: {
+        id: supabaseUser.id,
+        email: sanitizedEmail,
+        name: userName,
+        phone: userPhone,
+        password: 'supabase_auth', // Placeholder
+        role: userRole,
+        isVerified: supabaseUser.email_confirmed_at ? true : false,
+      }
+    });
+
     // Check if verified
-    if (!user.isVerified) {
-      console.log(`[AUTH] Login blocked: User not verified (${sanitizedEmail})`);
-      const otp = generateOTP();
-      await sendOTP(user.email, otp, 'EMAIL_VERIFICATION');
+    if (!supabaseUser.email_confirmed_at) {
+      console.log(`[AUTH] Login blocked: User email not verified (${sanitizedEmail})`);
       return NextResponse.json({ 
         requiresVerification: true, 
-        email: user.email, 
-        message: 'Please verify your email to continue.',
-        devOTP: (process.env.GMAIL_APP_PASSWORD && process.env.GMAIL_APP_PASSWORD !== 'PASTE_YOUR_APP_PASSWORD_HERE') ? null : otp
+        email: sanitizedEmail, 
+        message: 'Please verify your email to continue.'
       }, { status: 403 });
     }
 
-    // Verify password
-    const isValidPassword = await bcrypt.compare(password, user.password);
-    if (!isValidPassword) {
-      console.log(`[AUTH] Login failed: Password mismatch (${sanitizedEmail})`);
-      return NextResponse.json({ error: 'Invalid email or password' }, { status: 401 });
-    }
-
-    // Create secure session
-    const session = await getSession(rememberMe);
-    session.user = { id: user.id, email: user.email, role: user.role, name: user.name };
-    await session.save();
-
-    return NextResponse.json({ success: true, role: user.role });
+    return NextResponse.json({ success: true, role: localUser.role });
   } catch (error) {
     console.error("Login Error:", error);
     return NextResponse.json({ error: 'Failed to login' }, { status: 500 });
