@@ -86,7 +86,7 @@ export default function Header() {
 
         {/* Logo */}
         <div className={cn("flex items-center", "lg:flex-none", "max-lg:flex-1 max-lg:justify-center")}>
-          <Link href="/">
+          <Link href="/" className="flex items-center">
             <Image
               src="/logo_new.png"
               alt="Beauty Bees Logo"
