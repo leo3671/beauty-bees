@@ -1,31 +1,34 @@
 import prisma from '@/lib/prisma';
-import { sendOrderCancelled } from '@/lib/email';
+import { sendCancellationRequest } from '@/lib/email';
+import { NextResponse } from 'next/server';
 
 export async function POST(req) {
   try {
-    const { orderId } = await req.json();
+    const { orderId, reason } = await req.json();
     
     const order = await prisma.order.findUnique({
       where: { id: orderId }
     });
 
-    if (!order) return new Response(JSON.stringify({ error: "Order not found" }), { status: 404 });
-
-    // Restriction: Cannot cancel if status is Shipped, Delivered, or Returned
-    if (order.status !== 'Pending') {
-      return new Response(JSON.stringify({ error: "Order cannot be cancelled at this stage" }), { status: 400 });
+    if (!order) {
+      return NextResponse.json({ error: "Order not found" }, { status: 404 });
     }
 
-    const updatedOrder = await prisma.order.update({
-      where: { id: orderId },
-      data: { status: 'Cancelled' },
-      include: { items: true }
-    });
+    // Restriction: Cannot request cancellation if status is not Pending
+    if (order.status !== 'Pending') {
+      return NextResponse.json({ error: "Order cannot be cancelled at this stage" }, { status: 400 });
+    }
 
-    try { await sendOrderCancelled(updatedOrder); } catch (e) { console.error(e); }
+    try {
+      await sendCancellationRequest(order, reason);
+    } catch (e) {
+      console.error("Email delivery failed:", e);
+      return NextResponse.json({ error: "Failed to send cancellation request email" }, { status: 500 });
+    }
 
-    return new Response(JSON.stringify(updatedOrder), { status: 200 });
+    return NextResponse.json({ success: true, message: "Cancellation request submitted successfully" }, { status: 200 });
   } catch (error) {
-    return new Response(JSON.stringify({ error: "Cancellation failed" }), { status: 500 });
+    console.error("Cancellation request error:", error);
+    return NextResponse.json({ error: "Request failed" }, { status: 500 });
   }
 }

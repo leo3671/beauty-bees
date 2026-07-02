@@ -1,11 +1,12 @@
 "use client";
 
 import { usePathname } from 'next/navigation';
+import dynamic from 'next/dynamic';
 import Header from './Header';
 import Footer from './Footer';
-import Cart from './Cart';
-import BeeChatWidget from './BeeChatWidget';
 import { useCart } from '../lib/CartContext';
+
+const Cart = dynamic(() => import('./Cart'), { ssr: false });
 
 import { Toaster } from 'react-hot-toast';
 
@@ -30,7 +31,6 @@ export default function ClientLayout({ children }) {
       <Header />
       {closeCart && <Cart isOpen={isCartOpen} onClose={closeCart} />}
       <main style={{ flex: 1 }}>{children}</main>
-      <BeeChatWidget />
       <Footer />
     </>
   );

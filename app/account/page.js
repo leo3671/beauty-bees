@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { toast } from 'react-hot-toast';
 import { cn } from '@/lib/utils';
+import ProductCard from '@/components/ProductCard';
 
 function AccountPageContent() {
   const [orders, setOrders] = useState([]);
@@ -14,6 +15,13 @@ function AccountPageContent() {
   const [activeTab, setActiveTab] = useState(searchParams.get('tab') || 'overview');
   const [orderFilter, setOrderFilter] = useState('All');
   
+  // Wishlist & Cancellation states
+  const [wishlist, setWishlist] = useState([]);
+  const [wishlistLoading, setWishlistLoading] = useState(false);
+  const [cancellingOrderId, setCancellingOrderId] = useState(null);
+  const [cancelReason, setCancelReason] = useState('');
+  const [submittingCancel, setSubmittingCancel] = useState(false);
+  
   // Profile edit states
   const [editMode, setEditMode] = useState(false);
   const [profileData, setProfileData] = useState({ name: '', phone: '', mfaEnabled: false, currentPassword: '', newPassword: '' });
@@ -21,35 +29,18 @@ function AccountPageContent() {
 
   const router = useRouter();
 
-  useEffect(() => {
-    checkSession();
-  }, []);
-
-  useEffect(() => {
-    const tab = searchParams.get('tab');
-    if (tab) {
-      setActiveTab(tab);
-    }
-  }, [searchParams]);
-
-  useEffect(() => {
-    if (user) {
-      setProfileData({ ...profileData, name: user.name, phone: user.phone || '', mfaEnabled: !!user.mfaEnabled });
-    }
-  }, [user]);
-
-  const checkSession = async () => {
+  const fetchWishlist = async () => {
+    setWishlistLoading(true);
     try {
-      const res = await fetch('/api/auth/me');
-      if (!res.ok) {
-        router.push('/login');
-        return;
+      const res = await fetch('/api/user/wishlist');
+      if (res.ok) {
+        const data = await res.json();
+        setWishlist(data.items || []);
       }
-      const data = await res.json();
-      setUser(data.user);
-      fetchMyOrders(data.user.email);
     } catch (e) {
-      router.push('/login');
+      console.error(e);
+    } finally {
+      setWishlistLoading(false);
     }
   };
 
@@ -65,6 +56,45 @@ function AccountPageContent() {
       setLoading(false);
     }
   };
+
+  const checkSession = async () => {
+    try {
+      const res = await fetch('/api/auth/me');
+      if (!res.ok) {
+        router.push('/login');
+        return;
+      }
+      const data = await res.json();
+      setUser(data.user);
+      fetchMyOrders(data.user.email);
+      fetchWishlist();
+    } catch (e) {
+      router.push('/login');
+    }
+  };
+
+  useEffect(() => {
+    checkSession();
+  }, []);
+
+  useEffect(() => {
+    if (activeTab === 'wishlist' && user) {
+      fetchWishlist();
+    }
+  }, [activeTab, user]);
+
+  useEffect(() => {
+    const tab = searchParams.get('tab');
+    if (tab) {
+      setActiveTab(tab);
+    }
+  }, [searchParams]);
+
+  useEffect(() => {
+    if (user) {
+      setProfileData({ ...profileData, name: user.name, phone: user.phone || '', mfaEnabled: !!user.mfaEnabled });
+    }
+  }, [user]);
 
   const handleLogout = async () => {
     await fetch('/api/auth/logout', { method: 'POST' });
@@ -160,6 +190,18 @@ function AccountPageContent() {
           <button 
             className={cn(
               "w-full flex items-center gap-3 py-2.5 px-4 rounded-xl text-sm font-semibold transition-all border-none bg-transparent cursor-pointer",
+              activeTab === 'wishlist' ? "bg-bb-pink text-white shadow-sm" : "text-bb-text/80 hover:bg-bb-peach/50 hover:text-bb-pink"
+            )}
+            onClick={() => setActiveTab('wishlist')}
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+            </svg>
+            Wishlist
+          </button>
+          <button 
+            className={cn(
+              "w-full flex items-center gap-3 py-2.5 px-4 rounded-xl text-sm font-semibold transition-all border-none bg-transparent cursor-pointer",
               activeTab === 'settings' ? "bg-bb-pink text-white shadow-sm" : "text-bb-text/80 hover:bg-bb-peach/50 hover:text-bb-pink"
             )}
             onClick={() => setActiveTab('settings')}
@@ -217,6 +259,18 @@ function AccountPageContent() {
             <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
           </svg>
           <span>Orders</span>
+        </button>
+        <button 
+          className={cn(
+            "flex flex-col items-center gap-1 text-[10px] font-semibold bg-transparent border-none cursor-pointer",
+            activeTab === 'wishlist' ? "text-bb-pink" : "text-slate-400"
+          )}
+          onClick={() => setActiveTab('wishlist')}
+        >
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+          </svg>
+          <span>Wishlist</span>
         </button>
         <button 
           className={cn(
@@ -421,25 +475,64 @@ function AccountPageContent() {
 
                     <div className="flex justify-end border-t border-bb-border/10 pt-4">
                        {order.status === 'Pending' && (
-                         <button 
-                          className="bg-transparent border border-red-200 text-red-500 hover:bg-red-50 text-xs font-semibold px-4 py-2 rounded-xl cursor-pointer transition-colors" 
-                          onClick={async () => {
-                            if (!confirm('Are you sure you want to cancel this order?')) return;
-                            const res = await fetch('/api/user/orders/cancel', {
-                              method: 'POST',
-                              headers: { 'Content-Type': 'application/json' },
-                              body: JSON.stringify({ orderId: order.id })
-                            });
-                            if (res.ok) {
-                              toast.success('Order cancelled');
-                              fetchMyOrders(user.email);
-                            } else {
-                              toast.error('Cancellation failed. Order might already be shipping.');
-                            }
-                          }}
-                         >
-                          Cancel Order
-                         </button>
+                         cancellingOrderId === order.id ? (
+                           <div className="w-full flex flex-col gap-2.5 mt-2 bg-slate-50 p-4 rounded-xl border border-slate-200 text-left">
+                             <label className="text-xs font-semibold text-bb-heading">Reason for cancellation request:</label>
+                             <textarea
+                               value={cancelReason}
+                               onChange={(e) => setCancelReason(e.target.value)}
+                               placeholder="Please explain why you wish to cancel this order..."
+                               className="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs text-bb-text outline-none focus:border-bb-pink transition-all h-20 resize-none"
+                             />
+                             <div className="flex gap-2 justify-end">
+                               <button
+                                 disabled={submittingCancel}
+                                 onClick={async () => {
+                                   if (!cancelReason.trim()) {
+                                     toast.error('Please enter a reason for cancellation');
+                                     return;
+                                   }
+                                   setSubmittingCancel(true);
+                                   try {
+                                     const res = await fetch('/api/user/orders/cancel', {
+                                       method: 'POST',
+                                       headers: { 'Content-Type': 'application/json' },
+                                       body: JSON.stringify({ orderId: order.id, reason: cancelReason })
+                                     });
+                                     if (res.ok) {
+                                       toast.success('Cancellation request submitted!');
+                                       setCancellingOrderId(null);
+                                       setCancelReason('');
+                                     } else {
+                                       const data = await res.json();
+                                       toast.error(data.error || 'Failed to submit request');
+                                     }
+                                   } catch (e) {
+                                     toast.error('Connection error');
+                                   } finally {
+                                     setSubmittingCancel(false);
+                                   }
+                                 }}
+                                 className="bg-red-500 hover:bg-red-600 text-white text-xs font-bold px-4 py-2 rounded-xl border-none cursor-pointer shadow-sm transition-colors disabled:opacity-50"
+                               >
+                                 {submittingCancel ? 'Submitting...' : 'Submit Request'}
+                               </button>
+                               <button
+                                 onClick={() => { setCancellingOrderId(null); setCancelReason(''); }}
+                                 className="bg-white border border-slate-200 text-bb-text hover:bg-slate-50 text-xs font-semibold px-4 py-2 rounded-xl cursor-pointer transition-colors"
+                               >
+                                 Cancel
+                               </button>
+                             </div>
+                           </div>
+                         ) : (
+                           <button 
+                            className="bg-transparent border border-red-200 text-red-500 hover:bg-red-50 text-xs font-semibold px-4 py-2 rounded-xl cursor-pointer transition-colors" 
+                            onClick={() => setCancellingOrderId(order.id)}
+                           >
+                            Request Cancellation
+                           </button>
+                         )
                        )}
                        {order.status === 'Delivered' && (
                          <Link href={`/products/${order.items[0]?.productId}`} className="bg-bb-pink hover:bg-bb-pink-hover text-white text-xs font-bold px-4 py-2 rounded-xl no-underline shadow-sm transition-colors">
@@ -552,6 +645,35 @@ function AccountPageContent() {
                 )}
               </div>
             </form>
+          </section>
+        )}
+
+        {activeTab === 'wishlist' && (
+          <section className="bg-white border border-bb-border/30 rounded-2xl p-6 shadow-sm flex flex-col gap-6 animate-fade-in">
+            <div>
+              <h1 className="font-heading text-2xl font-bold text-bb-heading mb-1.5">My Wishlist</h1>
+              <p className="text-slate-400 text-sm">Products you have saved for later.</p>
+            </div>
+            
+            {wishlistLoading ? (
+              <div className="text-center py-12">
+                <div className="inline-block w-6 h-6 border-2 border-bb-pink border-t-transparent rounded-full animate-spin"></div>
+              </div>
+            ) : wishlist.length === 0 ? (
+              <div className="text-center py-12">
+                <div className="text-4xl mb-4">💖</div>
+                <p className="text-slate-500 text-sm mb-4">Your wishlist is empty.</p>
+                <Link href="/shop" className="inline-block bg-bb-heading text-white font-bold text-xs px-6 py-2.5 rounded-xl no-underline hover:bg-bb-text transition-colors">
+                  Explore Shop
+                </Link>
+              </div>
+            ) : (
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 md:gap-6">
+                {wishlist.map(product => (
+                  <ProductCard key={product.id} product={product} />
+                ))}
+              </div>
+            )}
           </section>
         )}
       </main>

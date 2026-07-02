@@ -1,13 +1,14 @@
 "use client";
 
 import Image from 'next/image';
-import Link from 'next/link';
+import Link from './OptimizedLink';
 import { useCart } from '../lib/CartContext';
 import { useLanguage } from '../lib/LanguageContext';
 import { toast } from 'react-hot-toast';
 import ProductRating from './ProductRating';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
+import WishlistToggle from './WishlistToggle';
 
 export default function ProductCard({ product }) {
   const { setCartItems, openCart } = useCart();
@@ -44,6 +45,7 @@ export default function ProductCard({ product }) {
             New
           </Badge>
         )}
+        <WishlistToggle productId={product.id} className="absolute top-2.5 right-2.5 z-10" />
 
         {/* Product Image */}
         <div

@@ -13,7 +13,7 @@ export default function ShippingManagement() {
     fetchZones();
   }, []);
 
-  const fetchZones = async () => {
+  async function fetchZones() {
     try {
       const res = await fetch('/api/admin/shipping');
       const data = await res.json();
@@ -23,7 +23,7 @@ export default function ShippingManagement() {
     } finally {
       setLoading(false);
     }
-  };
+  }
 
   const handleCreate = async (e) => {
     e.preventDefault();

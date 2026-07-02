@@ -1,16 +1,25 @@
 import { NextResponse } from 'next/server';
-import { getSession } from '@/lib/session';
+import { createSupabaseServerClient } from '@/lib/supabase';
 import prisma from '@/lib/prisma';
 
 export async function GET() {
-  const session = await getSession();
-  if (session.user) {
-    // Fetch fresh user data from DB using ID or Email
+  try {
+    const supabase = await createSupabaseServerClient();
+    const { data: { user: supabaseUser }, error } = await supabase.auth.getUser();
+
+    if (error || !supabaseUser) {
+      return NextResponse.json({ user: null }, { status: 401 });
+    }
+
+    // Fetch fresh user data from DB using ID
     const user = await prisma.user.findUnique({
-      where: session.user.id ? { id: session.user.id } : { email: session.user.email },
+      where: { id: supabaseUser.id },
       select: { id: true, name: true, email: true, phone: true, role: true, isVerified: true, mfaEnabled: true }
     });
+
     return NextResponse.json({ user });
+  } catch (err) {
+    console.error("Auth Me API Error:", err);
+    return NextResponse.json({ user: null }, { status: 401 });
   }
-  return NextResponse.json({ user: null }, { status: 401 });
 }

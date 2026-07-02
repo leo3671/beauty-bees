@@ -14,7 +14,7 @@ export default function BrandsManagement() {
     fetchBrands();
   }, []);
 
-  const fetchBrands = async () => {
+  async function fetchBrands() {
     try {
       const res = await fetch('/api/brands?all=true');
       const data = await res.json();
@@ -24,7 +24,7 @@ export default function BrandsManagement() {
     } finally {
       setLoading(false);
     }
-  };
+  }
 
   const handleToggleStatus = async (id, currentStatus) => {
     try {

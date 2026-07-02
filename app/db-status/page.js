@@ -1,4 +1,5 @@
 import prisma from '@/lib/prisma';
+import Link from 'next/link';
 
 export const dynamic = 'force-dynamic';
 
@@ -50,7 +51,7 @@ export default async function DBStatusPage() {
         <p style={{ fontSize: '0.9rem', color: '#94a3b8' }}>
           If this is RED, check your <strong>DATABASE_URL</strong> in Vercel Settings.
         </p>
-        <a href="/" style={{ 
+        <Link href="/" style={{ 
           display: 'inline-block', 
           marginTop: '20px', 
           color: 'var(--primary-pink)', 
@@ -58,7 +59,7 @@ export default async function DBStatusPage() {
           fontWeight: 'bold'
         }}>
           ← Back to Homepage
-        </a>
+        </Link>
       </div>
     </div>
   );

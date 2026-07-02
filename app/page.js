@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from "@/components/OptimizedLink";
 import Image from "next/image";
 import HomeProductTabs from "../components/HomeProductTabs";
 import ShopByCategory from "../components/ShopByCategory";
@@ -170,30 +170,31 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* ─── NEWSLETTER ──────────────────────────────────────────── */}
-      <section className="bg-gradient-to-br from-bb-text to-[#5a4a4d] py-16 px-6">
-        <div className="max-w-[560px] mx-auto text-center">
-          <h2 className="font-heading text-2xl md:text-[2rem] text-white font-medium mb-3">
-            Join the Beauty Bees Cosmetics Family
+      {/* ─── VIP WHATSAPP GROUP ─────────────────────────────────── */}
+      <section className="bg-gradient-to-br from-[#128C7E] to-[#075E54] py-16 px-6 text-center text-white">
+        <div className="max-w-[560px] mx-auto">
+          <span className="inline-block bg-white/20 text-white px-4 py-1.5 rounded-full text-[0.7rem] font-bold tracking-[2px] uppercase mb-4">
+            EXCLUSIVES & ALERTS
+          </span>
+          <h2 className="font-heading text-2xl md:text-[2rem] font-medium mb-3">
+            Join our VIP WhatsApp Group
           </h2>
-          <p className="text-white/70 mb-8 text-[0.95rem]">
-            Subscribe for exclusive drops, skincare tips, and members-only discounts.
+          <p className="text-white/85 mb-8 text-[0.95rem] leading-[1.6]">
+            Get instant restock notifications, flash sale alerts, and personalized skin consultation directly on WhatsApp.
           </p>
-          <div className="flex gap-3 mb-4 max-sm:flex-col">
-            <input
-              type="email"
-              placeholder="Enter your email address"
-              className="flex-1 px-5 py-3.5 rounded-full border-none bg-white/15 text-white outline-none
-                backdrop-blur-[10px] placeholder:text-white/50 focus:bg-white/25 transition-colors"
-            />
-            <button
-              className="px-8 py-3.5 bg-bb-pink text-white border-none rounded-full font-semibold text-[0.9rem]
-                hover:bg-bb-pink-hover hover:-translate-y-px transition-all duration-300 whitespace-nowrap"
-            >
-              Subscribe
-            </button>
-          </div>
-          <small className="text-white/40 text-[0.8rem]">No spam. Unsubscribe anytime. 🐝</small>
+          <a
+            href="https://chat.whatsapp.com/example-beauty-bees-vip"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-3 bg-white text-[#075E54] px-9 py-4 rounded-full font-bold text-base
+              shadow-[0_4px_14px_rgba(0,0,0,0.15)] hover:scale-102 hover:shadow-[0_6px_20px_rgba(0,0,0,0.25)]
+              transition-all duration-300 no-underline"
+          >
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
+              <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.514 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.724-1.455L0 24zm6.59-4.846c1.6.95 3.188 1.449 4.625 1.45 5.436 0 9.86-4.426 9.864-9.864.002-2.63-1.023-5.105-2.887-6.97C16.38 1.897 13.9 .872 11.267.872c-5.442 0-9.87 4.43-9.873 9.87-.001 2.012.518 3.666 1.5 5.097L1.874 22.03l6.402-1.681-.629-.379-.6-.361zm11.583-7.859c-.315-.158-1.86-.918-2.142-1.02-.283-.103-.488-.155-.693.158-.205.312-.79.992-.968 1.198-.18.206-.359.232-.674.074-.315-.158-1.33-.49-2.532-1.562-.936-.83-1.568-1.856-1.751-2.172-.183-.315-.02-.485.138-.642.142-.142.315-.368.473-.553.158-.185.21-.316.315-.528.105-.21.053-.395-.026-.553-.079-.158-.693-1.67-.95-2.288-.25-.6-.525-.515-.72-.525-.18-.01-.385-.01-.59-.01-.205 0-.538.077-.82.385-.282.309-1.078 1.055-1.078 2.573 0 1.517 1.102 2.985 1.256 3.193.154.208 2.17 3.31 5.257 4.639.734.316 1.307.505 1.754.647.737.233 1.407.2 1.938.12.593-.09 1.86-.761 2.122-1.46.262-.7.262-1.298.185-1.423-.078-.125-.283-.207-.597-.365z"/>
+            </svg>
+            Join VIP WhatsApp Group
+          </a>
         </div>
       </section>
 

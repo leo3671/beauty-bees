@@ -15,7 +15,7 @@ export default function OrderManagement() {
     fetchOrders();
   }, []);
 
-  const fetchOrders = async () => {
+  async function fetchOrders() {
     try {
       const res = await fetch('/api/orders');
       const data = await res.json();
@@ -25,7 +25,7 @@ export default function OrderManagement() {
     } finally {
       setLoading(false);
     }
-  };
+  }
 
   const updateOrderStatus = async (id, newStatus) => {
     try {

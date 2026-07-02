@@ -1,9 +1,13 @@
 import { getLiveProducts } from '../../../lib/serverData';
+import dynamic from 'next/dynamic';
 import AddToCartButton from '../../../components/AddToCartButton';
 import ProductCard from '../../../components/ProductCard';
-import ReviewSection from '../../../components/ReviewSection';
 import ProductRating from '../../../components/ProductRating';
 import Image from 'next/image';
+import WishlistToggle from '../../../components/WishlistToggle';
+import NotifyMeForm from '../../../components/NotifyMeForm';
+
+const ReviewSection = dynamic(() => import('../../../components/ReviewSection'));
 
 export async function generateMetadata({ params }) {
   const resolvedParams = await params;
@@ -36,7 +40,7 @@ export default async function ProductDetails({ params }) {
     return (
       <div className="container" style={{ padding: '100px 20px', textAlign: 'center' }}>
         <h2>Product not found</h2>
-        <p>The boutique item you're looking for may have been moved or is currently out of stock.</p>
+        <p>The boutique item you&apos;re looking for may have been moved or is currently out of stock.</p>
       </div>
     );
   }
@@ -86,6 +90,7 @@ export default async function ProductDetails({ params }) {
             {product.originalPrice && product.originalPrice > product.price && (
               <span className="bg-red-500 text-white text-xs font-bold px-2 py-0.5 rounded-md">SALE</span>
             )}
+            <WishlistToggle productId={product.id} className="ml-2" />
           </h1>
           
           <div className="flex items-center gap-4 mb-4 flex-wrap text-sm border-b border-bb-border/20 pb-4">
@@ -111,7 +116,13 @@ export default async function ProductDetails({ params }) {
           </div>
 
           <div className="mb-8">
-            <AddToCartButton product={product} />
+            {product.stock > 0 ? (
+              <AddToCartButton product={product} />
+            ) : product.isNotify ? (
+              <NotifyMeForm productId={product.id} />
+            ) : (
+              <AddToCartButton product={product} />
+            )}
           </div>
           
           {/* Guarantee Box */}

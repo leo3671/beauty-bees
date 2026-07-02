@@ -1,11 +1,26 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
-import { getSession } from '@/lib/session';
+import { createSupabaseServerClient } from '@/lib/supabase';
 import bcrypt from 'bcryptjs';
 
+async function checkAdmin() {
+  try {
+    const supabase = await createSupabaseServerClient();
+    const { data: { user: supabaseUser }, error } = await supabase.auth.getUser();
+    if (error || !supabaseUser) return false;
+
+    const dbUser = await prisma.user.findUnique({
+      where: { id: supabaseUser.id },
+      select: { role: true }
+    });
+    return dbUser?.role === 'admin';
+  } catch (e) {
+    return false;
+  }
+}
+
 export async function GET() {
-  const session = await getSession();
-  if (!session || !session.user || session.user.role !== 'admin') {
+  if (!(await checkAdmin())) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
@@ -29,8 +44,7 @@ export async function GET() {
 }
 
 export async function PUT(request) {
-  const session = await getSession();
-  if (!session || !session.user || session.user.role !== 'admin') {
+  if (!(await checkAdmin())) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 

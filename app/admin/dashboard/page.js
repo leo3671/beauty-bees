@@ -10,11 +10,7 @@ export default function DashboardOverview() {
   const [loading, setLoading] = useState(true);
   const { products } = useProducts();
 
-  useEffect(() => {
-    fetchOrders();
-  }, []);
-
-  const fetchOrders = async () => {
+  async function fetchOrders() {
     try {
       const res = await fetch('/api/orders');
       const data = await res.json();
@@ -24,7 +20,11 @@ export default function DashboardOverview() {
     } finally {
       setLoading(false);
     }
-  };
+  }
+
+  useEffect(() => {
+    fetchOrders();
+  }, []);
 
   // === Analytics Calculations ===
   const totalRevenue = Array.isArray(orders) ? orders.reduce((sum, o) => sum + o.total, 0) : 0;

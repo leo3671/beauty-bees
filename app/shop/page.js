@@ -28,11 +28,11 @@ function ShopContent() {
     }
   }, [initialBrand]);
 
-  const scrollToBrand = (brand) => {
+  function scrollToBrand(brand) {
     if (brandRefs.current[brand]) {
       brandRefs.current[brand].scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
-  };
+  }
 
   const filteredProducts = Array.isArray(products) ? products.filter(p => {
     const matchesFilter = activeFilter === 'All' || p.category === activeFilter || p.brand === activeFilter;

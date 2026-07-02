@@ -3,42 +3,46 @@ generator client {
 }
 
 datasource db {
-  provider  = "postgresql"
-  url       = env("DATABASE_URL")
-  directUrl = env("DIRECT_URL")
+  provider = "sqlite"
+  url      = "file:./dev.db"
 }
 
 model User {
-  id         String   @id @default(cuid())
-  name       String   @default("")
-  email      String   @unique
-  phone      String   @default("")
+  id         String     @id @default(cuid())
+  name       String     @default("")
+  email      String     @unique
+  phone      String     @default("")
   password   String
-  role       String   @default("customer")
-  isVerified Boolean  @default(false)
-  mfaEnabled Boolean  @default(false)
+  role       String     @default("customer")
+  isVerified Boolean    @default(false)
+  mfaEnabled Boolean    @default(false)
   mfaSecret  String?
-  createdAt  DateTime @default(now())
+  createdAt  DateTime   @default(now())
+  wishlist   Wishlist[]
 }
 
 model Product {
-  id            String   @id @default(cuid())
-  name          String
-  brand         String
-  category      String
-  description   String?
-  price         Int
-  originalPrice Int?
-  isNew         Boolean  @default(false)
-  isBestSeller  Boolean  @default(false)
-  stock         Int      @default(0)
-  inStock       Boolean  @default(true)
-  image         String
-  skinType      String   @default("[]")
-  ingredients   String   @default("[]")
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-  reviews       Review[]
+  id                 String              @id @default(cuid())
+  name               String
+  brand              String
+  category           String
+  description        String?
+  price              Int
+  originalPrice      Int?
+  isNew              Boolean             @default(false)
+  isBestSeller       Boolean             @default(false)
+  stock              Int                 @default(0)
+  inStock            Boolean             @default(true)
+  image              String
+  skinType           String              @default("[]")
+  ingredients        String              @default("[]")
+  isNotify           Boolean             @default(false)
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
+  reviews            Review[]
+  wishlist           Wishlist[]
+  bundles            Bundle[]
+  stockNotifications StockNotification[]
 
   @@index([category])
   @@index([brand])
@@ -112,28 +116,6 @@ model DiscountVoucher {
   createdAt     DateTime  @default(now())
 }
 
-model ChatSession {
-  id        String        @id @default(cuid())
-  userId    String?
-  status    String        @default("ai")
-  createdAt DateTime      @default(now())
-  updatedAt DateTime      @updatedAt
-  messages  ChatMessage[]
-
-  @@index([userId])
-}
-
-model ChatMessage {
-  id            String      @id @default(cuid())
-  chatSessionId String
-  sender        String
-  content       String
-  createdAt     DateTime    @default(now())
-  session       ChatSession @relation(fields: [chatSessionId], references: [id], onDelete: Cascade)
-
-  @@index([chatSessionId])
-}
-
 model ShippingZone {
   id        String   @id @default(cuid())
   name      String   @unique
@@ -155,4 +137,40 @@ model SiteSettings {
   logoUrl   String?
   favicon   String?
   updatedAt DateTime @updatedAt
+}
+
+model Wishlist {
+  id        String   @id @default(cuid())
+  userId    String
+  productId String
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, productId])
+  @@index([userId])
+  @@index([productId])
+}
+
+model Bundle {
+  id          String    @id @default(cuid())
+  name        String
+  description String?
+  price       Int
+  image       String?
+  isActive    Boolean   @default(true)
+  products    Product[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model StockNotification {
+  id        String   @id @default(cuid())
+  productId String
+  email     String
+  createdAt DateTime @default(now())
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@unique([productId, email])
+  @@index([productId])
 }

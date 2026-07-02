@@ -8,10 +8,6 @@ export default function CustomerManagement() {
   const [loading, setLoading] = useState(true);
   const [expandedEmail, setExpandedEmail] = useState(null);
 
-  useEffect(() => {
-    fetchOrders();
-  }, []);
-
   const fetchOrders = async () => {
     try {
       const res = await fetch('/api/orders');
@@ -23,6 +19,10 @@ export default function CustomerManagement() {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    fetchOrders();
+  }, []);
 
   // Group orders by customer email
   const customerMap = {};

@@ -5,6 +5,7 @@ import { ProductProvider } from "../lib/ProductContext";
 import { LanguageProvider } from "../lib/LanguageContext";
 import { AuthProvider } from "../lib/AuthContext";
 import ClientLayout from "../components/ClientLayout";
+import PostHogProvider from "../components/PostHogProvider";
 
 const dmSans = DM_Sans({
   variable: "--font-main",
@@ -35,15 +36,17 @@ export default function RootLayout({ children }) {
     <html lang="en" className={`${dmSans.variable} ${outfit.variable}`}>
       <body>
         <LanguageProvider>
-          <AuthProvider>
-            <ProductProvider>
-              <CartProvider>
-                <ClientLayout>
-                  {children}
-                </ClientLayout>
-              </CartProvider>
-            </ProductProvider>
-          </AuthProvider>
+          <PostHogProvider>
+            <AuthProvider>
+              <ProductProvider>
+                <CartProvider>
+                  <ClientLayout>
+                    {children}
+                  </ClientLayout>
+                </CartProvider>
+              </ProductProvider>
+            </AuthProvider>
+          </PostHogProvider>
         </LanguageProvider>
       </body>
     </html>

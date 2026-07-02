@@ -15,7 +15,7 @@ export default function UserManagement() {
     fetchUsers();
   }, []);
 
-  const fetchUsers = async () => {
+  async function fetchUsers() {
     try {
       const res = await fetch('/api/admin/users');
       const data = await res.json();
@@ -25,7 +25,7 @@ export default function UserManagement() {
     } finally {
       setLoading(false);
     }
-  };
+  }
 
   const handleUpdateUser = async (e) => {
     e.preventDefault();

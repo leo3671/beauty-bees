@@ -69,7 +69,6 @@ export default function DashboardLayout({ children }) {
               { href: '/admin/dashboard/customers', label: 'Customers' },
               { href: '/admin/dashboard/discounts', label: 'Discounts & Offers' },
               { href: '/admin/dashboard/shipping', label: 'Shipping Zones' },
-              { href: '/admin/dashboard/support', label: 'AI & Support' },
             ].map((link) => (
               <Link 
                 key={link.href}

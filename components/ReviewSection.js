@@ -16,7 +16,7 @@ export default function ReviewSection({ productId }) {
 
   useEffect(() => { fetchReviews(); }, [productId]);
 
-  const fetchReviews = async () => {
+  async function fetchReviews() {
     try {
       const res = await fetch(`/api/reviews?productId=${productId}`);
       const data = await res.json();

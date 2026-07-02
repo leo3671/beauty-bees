@@ -17,7 +17,7 @@ export default function DiscountManagement() {
     fetchVouchers();
   }, []);
 
-  const fetchVouchers = async () => {
+  async function fetchVouchers() {
     try {
       const res = await fetch('/api/admin/discounts');
       const data = await res.json();
@@ -27,7 +27,7 @@ export default function DiscountManagement() {
     } finally {
       setLoading(false);
     }
-  };
+  }
 
   const handleCreate = async (e) => {
     e.preventDefault();

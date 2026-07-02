@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import Link from 'next/link';
+import Link from './OptimizedLink';
 import Image from 'next/image';
 import { useCart } from '../lib/CartContext';
 import { useAuth } from '../lib/AuthContext';
