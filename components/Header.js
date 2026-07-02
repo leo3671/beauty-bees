@@ -87,22 +87,14 @@ export default function Header() {
         {/* Logo */}
         <div className={cn("flex items-center", "lg:flex-none", "max-lg:flex-1 max-lg:justify-center")}>
           <Link href="/">
-            {siteSettings.logoUrl && !imgError ? (
-              <div className="relative h-[50px] w-[140px] max-lg:h-[40px] max-lg:w-[120px] flex items-center">
-                <Image
-                  src={siteSettings.logoUrl}
-                  alt={`${siteSettings.siteName} Official Logo`}
-                  fill
-                  priority
-                  style={{ objectFit: 'contain' }}
-                  onError={() => setImgError(true)}
-                />
-              </div>
-            ) : (
-              <h1 className="m-0 text-xl font-bold text-bb-text tracking-wide">
-                {siteSettings.siteName.toUpperCase()}
-              </h1>
-            )}
+            <Image
+              src="/logo_new.png"
+              alt="Beauty Bees Logo"
+              width={140}
+              height={48}
+              priority
+              className="h-12 w-auto object-contain"
+            />
           </Link>
         </div>
 

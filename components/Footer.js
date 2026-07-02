@@ -11,8 +11,8 @@ export default function Footer() {
           <div className="col-span-2 md:col-span-1">
             <div className="relative h-[50px] w-[150px] mb-4">
               <Image
-                src="/logo_fixed.png"
-                alt="Beauty Bees Cosmetics"
+                src="/logo_new.png"
+                alt="Beauty Bees Logo"
                 fill
                 style={{ objectFit: 'contain' }}
               />

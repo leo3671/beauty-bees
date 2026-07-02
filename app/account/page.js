@@ -463,7 +463,7 @@ function AccountPageContent() {
                       {order.items.map((item, idx) => (
                         <div key={idx} className="flex gap-3 items-center">
                           <div className="w-10 h-10 rounded-lg bg-slate-50 border border-slate-100 overflow-hidden flex-shrink-0 flex items-center justify-center p-1">
-                            <img src={item.image || '/logo_fixed.png'} alt={item.name} className="w-full h-full object-contain" />
+                            <img src={item.image || '/logo_new.png'} alt={item.name} className="w-full h-full object-contain" />
                           </div>
                           <div className="flex-1 min-w-0">
                             <span className="text-xs font-semibold text-bb-heading truncate block">{item.name}</span>

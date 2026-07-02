@@ -20,7 +20,7 @@ export default function OptimizedImage({
   const [error, setError] = useState(false);
 
   // Fallback placeholder image on load error or if no src is provided
-  const imageSrc = error || !src ? '/logo_fixed.png' : src;
+  const imageSrc = error || !src ? '/logo_new.png' : src;
 
   return (
     <div 
